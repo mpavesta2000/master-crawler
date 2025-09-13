@@ -1,0 +1,111 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  data-layout="vertical" data-topbar="light" dir="rtl" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none"
+	  data-preloader="disable">
+
+<head>
+	<!--page title-->
+	<div th:replace="partials/title-meta :: title-meta('ورود')"></div>
+
+	<!-- Page CSS -->
+	<div th:replace="partials/head-css :: head-css"></div>
+
+	<link href="/assets/css/custom-authentication.css" rel="stylesheet" type="text/css"/>
+
+</head>
+
+<body>
+<div class="auth-page-wrapper auth-bg-cover py-5 d-flex justify-content-center align-items-center min-vh-100">
+	<!-- Add the gradient overlay -->
+	<div class="ravii-auth-overlay"></div>
+
+	<!-- Add the logo -->
+	<div class="ravii-auth-logo-wrapper">
+		<a href="/" class="ravii-auth-logo-link">
+			<img src="/assets/images/real-ravii.png" alt="RAVII" class="ravii-auth-logo">
+		</a>
+	</div>
+
+	<div class="bg-overlay"></div>
+	<!-- auth-page content -->
+	<div class="auth-page-content overflow-hidden pt-lg-5">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-lg-6">
+					<div class="card overflow-hidden">
+						<div class="row g-0 justify-content-center">
+							<div class="col-lg-12">
+								<div class="p-lg-5 p-4">
+									<div>
+										<h2 class="text-primary">به راوی خوش آمدید.</h2>
+										<p class="text-muted">بیا در راوی وارد شو!</p>
+									</div>
+
+									<div class="mt-4">
+										<form th:action="@{/admin/authentication/login}" th:object="${user}" method="post">
+											<div th:if="${session.error}" class="alert alert-danger">
+												<p th:text="${session.error}"></p>
+											</div>
+											<div class="mb-3">
+												<label for="username" class="form-label">ایمیل</label>
+												<input name="username"
+													   field="{email}"
+													   type="email" class="form-control" id="username"
+													   placeholder=".ایمیل خود را وارد کنید">
+											</div>
+
+											<div class="mb-3">
+												<label class="form-label" for="password-input">رمزعبور</label>
+												<div class="position-relative auth-pass-inputgroup mb-3">
+													<input name="password"
+														   field="{password}"
+														   type="password" class="form-control pe-5 password-input"
+														   placeholder="رمزعبور خود را وارد کنید." id="password-input">
+													<button
+															class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
+															type="button" id="password-addon"><i
+															class="ri-eye-fill align-middle"></i></button>
+												</div>
+											</div>
+											<div class="mt-4">
+												<button class="btn btn-primary w-100" type="submit">ورود</button>
+											</div>
+
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- end row -->
+		</div>
+		<!-- end container -->
+	</div>
+	<!-- end auth page content -->
+
+	<!-- footer -->
+	<footer class="footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="text-center">
+						<p class="mb-0">
+							توسعه شده توسط تیم راوی - ۱۴۰۳
+							&copy;
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+	<!-- end Footer -->
+</div>
+
+<div th:replace="partials/vendor-scripts :: scripts"></div>
+<!-- password-addon init -->
+<script src="/assets/js/pages/password-addon.init.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<th:block layout:fragment="pagetitle">
+  <div th:replace="partials/title-meta :: title-meta('تنظیمات RSS')"></div>
+</th:block>
+
+<head>
+  <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+  <link href="/assets/css/rss-setting.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div layout:fragment="content">
+  <div th:replace="partials/page-title :: page-title('تنظیمات RSS','RSS')"></div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">تنظیمات RSS خبرگزاری برنا</div>
+        <div class="card-body">
+          <div class="form-check form-switch mb-4">
+            <div class="row">
+              <div class="col-md-6">
+                <input class="form-check-input" type="checkbox" id="bornaRSSToggle" th:checked="${bornaRSSEnabled}">
+                <label class="form-check-label" for="bornaRSSToggle">فعال کردن RSS خبرگزاری برنا</label>
+              </div>
+              <div class="col-md-6 d-flex">
+                <input type="number" class="form-control" id="maxNewsInput" min="1" max="20"
+                       th:value="${defaultBornaMaxNews ?: 5}" placeholder="حداکثر تعداد اخبار">
+                <button class="btn btn-primary ms-2" id="setMaxNewsBtn">تنظیم</button>
+              </div>
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <div class="form-check form-switch mb-4">
+            <div class="row">
+              <div class="col-md-6">
+                <input class="form-check-input" type="checkbox" id="fararuRSSToggle" th:checked="${fararuRSSEnabled}">
+                <label class="form-check-label" for="fararuRSSToggle">فعال کردن RSS خبرگزاری فرارو</label>
+              </div>
+              <div class="col-md-6 d-flex">
+                <input type="number" class="form-control" id="maxFararuNewsInput" min="1" max="20"
+                       th:value="${defaultFararuMaxNews ?: 5}" placeholder="حداکثر تعداد اخبار">
+                <button class="btn btn-primary ms-2" id="setFararuMaxNewsBtn">تنظیم</button>
+              </div>
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <div class="form-check form-switch mb-4">
+            <div class="row">
+              <div class="col-md-6">
+                <input class="form-check-input" type="checkbox" id="bbcArabicRSSToggle" th:checked="${bbcArabicRSSEnabled}">
+                <label class="form-check-label" for="bbcArabicRSSToggle">فعال کردن RSS بی بی سی عربی</label>
+              </div>
+              <div class="col-md-6 d-flex">
+                <input type="number" class="form-control" id="maxBBCArabicNewsInput" min="1" max="20"
+                       th:value="${defaultBBCArabicMaxNews ?: 5}" placeholder="حداکثر تعداد اخبار">
+                <button class="btn btn-primary ms-2" id="setBBCArabicMaxNewsBtn">تنظیم</button>
+              </div>
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <div class="form-check form-switch mb-4">
+            <div class="row">
+              <div class="col-md-6">
+                <input class="form-check-input" type="checkbox" id="alWatanRSSToggle" th:checked="${alWatanRSSEnabled}">
+                <label class="form-check-label" for="alWatanRSSToggle">فعال کردن RSS الوطن</label>
+              </div>
+              <div class="col-md-6 d-flex">
+                <input type="number" class="form-control" id="maxAlWatanNewsInput" min="1" max="20"
+                       th:value="${defaultAlWatanMaxNews ?: 5}" placeholder="حداکثر تعداد اخبار">
+                <button class="btn btn-primary ms-2" id="setAlWatanMaxNewsBtn">تنظیم</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">لاگ RSS</div>
+        <div class="card-body">
+          <div class="terminal rounded-2" id="logsContainer"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<th:block layout:fragment="pagejs">
+  <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+  <script src="/assets/js/pages/sweetalerts.init.js"></script>
+  <script src="/assets/libs/prismjs/prism.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+  <script src="/assets/js/crawler/rss-setting.js"></script>
+</th:block>
+</body>
+
+</html>

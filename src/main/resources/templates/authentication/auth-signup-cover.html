@@ -1,0 +1,122 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="fa" dir="rtl"
+	  data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none"
+	  data-preloader="disable">
+
+<head>
+	<!--page title-->
+	<div th:replace="partials/title-meta :: title-meta('ثبت نام')"></div>
+
+	<!-- Page CSS -->
+	<div th:replace="partials/head-css :: head-css"></div>
+
+	<link href="/assets/css/custom-authentication.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<body>
+<!-- auth-page wrapper -->
+<div class="auth-page-wrapper auth-bg-cover py-5 d-flex justify-content-center align-items-center min-vh-100">
+	<!-- Add the gradient overlay -->
+	<div class="ravii-auth-overlay"></div>
+
+	<!-- Add the logo -->
+	<div class="ravii-auth-logo-wrapper">
+		<a href="/" class="ravii-auth-logo-link">
+			<img src="/assets/images/real-ravii.png" alt="RAVII" class="ravii-auth-logo">
+		</a>
+	</div>
+	<div class="bg-overlay"></div>
+	<!-- auth-page content -->
+	<div class="auth-page-content overflow-hidden pt-lg-5">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-lg-6">
+					<div class="card overflow-hidden m-0">
+						<div class="row justify-content-center">
+							<div class="col-lg-12">
+								<div class="p-lg-5 p-4">
+									<div>
+										<h2 class="text-primary">ثبت نام نکردی تو RAVII؟واقعا؟</h2>
+										<p class="text-muted">الان بیا در دامی ثبت نام کن!</p>
+									</div>
+
+									<div class="mt-4">
+										<form class="needs-validation" method="post" novalidate th:action="@{/admin/authentication/signup/save}" th:object="${user}">
+
+											<div class="mb-3">
+												<label for="useremail" class="form-label">ایمیل <span
+														class="text-danger">*</span></label>
+												<input type="email" class="form-control" th:field="*{email}" id="useremail"
+													   placeholder=".ایمیل خود را وارد کنید" required>
+												<div class="invalid-feedback">
+													لطفاایمیل خود را وارد کنید
+												</div>
+											</div>
+											<div class="mb-3">
+												<label class="form-label">نوع کاربر<span
+														class="text-danger">*</span></label>
+												<select th:field="*{userTypeId}" class="form-select mb-3" aria-label="Default select example">
+													<option th:each="type : ${getAllTypes}" th:text="${type.getUserTypeName() == 'Admin' ? 'ادمین' : (type.getUserTypeName() == 'User' ? 'ویراستار' : type.getUserTypeName())}" th:value="${type.getUserTypeId()}"></option>
+												</select>
+											</div>
+
+											<div class="mb-3">
+												<label class="form-label" for="password-input">رمزعبور</label>
+												<div class="position-relative auth-pass-inputgroup">
+													<input type="password" th:field="*{password}" class="form-control pe-5 password-input"
+														   onpaste="return false" placeholder="رمزعبور خود را وارد کنید."
+														   id="password-input" aria-describedby="passwordInput"
+														   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required>
+													<button
+															class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
+															type="button" id="password-addon"><i
+															class="ri-eye-fill align-middle"></i></button>
+													<div class="invalid-feedback">
+														لطفا رمزعبور خود را وارد کنید
+													</div>
+												</div>
+											</div>
+
+											<div class="mb-4">
+
+											</div>
+
+											<div id="password-contain" class="p-3 bg-light mb-2 rounded">
+												<h5 class="fs-13">رمز عبور باید شامل:</h5>
+												<p id="pass-length" class="invalid fs-12 mb-2">حداقل <b>۸ کاراکتر</b></p>
+												<p id="pass-lower" class="invalid fs-12 mb-2">حداقل یک <b>حرف کوچک</b> (a-z)</p>
+												<p id="pass-upper" class="invalid fs-12 mb-2">حداقل یک <b>حرف بزرگ</b> (A-Z)</p>
+												<p id="pass-number" class="invalid fs-12 mb-0">حداقل یک <b>عدد</b> (0-9)</p>
+											</div>
+
+
+											<div class="mt-4">
+												<button class="btn btn-primary w-100" type="submit">ثبت نام</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end card -->
+				</div>
+				<!-- end col -->
+
+			</div>
+			<!-- end row -->
+		</div>
+		<!-- end container -->
+	</div>
+	<!-- end auth page content -->
+</div>
+<!-- end auth-page-wrapper -->
+
+<div th:replace="partials/vendor-scripts :: scripts"></div>
+<!-- validation init -->
+<script src="/assets/js/pages/form-validation.init.js"></script>
+<!-- password create init -->
+<script src="/assets/js/pages/passowrd-create.init.js"></script>
+</body>
+
+</html>

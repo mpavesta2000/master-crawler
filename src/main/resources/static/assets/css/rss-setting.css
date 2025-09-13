@@ -1,0 +1,14 @@
+.terminal {
+    background-color: #1c1c1c;
+    color: #fff;
+    font-family: monospace;
+    padding: 20px;
+    height: 400px;
+    overflow-y: scroll;
+}
+.terminal p {
+    margin: 0;
+}
+.terminal p.error {
+    color: #ff0000;
+}

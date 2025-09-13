@@ -1,0 +1,311 @@
+<html >
+
+<body>
+<div th:fragment="sidebar" th:remove="tag">
+	<!-- ========== App Menu ========== -->
+	<div class="app-menu navbar-menu">
+		<div class="navbar-brand-box">
+			<a href="/" class="logo logo-dark">
+					<span class="logo-sm">
+						<img src="/assets/images/logo-sm.png" alt="" height="22">
+					</span>
+				<span class="logo-lg">
+						<img src="/assets/images/logo-dark.png" alt="" height="17">
+					</span>
+			</a>
+			<a href="/" class="logo logo-light">
+					<span class="logo-sm">
+						<img src="/assets/images/logo-sm.png" alt="" height="22">
+					</span>
+				<span class="logo-lg">
+						<img src="/assets/images/logo-light.png" alt="" height="17">
+					</span>
+			</a>
+			<button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
+					id="vertical-hover">
+				<i class="ri-record-circle-line"></i>
+			</button>
+		</div>
+		<div id="scrollbar">
+			<div class="container-fluid">
+				<div id="two-column-menu">
+				</div>
+				<ul class="navbar-nav" id="navbar-nav">
+					<li class="menu-title"><span data-key="t-menu">منو</span></li>
+					<!--						Dashboard & Analytics-->
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarDashboards" data-bs-toggle="collapse"
+						   role="button" aria-expanded="false" aria-controls="sidebarDashboards">
+							<i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">داشبورد</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarDashboards">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/" class="nav-link" data-key="t-analytics">
+										اصلی </a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<!--						News-->
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarNews" data-bs-toggle="collapse"
+						   role="button" aria-expanded="false" aria-controls="sidebarNews">
+							<i class="ri-newspaper-line"></i> <span data-key="t-news">اخبار</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarNews">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/admin/news/add" class="nav-link" data-key="t-add-news">
+										افزودن خبر </a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/news/add-image-news" class="nav-link" data-key="t-add-news-images">
+										افزودن خبر گالری </a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/news/add-video-news" class="nav-link" data-key="t-add-news-video">
+										افزودن خبر ویدیویی </a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/news/list" class="nav-link" data-key="t-manage-news">
+										مدیریت اخبار </a>
+								</li>
+								<li class="nav-item" th:if="${#authorization.expression('hasAuthority(''Admin'')')}">
+									<a href="/admin/news/sort" class="nav-link" data-key="t-change-order-news">
+										تغییر ترتیب اخبار</a>
+								</li>
+								<li class="nav-item" th:if="${#authorization.expression('hasAuthority(''Admin'')')}">
+									<a href="/admin/comments/list" class="nav-link" data-key="t-comments-news">
+										نظرات اخبار</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<!--						Crawler-->
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarQuickNews" data-bs-toggle="collapse"
+						   role="button" aria-expanded="false" aria-controls="sidebarQuickNews">
+							<i class="ri-robot-line"></i> <span data-key="t-quick-news">ابزار هوش مصنوعی</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarQuickNews">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/admin/quickNews/crawler" class="nav-link" data-key="t-crawler">
+										چپ چین</a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/quickNews/generate" class="nav-link" data-key="t-generate">
+										تولید خبر </a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/quickNews/text" class="nav-link" data-key="t-voice-text">
+										تبدیل صدا به متن</a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/quickNews/translate" class="nav-link" data-key="t-translate">
+										ترجمه خبر
+									</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<!--						Publications-->
+					<li th:if="${!#authorization.expression('hasAuthority(''Ai'')')}" class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarPublications" data-bs-toggle="collapse"
+						   role="button" aria-expanded="false" aria-controls="sidebarPublications">
+							<i class="ri-article-line"></i> <span data-key="t-publications">نشریات</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarPublications">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/news/add" class="nav-link" data-key="t-add-publications">
+										افزودن نشریه </a>
+								</li>
+								<li class="nav-item">
+									<a href="/news/list" class="nav-link" data-key="t-manage-publications">
+										مدیریت نشریات </a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<!--						Categories-->
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarCategory" data-bs-toggle="collapse"
+						   role="button" aria-expanded="false" aria-controls="sidebarCategory">
+							<i class="ri-inbox-archive-line"></i> <span data-key="t-category">دسته بندی‌ها</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarCategory">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/admin/category/all" class="nav-link" data-key="t-manage-category">
+										مدیریت دسته بندی‌ها</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<!--						Tags-->
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarTags" data-bs-toggle="collapse"
+						   role="button" aria-expanded="false" aria-controls="sidebarTags">
+							<i class="ri-price-tag-3-line"></i> <span data-key="t-category">برچسب‌ها</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarTags">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/admin/tags/list" class="nav-link" data-key="t-manage-tags">
+										مدیریت برچسب‌ها</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<!--						Gallery-->
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarGallery" data-bs-toggle="collapse"
+						   role="button" aria-expanded="false" aria-controls="sidebarGallery">
+							<i class="ri-gallery-line"></i> <span data-key="t-gallery">گالری</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarGallery">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/admin/gallery/list-images" class="nav-link" data-key="t-gallery-all">
+										عکس‌ها </a>
+								</li>
+								<li class="nav-item">
+									<a href="/admin/gallery/list-videos" class="nav-link" data-key="t-gallery-all">
+										فیلم‌ها </a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<!--						Advertisements-->
+					<li th:if="${!#authorization.expression('hasAuthority(''Ai'')')}" class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarAdvertisements" data-bs-toggle="collapse"
+						   role="button" aria-expanded="false" aria-controls="sidebarAdvertisements">
+							<i class="ri-advertisement-line"></i> <span data-key="t-advertisements">تبلیغات</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarAdvertisements">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/gallery/list-images" class="nav-link" data-key="t-add-advertisements">
+										افزودن تبلیغات </a>
+								</li>
+								<li class="nav-item">
+									<a href="/gallery/list-videos" class="nav-link" data-key="t-manage-advertisements">
+										مدیریت تبلیغات</a>
+								</li>
+								<li class="nav-item">
+									<a href="/gallery/list-videos" class="nav-link" data-key="t-change-order-advertisements">
+										تغییر ترتیب تبلیغات</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<!--						Links-->
+					<li th:if="${!#authorization.expression('hasAuthority(''Ai'')')}" class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarLinks" data-bs-toggle="collapse"
+						   role="button" aria-expanded="false" aria-controls="sidebarLinks">
+							<i class="ri-links-line"></i> <span data-key="t-links">پیوندها</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarLinks">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/links/add" class="nav-link" data-key="t-add-links">
+										افزودن پیوندها</a>
+								</li>
+								<li class="nav-item">
+									<a href="/links/list" class="nav-link" data-key="t-manage-links">
+										مدیریت پیوندها </a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<!--						Users-->
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarUsers" data-bs-toggle="collapse"
+						   role="button" aria-expanded="false" aria-controls="sidebarUsers">
+							<i class="ri-user-line"></i> <span data-key="t-users">کاربران</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarUsers">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/users/list" class="nav-link" data-key="t-manage-users">
+										مدیریت کاربران </a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<!--						Site Menu-->
+					<li th:if="${!#authorization.expression('hasAuthority(''Ai'')')}" class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarSitemenu" data-bs-toggle="collapse"
+						   role="button" aria-expanded="false" aria-controls="sidebarSitemenu">
+							<i class="ri-menu-3-line"></i> <span data-key="t-sitemenu">منوی سایت</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarSitemenu">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/users/list" class="nav-link" data-key="t-edit-sitemenu">
+										ویرایش منوی سایت</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<!--						Company Info-->
+					<li th:if="${!#authorization.expression('hasAuthority(''Ai'')')}" class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarCompanyinfo" data-bs-toggle="collapse"
+						   role="button" aria-expanded="false" aria-controls="sidebarCompanyinfo">
+							<i class="ri-building-3-line"></i> <span data-key="t-companyinfo">اطلاعات شرکت</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarCompanyinfo">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/contact/callus/show" class="nav-link" data-key="t-edit-call-info">
+										ویرایش تماس باما</a>
+								</li>
+								<li class="nav-item">
+									<a href="/contact/aboutus/show" class="nav-link" data-key="t-edit-about-info">
+										ویرایش درباره‌ما</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<!--						Q&A-->
+					<li th:if="${!#authorization.expression('hasAuthority(''Ai'')')}" class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarQa" data-bs-toggle="collapse"
+						   role="button" aria-expanded="false" aria-controls="sidebarQa">
+							<i class="ri-question-answer-line"></i> <span data-key="t-qa">پرسش و پاسخ</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarQa">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/users/list" class="nav-link" data-key="t-manage-qa">
+										مدیریت پرسش و پاسخ‌ها</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<!--						RSS-->
+					<li th:if="${!#authorization.expression('hasAuthority(''Ai'')')}" class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarRSS" data-bs-toggle="collapse"
+						   role="button" aria-expanded="false" aria-controls="sidebarRSS">
+							<i class="ri-rss-line"></i> <span data-key="t-rss">RSS</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarRSS">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/admin/rss/setting" class="nav-link" data-key="t-rss-setting">
+										تنظیمات RSS</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="sidebar-background"></div>
+	</div>
+	<div class="vertical-overlay"></div>
+</div>
+</body>
+
+</html>

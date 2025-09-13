@@ -1,0 +1,177 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<th:block layout:fragment="pagetitle">
+    <div th:replace="partials/title-meta :: title-meta('تولید خبر')"></div>
+</th:block>
+
+<head>
+    <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="/assets/css/generate-based-question.css" type="text/css">
+
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div th:replace="partials/page-title :: page-title('ابزار هوش مصنوعی','تولید خبر')"></div>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h2 class="card-title mb-4 text-center">سیستم تولید خبر هوشمند</h2>
+                        <p class="card-text text-center mb-4">
+                            با استفاده از این سیستم می‌توانید به سادگی انواع خبر را با کیفیت بالا تولید کنید.
+                            کافیست نوع خبر را انتخاب کرده و به سوالات پاسخ دهید.
+                        </p>
+                        <div class="d-grid">
+                            <button class="btn btn-primary btn-lg" id="openNewsGeneratorBtn">
+                                <i class="fas fa-newspaper me-2"></i>شروع تولید خبر
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="loadingOverlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">در حال بارگذاری...</span>
+        </div>
+    </div>
+
+</div>
+
+<th:block layout:fragment="modal">
+    <div class="modal fade" id="newsGeneratorModal" tabindex="-1" aria-labelledby="newsGeneratorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newsGeneratorModalLabel">تولید خبر هوشمند</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="step-indicator">
+                        <div class="step active" id="step1Indicator">
+                            <div class="step-number">1</div>
+                            <div class="step-label">انتخاب مدل</div>
+                        </div>
+                        <div class="step" id="step2Indicator">
+                            <div class="step-number">2</div>
+                            <div class="step-label">پاسخ به سوالات</div>
+                        </div>
+                        <div class="step" id="step3Indicator">
+                            <div class="step-number">3</div>
+                            <div class="step-label">تایید</div>
+                        </div>
+                        <div class="step" id="step4Indicator">
+                            <div class="step-number">4</div>
+                            <div class="step-label">نتیجه</div>
+                        </div>
+                    </div>
+
+                    <div id="step1" class="step-content">
+                        <h4 class="mb-3">مدل خبری که می‌خواهید تولید کنید را انتخاب کنید</h4>
+                        <div class="row g-3" id="newsModelsContainer">
+                            <div class="col-md-4">
+                                <div class="card news-card h-100" data-model-id="news-quote">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-quote-right fa-2x mb-3 text-primary"></i>
+                                        <h5 class="card-title">خبر نقلی</h5>
+                                        <p class="card-text small">خبر از زبان یک شخص یا منبع نقل می‌شود</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card news-card h-100" data-model-id="news-event">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-calendar-day fa-2x mb-3 text-success"></i>
+                                        <h5 class="card-title">خبر رویدادی</h5>
+                                        <p class="card-text small">گزارش یک رویداد یا اتفاق خاص</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card news-card h-100" data-model-id="news-analysis">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-chart-line fa-2x mb-3 text-danger"></i>
+                                        <h5 class="card-title">خبر تحلیلی</h5>
+                                        <p class="card-text small">تحلیل و بررسی عمیق یک موضوع</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="step2" class="step-content" style="display: none;">
+                        <h4 class="mb-3">
+                            <span id="selectedModelName"></span>
+                            <span class="ms-2">-</span>
+                            <span class="ms-2">لطفاً به سوالات زیر پاسخ دهید</span>
+                        </h4>
+                        <form id="questionsForm">
+                            <div id="questionsContainer" class="mb-3">
+                            </div>
+                            <div class="alert alert-danger" id="questionValidationError" style="display: none;">
+                                لطفاً به تمام سوالات پاسخ دهید.
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="step3" class="step-content" style="display: none;">
+                        <h4 class="mb-3">تأیید اطلاعات وارد شده</h4>
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <strong>مدل خبری: </strong>
+                                <span id="confirmModelName"></span>
+                            </div>
+                            <div class="card-body">
+                                <div id="answersReviewContainer">
+                                    <!-- Answers review will be added here -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            آیا می‌خواهید با اطلاعات فوق، خبر تولید شود؟
+                        </div>
+                    </div>
+
+                    <div id="step4" class="step-content" style="display: none;">
+                        <h4 class="mb-3">خبر تولید شده</h4>
+                        <div class="card">
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                <span>نتیجه</span>
+                                <button class="btn btn-sm btn-outline-primary" id="copyNewsBtn">
+                                    <i class="fas fa-copy me-1"></i>کپی
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div id="generatedNewsContainer" class="p-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" id="backBtn" style="display: none;">
+                        <i class="fas fa-arrow-right me-1"></i>بازگشت
+                    </button>
+                    <button type="button" class="btn btn-primary" id="nextBtn">
+                        ادامه<i class="fas fa-arrow-left ms-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<th:block layout:fragment="pagejs">
+    <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script src="/assets/js/pages/sweetalerts.init.js"></script>
+    <script src="/assets/libs/ckeditor/ckeditor.js"></script>
+    <script src="/assets/js/crawler/generate-based-question.js"></script>
+</th:block>
+</body>
+
+</html>

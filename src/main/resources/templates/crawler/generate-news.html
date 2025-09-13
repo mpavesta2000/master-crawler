@@ -1,0 +1,108 @@
+
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<th:block layout:fragment="pagetitle">
+    <div th:replace="partials/title-meta :: title-meta('تولید خبر')"></div>
+</th:block>
+
+<head>
+    <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        .required::after {
+            content: " *";
+            color: #e34343;
+        }
+        .cke_notifications_area {
+            display: none !important;
+        }
+        textarea.form-control {
+            height: auto !important;
+        }
+    </style>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div th:replace="partials/page-title :: page-title('ابزار هوش مصنوعی','تولید خبر')"></div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0 flex-grow-1">تولید خبر با هوش مصنوعی</h4>
+                </div>
+                <div class="card-body">
+                    <form id="generateForm">
+                        <div class="row g-3">
+                            <div class="col-lg-6">
+                                <div class="form-floating mt-2">
+                                    <textarea rows="7" type="text" class="form-control" id="keywords" ></textarea>
+                                    <label for="keywords">کلمات کلیدی</label>
+                                    <span class="text-info">مثال:شیر فلکه، شیر آلات صنعتی، شیرآلات</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-floating mt-2">
+                                    <textarea rows="7" type="text" class="form-control" id="seo"></textarea>
+                                    <label for="seo">نکات SEO</label>
+                                    <span class="text-info">مثال:داخل متن از تگ های h1 استفاده نشود و متن را بر اساس معیار های seo به من بده و موارد نگارشی هم رعایت کن.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mt-2">
+                                    <label for="editor">توضیحات به هوش مصنوعی</label>
+                                    <textarea id="editor" ></textarea>
+                                    <span class="text-info">مثال:یک مقاله درباره ی تشخیص خرابی شیرآلات صنعتی می خوام که حداقل ۴۰۰ کلمه باشد.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <button type="submit" class="btn btn-success w-100">ارسال درخواست</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0 flex-grow-1">نتیجه خبر تولید شده توسط هوش مصنوعی</h4>
+                </div>
+                <div class="card-body">
+                    <form id="sendToCms">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <textarea rows="30" id="outcome"></textarea>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <button type="submit" class="btn btn-success w-100">ذخیره مقاله</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<th:block layout:fragment="modal">
+</th:block>
+<th:block layout:fragment="pagejs">
+    <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script src="/assets/js/pages/sweetalerts.init.js"></script>
+    <script src="/assets/libs/ckeditor/ckeditor.js"></script>
+    <script src="/assets/js/crawler/generate-news.js"></script>
+</th:block>
+</body>
+
+</html>

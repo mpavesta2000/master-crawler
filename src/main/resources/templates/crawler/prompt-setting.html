@@ -1,0 +1,160 @@
+
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<th:block layout:fragment="pagetitle">
+    <div th:replace="partials/title-meta :: title-meta('تنظیمات بات')"></div>
+</th:block>
+
+<head>
+    <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
+    <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+    <style>
+        .required::after {
+            content: " *";
+            color: #e34343;
+        }
+        textarea.form-control {
+            height: auto !important;
+        }
+    </style>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div th:replace="partials/page-title :: page-title('ابزار هوش مصنوعی','تنظیمات بات')"></div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header align-items-center d-flex">
+                    <h4 class="card-title mb-0 flex-grow-1">تنظیمات چت جی پی تی:</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/quickNews/prompt/gpt/save}" th:object="${gpt}" method="post">
+                            <div class="row g-3">
+                                <div class="col-lg-4">
+                                    <div class="form-floating">
+                                        <input hidden th:field="*{id}">
+                                        <textarea rows="5" type="text" th:field="*{titlePrompt}" class="form-control" id="titlePromptGpt"></textarea>
+                                        <label for="titlePromptGpt">تیتر</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-floating">
+                                        <textarea rows="5" type="text" th:field="*{subTitlePrompt}" class="form-control" id="subTitlePromptGpt"></textarea>
+                                        <label for="subTitlePromptGpt">زیر تیتر</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-floating">
+                                        <textarea rows="5" type="text" th:field="*{headlinePrompt}" class="form-control" id="headLinePromptGpt"></textarea>
+                                        <label for="headLinePromptGpt">رو تیتر</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-floating">
+                                        <textarea rows="7" type="text" th:field="*{leadPrompt}" class="form-control" id="leadPromptGpt"></textarea>
+                                        <label for="leadPromptGpt">سرنخ خبر</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-floating">
+                                        <textarea rows="7" type="text" th:field="*{bodyPrompt}" class="form-control" id="bodyPromptGpt"></textarea>
+                                        <label for="bodyPromptGpt">متن خبر</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="text-end">
+                                        <button type="submit" class="btn btn-primary">ذخیره</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header align-items-center d-flex">
+                    <h4 class="card-title mb-0 flex-grow-1">تنظیمات جمنای:</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/quickNews/prompt/gemini/save}" th:object="${gemini}" method="post">
+                        <div class="row g-3">
+                            <div class="col-lg-4">
+                                <div class="form-floating">
+                                    <input hidden th:field="*{id}">
+                                    <textarea rows="5" type="text" th:field="*{titlePrompt}" class="form-control" id="titlePromptGemini"></textarea>
+                                    <label for="titlePromptGemini">تیتر</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-floating">
+                                    <textarea rows="5" type="text" th:field="*{subTitlePrompt}" class="form-control" id="subTitlePromptGemini"></textarea>
+                                    <label for="subTitlePromptGemini">زیر تیتر</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-floating">
+                                    <textarea rows="5" type="text" th:field="*{headlinePrompt}" class="form-control" id="headLinePromptGemini"></textarea>
+                                    <label for="headLinePromptGemini">رو تیتر</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-floating">
+                                    <textarea rows="7" type="text" th:field="*{leadPrompt}" class="form-control" id="leadPromptGemini"></textarea>
+                                    <label for="leadPromptGemini">سرنخ خبر</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-floating">
+                                    <textarea rows="7" type="text" th:field="*{bodyPrompt}" class="form-control" id="bodyPromptGemini"></textarea>
+                                    <label for="bodyPromptGemini">متن خبر</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary">ذخیره</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<th:block layout:fragment="modal">
+</th:block>
+<th:block layout:fragment="pagejs">
+    <script src="/assets/js/pages/form-validation.init.js"></script>
+    <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script src="/assets/libs/prismjs/prism.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var success = [[${success}]];
+        if (success === true) {
+            Swal.fire({
+                text: "تنظیمات شما با موفقیت ذخیره شد.",
+                icon: "success",
+                confirmButtonText: "تایید",
+                confirmButtonColor: "#556ee6"
+            });
+        }
+        /*]]>*/
+    </script>
+</th:block>
+</body>
+
+</html>

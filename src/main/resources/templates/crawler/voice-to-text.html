@@ -1,0 +1,188 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<th:block layout:fragment="pagetitle">
+    <div th:replace="partials/title-meta :: title-meta('تبدیل صدا به متن')"></div>
+</th:block>
+
+<head>
+    <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/assets/libs/filepond/filepond.min.css" type="text/css" />
+    <link rel="stylesheet" href="/assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.css">
+    <style>
+        .required::after {
+            content: " *";
+            color: #e34343;
+        }
+        .cke_notifications_area {
+            display: none !important;
+        }
+        textarea.form-control {
+            height: auto !important;
+        }
+        .file-name-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 80%;
+        }
+
+    </style>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div th:replace="partials/page-title :: page-title('ابزار هوش مصنوعی','تبدیل صدا به متن')"></div>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0 flex-grow-1">ضبط صدا</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <div class="d-flex justify-content-center">
+                                <div id="recording-status" class="badge bg-light text-dark mb-2">آماده برای ضبط</div>
+                            </div>
+                            <div class="d-flex justify-content-center mt-2 mb-2">
+                                <span id="recording-time" class="badge bg-light text-dark">00:00</span>
+                            </div>
+                            <div class="d-flex justify-content-center gap-2">
+                                <button id="start-recording" class="btn btn-primary">
+                                    <i class="ri-mic-fill me-1"></i> شروع ضبط
+                                </button>
+                                <button id="stop-recording" class="btn btn-danger" disabled>
+                                    <i class="ri-stop-fill me-1"></i> توقف ضبط
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div id="audio-container" class="d-none">
+                                <label class="form-label">پیش‌نمایش صدا:</label>
+                                <audio id="recorded-audio" controls class="w-100 mb-3"></audio>
+                                <div class="form-group">
+                                    <label for="filename">نام فایل:</label>
+                                    <input type="text" id="filename" class="form-control" placeholder="نام فایل را وارد کنید" required>
+                                </div>
+                                <div class="d-flex justify-content-end mt-2">
+                                    <button id="upload-audio" class="btn btn-success">
+                                        <i class="ri-upload-2-fill me-1"></i> آپلود صدا
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0 flex-grow-1">تولید متن از فایل صوتی</h4>
+                </div>
+                <div class="card-body">
+                    <h6>آپلود فایل صوتی</h6>
+                    <input type="file" class="filepond" name="voices" id="voices" data-allow-reorder="true" data-max-file-size="24MB" data-max-files="1" required>
+                    <hr>
+                    <h6>فایل های صوتی موجود در سیستم</h6>
+                    <form id="voiceForm" action="/submit" method="post">
+                        <div class="live-preview">
+                            <div class="list-group">
+                                <label th:each="voice : ${voiceList}" class="list-group-item d-flex align-items-center justify-content-between flex-wrap">
+                                    <div class="d-flex align-items-center w-100">
+                                        <input class="form-check-input fs-14 mt-0 align-middle me-1" name="exampleRadios" type="radio" th:value="${voice.fileName}">
+                                        <span th:text="${voice.getFileName()}" class="file-name-text"></span>
+                                        <span class="ms-2 text-muted" th:text="${voice.getFileSize()} + ' مگابایت'"></span>
+                                    </div>
+                                    <div class="d-flex flex-column flex-sm-row align-items-center gap-2 justify-content-end w-100 text-end mt-2">
+                                        <button type="button" class="btn btn-success btn-sm play-button w-100 w-sm-auto" th:data-filename="${voice.getFileName()}">
+                                            پخش
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm delete-button w-100 w-sm-auto" th:data-filename="${voice.getFileName()}">
+                                            حذف
+                                        </button>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="hstack gap-2 justify-content-end mt-2">
+                            <button type="submit" class="btn btn-primary">تایید</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0 flex-grow-1">نتیجه متن تولید شده از فایل صوتی</h4>
+                </div>
+                <div class="card-body">
+                    <div class="col-12">
+                        <button id="copyButton" class="btn btn-primary mb-2 w-100">کپی کردن متن</button>
+                        <div class="form-floating">
+                            <textarea rows="30" id="outcome"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="modal">
+    <div class="modal fade" id="audioModal" tabindex="-1" aria-labelledby="audioModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="audioModalLabel">پخش فایل صوتی</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <audio id="audio-player" controls style="width: 100%"></audio>
+                    <p id="audio-filename"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+
+<th:block layout:fragment="pagejs">
+    <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script src="/assets/js/pages/sweetalerts.init.js"></script>
+    <script src="/assets/libs/prismjs/prism.js"></script>
+    <script src="/assets/libs/filepond/filepond.min.js"></script>
+    <script src="/assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
+    <script src="/assets/libs/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
+    <script src="/assets/libs/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
+    <script src="/assets/libs/filepond-plugin-file-encode/filepond-plugin-file-encode.min.js"></script>
+    <script src="/assets/libs/ckeditor/ckeditor.js"></script>
+    <script src="/assets/js/crawler/voice-to-text.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var success = [[${success}]];
+        var error = [[${error}]];
+
+        if (success === true) {
+            Swal.fire({
+                text: "فایل شما با موفقیت ذخیره شد.",
+                icon: "success",
+                confirmButtonText: "تایید",
+                confirmButtonColor: "#556ee6"
+            });
+        } else if (error) {
+            Swal.fire({
+                text: [[${error}]],
+                icon: "error",
+                confirmButtonText: "تایید",
+                confirmButtonColor: "#d33"
+            });
+        }
+        /*]]>*/
+    </script>
+</th:block>
+</body>
+
+</html>

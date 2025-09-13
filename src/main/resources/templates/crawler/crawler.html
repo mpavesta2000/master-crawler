@@ -1,0 +1,368 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<th:block layout:fragment="pagetitle">
+    <!--page title-->
+    <div th:replace="partials/title-meta :: title-meta('راوی بات')"></div>
+</th:block>
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/css/crawler-ai.css" rel="stylesheet" type="text/css"/>
+
+</head>
+
+<body>
+<div layout:fragment="content">
+    <!-- start page title -->
+    <div th:replace="partials/page-title :: page-title('خبر سریع','دامی بات')"></div>
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0 fw-bolder">دامی بات</h4>
+                </div><!-- end card header -->
+                <div class="card-body">
+                    <form action="/api/crawler/save" method="POST" class="form-steps needs-validation" autocomplete="off" novalidate>
+                        <div class="text-center pt-3 pb-4 mb-1">
+                            <h5>بررسی و استخراج اطلاعات لینک خبر</h5>
+                        </div>
+                        <div id="custom-progress-bar" class="progress-nav mb-4">
+                            <div class="progress" style="height: 1px;">
+                                <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0"
+                                     aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+
+                            <ul class="nav nav-pills progress-bar-tab custom-nav" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link rounded-pill active"
+                                            data-progressbar="custom-progress-bar" id="pills-gen-info-tab"
+                                            data-bs-toggle="pill" data-bs-target="#pills-gen-info" type="button"
+                                            role="tab" aria-controls="pills-gen-info" aria-selected="true">۱</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link rounded-pill" data-progressbar="custom-progress-bar"
+                                            id="pills-info-desc-tab" data-bs-toggle="pill"
+                                            data-bs-target="#pills-info-desc" type="button" role="tab"
+                                            aria-controls="pills-info-desc" aria-selected="false">۲</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link rounded-pill" data-progressbar="custom-progress-bar"
+                                            id="pills-success-tab" data-bs-toggle="pill" data-bs-target="#pills-success"
+                                            type="button" role="tab" aria-controls="pills-success"
+                                            aria-selected="false">۳</button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="pills-gen-info" role="tabpanel"
+                                 aria-labelledby="pills-gen-info-tab">
+                                <div>
+                                    <div class="mb-4">
+                                        <div>
+                                            <h5 class="mb-1">لینک خبر مورد نظر خود را وارد کنید</h5>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="mb-3">
+                                                <div class="d-flex align-items-center">
+                                                    <label class="form-label me-2">لینک خبری</label>
+                                                    <div id="validationIcons" class="d-flex align-items-center">
+                                                        <div id="spinner" class="spinner-grow text-primary d-none"
+                                                             style="width: 1rem; height: 1rem;" role="status"></div>
+                                                        <span id="successIcon" class="text-success d-none" style="font-size: 1.5rem; margin-left: 0.5rem;">✔️</span>
+                                                        <span id="errorIcon" class="text-danger d-none" style="font-size: 1.5rem; margin-left: 0.5rem;">✖️</span>
+                                                    </div>
+                                                </div>
+                                                <input id="urlInput" type="text" class="form-control mt-2" placeholder="" required>
+                                                <div class="invalid-feedback">لطفا لینک خبر را وارد کنید.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-start gap-3 mt-4">
+                                    <button type="button" class="btn btn-success btn-label right ms-auto nexttab"
+                                            data-nexttab="pills-info-desc-tab">
+                                        <i class="ri-arrow-left-line label-icon align-middle fs-16 ms-2"></i>بررسی و تحلیل لینک
+                                    </button>
+                                </div>
+                            </div>
+
+
+                            <!-- end tab pane -->
+
+                            <div class="tab-pane fade" id="pills-info-desc" role="tabpanel"
+                                 aria-labelledby="pills-info-desc-tab">
+                                <div class="row">
+                                    <!-- Main Content (First Column) -->
+                                    <div class="col-12 col-md-8">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="mb-3" id="box-chapchin">
+                                                    <label class="form-label" for="news-subheading-input">رو تیتر خبر</label>
+                                                    <input type="text" class="form-control" id="news-subheading-input"
+                                                           placeholder="">
+                                                    <button type="button" class="magic-btn" onclick="getAISuggestion(this)" data-field="subheading">
+                                                        <i class="ri-magic-line"></i>
+                                                    </button>
+                                                </div>
+
+                                                <!-- Title (تیتر خبر) -->
+                                                <div class="mb-3" id="box-chapchin">
+                                                    <label class="form-label required" for="news-title-input">تیتر خبر</label>
+                                                    <input type="text" class="form-control" id="news-title-input" required>
+                                                    <button type="button" class="magic-btn" onclick="getAISuggestion(this)" data-field="title">
+                                                        <i class="ri-magic-line"></i>
+                                                    </button>
+                                                    <div class="invalid-feedback">
+                                                        <p>لطفا تیتر خبر را وارد کنید.</p>
+                                                        <p>تیتر خبر باید بین ۵ تا ۱۰۰ کاراکتر باشد.</p>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Lead (سرنخ خبر) -->
+                                                <div class="mb-3" id="box-chapchin">
+                                                    <label class="form-label required" for="news-lead-input">سرنخ خبر</label>
+                                                    <input type="text" class="form-control" id="news-lead-input" required>
+                                                    <button type="button" class="magic-btn" onclick="getAISuggestion(this)" data-field="lead">
+                                                        <i class="ri-magic-line"></i>
+                                                    </button>
+                                                    <div class="invalid-feedback">
+                                                        <p>لطفا سر تیتر خبر را وارد کنید.</p>
+                                                        <p>سرنخ خبر باید بین ۵ تا ۲۵۵ کاراکتر باشد</p>
+                                                    </div>
+                                                </div>
+
+                                                <!-- News Text (متن خبر) -->
+                                                <div class="mb-3" id="box-chapchin">
+                                                    <label class="form-label required">متن خبر</label>
+                                                    <textarea id="news-body-textarea" class="form-control" required></textarea>
+                                                    <button type="button" class="magic-btn" onclick="getAISuggestion(this)" data-field="body">
+                                                        <i class="ri-magic-line"></i>
+                                                    </button>
+                                                    <div class="invalid-feedback">
+                                                        لطفا متن خبر را وارد کنید.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Main Image (عکس اصلی خبر) -->
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="card-title mb-0 required">عکس اصلی خبر</h5>
+                                            </div>
+                                            <div class="border-dashed border-opacity-10 mt-2 border-light">
+                                                <div class="p-2 d-flex justify-content-center">
+                                                    <img class="img-thumbnail" src=""  alt="200x200" width="200">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Sidebar Content (Second Column) -->
+                                    <div class="col-12 col-md-4">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="card-title mb-0 fw-bolder">تنظیمات</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <!-- Status (وضیعت) -->
+                                                <div class="mb-3">
+                                                    <label class="form-label required">وضیعت</label>
+                                                    <select class="form-select" required>
+                                                        <option value="Draft">پیش نویس</option>
+                                                        <option value="Publish">انتشار</option>
+                                                    </select>
+                                                    <div class="invalid-feedback">
+                                                        لطفا وضیعت خبر را وارد کنید.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="card-title mb-0 fw-bolder">تگ ها</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label required">دسته بندی</label>
+                                                    <select id="category-select" multiple="multiple" class="form-select" style="width: 100%" required></select>
+                                                    <div class="invalid-feedback">
+                                                        لطفا دسته بندی خبر را وارد کنید.
+                                                    </div>
+                                                    <div class="valid-feedback">
+                                                        تکمیل شده است.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="d-flex align-items-start gap-3 mt-4">
+                                    <button type="button"
+                                            class="btn btn-link text-decoration-none btn-label previestab"
+                                            data-previous="pills-gen-info-tab"><i
+                                            class="ri-arrow-right-line label-icon align-middle fs-16 me-2"></i> بازگشت به عقب</button>
+                                    <button type="button"
+                                            class="btn btn-success btn-label right ms-auto nexttab"
+                                            data-nexttab="pills-success-tab"><i
+                                            class="ri-arrow-left-line label-icon align-middle fs-16 ms-2"></i>تایید اطلاعات خبر</button>
+                                </div>
+                            </div>
+                            <!-- end tab pane -->
+
+                            <div class="tab-pane fade" id="pills-success" role="tabpanel"
+                                 aria-labelledby="pills-success-tab">
+                                <div id="success-message" class="text-center d-none">
+                                    <div class="mb-4">
+                                        <lord-icon src="https://cdn.lordicon.com/lupuorrc.json" trigger="loop"
+                                                   colors="primary:#0ab39c,secondary:#405189"
+                                                   style="width:120px;height:120px"></lord-icon>
+                                    </div>
+                                    <h5>خبر با موفقیت با وضیعت پیش نویس ارسال شد!</h5>
+                                    <p class="text-muted">لطفا در پنل خود دسته بندی خبر را مشخص کنید.</p>
+                                </div>
+                                <div id="error-message" class="text-center d-none">
+                                    <div class="mb-4">
+                                        <lord-icon src="https://cdn.lordicon.com/tdrtiskw.json" trigger="loop"
+                                                   colors="primary:#ff5b5b,secondary:#ffb4b4"
+                                                   style="width:120px;height:120px"></lord-icon>
+                                    </div>
+                                    <h5>خطا در ارسال خبر!</h5>
+                                    <p class="text-muted">لطفا دوباره تلاش کنید یا با پشتیبانی تماس بگیرید.</p>
+                                </div>
+                            </div>
+
+                            <!-- end tab pane -->
+                        </div>
+                        <!-- end tab content -->
+                    </form>
+                </div>
+                <!-- end card body -->
+            </div>
+            <!-- end card -->
+        </div>
+    </div>
+    <div class="row g-4 mb-4">
+        <div class="col-md-8 col-lg-6">
+            <div class="card ribbon-box border shadow-lg mb-lg-0">
+                <div class="card-body text-muted">
+                    <span class="ribbon-three ribbon-three-primary">
+                    <span>کرالر</span>
+                </span>
+                    <h3 class="text-center mb-4 fw-bold text-dark d-none d-md-block">سایت های پشتیبانی شده</h3>
+                    <h5 class="text-end mb-4 fw-bold text-dark d-md-none">سایت های پشتیبانی شده</h5>
+
+
+                    <ul class="list-group list-group-flush">
+                        <th:block th:each="entry : ${supportedSites}">
+                            <li class="list-group-item py-3 px-4 border-0 bg-light rounded-3 mb-2 shadow-sm">
+                                <a
+                                        th:href="@{http://{url}(url=${entry.value})}"
+                                        target="_blank"
+                                        class="text-decoration-none d-flex align-items-center justify-content-between text-dark fs-5 fw-medium"
+                                >
+                                    <span th:text="${entry.key}">Site Name</span>
+                                    <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+                            </li>
+                        </th:block>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 col-lg-6">
+            <div class="card ribbon-box border shadow-lg mb-lg-0">
+                <div class="card-body text-muted">
+                    <!-- Ribbon style for a label -->
+                    <span class="ribbon-three ribbon-three-secondary">
+                    <span>راهنما</span>
+                </span>
+                    <h3 class="text-center mb-4 fw-bold text-dark d-none d-md-block">راهنمای استفاده از کرالر</h3>
+                    <h5 class="text-end mb-4 fw-bold text-dark d-md-none">راهنمای استفاده از کرالر</h5>
+
+
+                    <ol class="list-group list-group-numbered">
+                        <li class="list-group-item py-3 px-4 border-0 bg-light rounded-3 mb-2 shadow-sm">
+                            ابتدا وارد صفحه اصلی شوید و یک سایت پشتیبانی شده را انتخاب کنید.
+                        </li>
+                        <li class="list-group-item py-3 px-4 border-0 bg-light rounded-3 mb-2 shadow-sm">
+                            بر روی دکمه <strong>شروع کرال</strong> کلیک کنید تا کرالر شروع به جمع‌آوری داده‌ها کند.
+                        </li>
+                        <li class="list-group-item py-3 px-4 border-0 bg-light rounded-3 mb-2 shadow-sm">
+                            پس از اتمام عملیات، گزارش کامل در بخش <strong>خروجی‌ها</strong> قابل مشاهده خواهد بود.
+                        </li>
+                        <li class="list-group-item py-3 px-4 border-0 bg-light rounded-3 mb-2 shadow-sm">
+                            در صورت بروز هرگونه خطا، بخش <strong>پشتیبانی</strong> را بررسی کنید یا با ما تماس بگیرید.
+                        </li>
+                    </ol>
+
+                    <p class="mt-3 text-dark">
+                        برای اطلاعات بیشتر، به مستندات رسمی مراجعه کنید یا با تیم پشتیبانی ما در ارتباط باشید.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<th:block layout:fragment="modal">
+    <div class="modal fade" id="suggestionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">پیشنهادات هوش مصنوعی جمنای</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="loadingSpinner" style="display: none;" class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">در حال دریافت پیشنهادات...</span>
+                        </div>
+                        <p>در حال دریافت پیشنهادات...</p>
+                    </div>
+                    <div id="suggestionsContainer" class="d-none">
+                        <div class="suggestions-grid">
+                            <!-- Suggestions -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                    <button type="button" class="btn btn-primary" id="applyButton" onclick="applySuggestion()" disabled>
+                        اعمال پیشنهاد
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="pagejs">
+    <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script src="/assets/js/pages/sweetalerts.init.js"></script>
+    <script src="/assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script src="https://cdn.ckeditor.com/4.20.2/standard/ckeditor.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="/assets/js/pages/select2.init.js"></script>
+    <script src="/assets/libs/prismjs/prism.js"></script>
+    <script src="/assets/js/pages/form-validation.init.js"></script>
+    <script src="/assets/libs/prismjs/prism.js"></script>
+    <script src="/assets/js/pages/form-wizard.init.js"></script>
+    <script src="/assets/js/pages/project-create.init.js"></script>
+    <script src="/assets/js/crawler/crawler-ai.js"></script>
+</th:block>
+</body>
+
+</html>

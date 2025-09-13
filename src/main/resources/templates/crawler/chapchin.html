@@ -1,0 +1,79 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<th:block layout:fragment="pagetitle">
+    <div th:replace="partials/title-meta :: title-meta('چپ چین')"></div>
+</th:block>
+
+<head>
+    <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div th:replace="partials/page-title :: page-title('ابزار هوش مصنوعی','چپ چین')"></div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    بات چپ چین
+                </div>
+                <form id="chapchinForm">
+                    <div class="card-body">
+                        <label>لینک خود را اینجا وارد کنید:</label>
+                        <input type="text" class="form-control" id="url" dir="ltr">
+
+                        <div class="text-end mt-4">
+                            <button type="submit" class="btn btn-success w-100">ارسال لینک</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-8 col-lg-12">
+            <div class="card ribbon-box border shadow-lg mb-lg-0">
+                <div class="card-body text-muted">
+                <span class="ribbon-three ribbon-three-primary">
+                    <span>کرالر</span>
+                </span>
+                    <h3 class="text-center mb-4 fw-bold text-dark d-none d-md-block">سایت های پشتیبانی شده</h3>
+                    <h5 class="text-end mb-4 fw-bold text-dark d-md-none">سایت های پشتیبانی شده</h5>
+
+                    <!-- Search Bar -->
+                    <input type="text" id="searchInput" class="form-control mb-3" placeholder="جستجوی سایت..." onkeyup="filterSites()">
+
+                    <div class="row" id="siteList">
+                        <th:block th:each="entry, iterStat : ${supportedSites}">
+                            <div class="col-md-6">
+                                <li class="list-group-item py-3 px-4 border-0 bg-light rounded-3 mb-2 shadow-sm site-item">
+                                    <a
+                                            th:href="@{http://{url}(url=${entry.value})}"
+                                            target="_blank"
+                                            class="text-decoration-none d-flex align-items-center justify-content-between text-dark fs-5 fw-medium"
+                                    >
+                                        <span th:text="${entry.key}" class="site-name">Site Name</span>
+                                        <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                </li>
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="pagejs">
+    <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script src="/assets/js/pages/sweetalerts.init.js"></script>
+    <script src="/assets/libs/prismjs/prism.js"></script>
+    <script src="/assets/js/crawler/chapchin.js"></script>
+</th:block>
+</body>
+
+</html>

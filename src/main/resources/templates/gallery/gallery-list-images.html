@@ -1,0 +1,282 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<th:block layout:fragment="pagetitle">
+    <div th:replace="partials/title-meta :: title-meta('عکس ها')"></div>
+</th:block>
+
+<head>
+    <link rel="stylesheet" href="/assets/libs/glightbox/css/glightbox.min.css">
+    <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/assets/libs/filepond/filepond.min.css" type="text/css" />
+    <link rel="stylesheet" href="/assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.css">
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div th:replace="partials/page-title :: page-title('گالری','عکس ها')"></div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="">
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-sm-auto">
+                            <div>
+                                <form method="get" action="/admin/gallery/list-images" class="search-box ms-2 d-flex align-items-center">
+                                    <div class="row g-1">
+                                        <div class="col-8 col-md-10">
+                                            <input type="text" class="form-control" id="searchProductList" th:value="${searchQuery}" name="search" placeholder="جستجو عکس.." />
+                                        </div>
+                                        <div class="col-4 col-md-2">
+                                            <button type="submit" class="btn btn-primary btn-icon waves-effect"><i class="ri-search-line"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="col-sm">
+                            <div class="d-flex justify-content-sm-end">
+                                <button type="button" class="btn btn-primary" id="addimage-btn" data-bs-toggle="modal" data-bs-target="#addImage"><i class="ri-add-line align-bottom me-1"></i>افزودن عکس</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="row gallery-wrapper ">
+                                <div th:each="image : ${images}" class="element-item col-xxl-3 col-xl-4 col-sm-6">
+                                    <div class="gallery-box card">
+                                        <div class="gallery-container" >
+                                            <a class="image-popup" th:href="${image.imageSrc}" title="">
+                                                <img class="gallery-img img-fluid mx-auto"
+                                                     style="width: 400px; height: 200px;"
+                                                     th:src="${image.imageSrc}" alt="" />
+                                                <div class="gallery-overlay">
+                                                    <h5 th:text="${image.imageName}" class="overlay-caption"></h5>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <h5 th:text="${image.imageName}"></h5>
+                                    <div class="row justify-content-end">
+                                        <div class="col-sm-auto d-flex justify-content-end">
+                                            <form th:action="@{/gallery/list-images-delete}" method="post" class="text-center mt-2 mb-2">
+                                                <input type="hidden" name="name" th:value="${image.imageName}" />
+                                                <button type="button" class="btn btn-danger btn-icon waves-effect waves-light me-2" onclick="confirmDelete(event)">
+                                                    <i class="ri-delete-bin-5-line"></i>
+                                                </button>
+                                            </form>
+                                            <div class="mt-2 mb-2">
+                                                <button type="button" class="btn btn-primary btn-icon waves-effect waves-light"   th:data-image-id="${image.id}" th:data-image-name="${image.imageName}" data-bs-toggle="modal" data-bs-target="#editImage">
+                                                    <i class="ri-pencil-line"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end row -->
+                </div>
+                <!-- ene card body -->
+            </div>
+            <!-- end card -->
+        </div>
+        <!-- end col -->
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="mt-4 mt-lg-0">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin/gallery/list-images(page=${currentPage - 1}, size=${pageSize})}">→ قبلی</a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/admin/gallery/list-images(page=${i}, size=${pageSize})}" th:text="${i + 1}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin/gallery/list-images(page=${currentPage + 1}, size=${pageSize})}">بعدی ←</a>
+                        </li>
+                    </ul>
+                </nav>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<th:block layout:fragment="modal">
+
+    <div class="modal fade" id="addImage" tabindex="-1" aria-labelledby="addImage" aria-modal="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addImageLabel">افزودن عکس</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="nav nav-pills flex-column nav-pills-tab custom-verti-nav-pills text-center" role="tablist" aria-orientation="vertical">
+                                <a class="nav-link active show" id="custom-v-pills-link-tab" data-bs-toggle="pill" href="#custom-v-pills-link" role="tab" aria-controls="custom-v-pills-link" aria-selected="true">
+                                    <i class="ri-link-m d-block fs-20 mb-1"></i> آپلود با لینک
+                                </a>
+                                <a class="nav-link" id="custom-v-pills-upload-tab" data-bs-toggle="pill" href="#custom-v-pills-upload" role="tab" aria-controls="custom-v-pills-upload" aria-selected="false">
+                                    <i class="ri-gallery-upload-line d-block fs-20 mb-1"></i> آپلود مستقیم فایل
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-9">
+                            <div class="tab-content text-muted mt-3 mt-lg-0">
+                                <div class="tab-pane fade active show" id="custom-v-pills-link" role="tabpanel" aria-labelledby="custom-v-pills-link-tab">
+                                    <h6>آپلود از طریق لینک</h6>
+                                    <form th:action="@{/admin/gallery/list-images-link-add}" id="uploadImage" method="post">
+                                        <div class="mb-3">
+                                            <label class="form-label">لینک تصویر را وارد کنید:</label>
+                                            <input type="url" class="form-control" name="imageUrl" placeholder="https://example.com/image.jpg" required>
+                                        </div>
+                                        <div class="hstack gap-2 justify-content-end">
+                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">انصراف</button>
+                                            <button type="submit" class="btn btn-primary">آپلود</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="tab-pane fade" id="custom-v-pills-upload" role="tabpanel" aria-labelledby="custom-v-pills-upload-tab">
+                                    <h6>آپلود مستقیم فایل</h6>
+                                        <div class="mb-3">
+                                            <label class="form-label">فایل مورد نظر خود را انتخاب کنید:</label>
+                                            <input type="file" class="filepond" name="image" data-allow-reorder="true" data-max-file-size="70MB" data-max-files="1" required>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editImage" tabindex="-1" aria-labelledby="editImage" aria-modal="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalgridLabel">ویرایش اسم عکس</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/admin/gallery/list-images-edit}" method="post">
+                        <div class="row g-3">
+                            <div class="col-xxl-12">
+                                <input type="hidden" name="imageId" id="editImageId" />
+                                <div>
+                                    <label for="editImageName" class="form-label">اسم عکس:</label>
+                                    <input type="text" class="form-control" id="editImageName" name="imageName" placeholder="">
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="hstack gap-2 justify-content-end">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">انصراف</button>
+                                    <button type="submit" class="btn btn-primary">تایید</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+<th:block layout:fragment="pagejs">
+    <script src="/assets/libs/glightbox/js/glightbox.min.js"></script>
+    <script src="/assets/libs/isotope-layout/isotope.pkgd.min.js"></script>
+    <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script src="/assets/libs/filepond/filepond.min.js"></script>
+    <script src="/assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
+    <script src="/assets/libs/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
+    <script src="/assets/libs/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
+    <script src="/assets/libs/filepond-plugin-file-encode/filepond-plugin-file-encode.min.js"></script>
+    <script src="/assets/js/crawler/gallery-images.js"></script>
+    <script>
+        function confirmDelete(event) {
+            event.preventDefault();
+            const form = event.target.closest('form');
+
+            Swal.fire({
+                title: 'آیا مطمئن هستید؟',
+                text: 'این عمل قابل بازگشت نیست!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'بله، حذف کن',
+                cancelButtonText: 'لغو',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        }
+    </script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var deleted = [[${deleted}]];
+        if (deleted === true) {
+            Swal.fire({
+                text: "عکس شما با موفقیت حذف شد.",
+                icon: "success",
+                confirmButtonText: "تایید",
+                confirmButtonColor: "#556ee6"
+            });
+        }
+        /*]]>*/
+
+        var success = [[${success}]];
+        if (success === true) {
+            Swal.fire({
+                text: "عکس شما با موفقیت ذخیره شد.",
+                icon: "success",
+                confirmButtonText: "تایید",
+                confirmButtonColor: "#556ee6"
+            });
+        }
+
+        var failed = [[${failed}]];
+        if (failed === true) {
+            Swal.fire({
+                text: "عکس شما یافت نشد.",
+                icon: "error",
+                confirmButtonText: "تایید",
+                confirmButtonColor: "#556ee6"
+            });
+        }
+
+        const errorMessage = /*[[${error}]]*/ '';
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'error',
+                title: 'خطا',
+                text: errorMessage,
+                confirmButtonText: 'تایید',
+                confirmButtonColor: '#d33',
+            });
+        }
+
+        const error = [[${error}]];
+        if (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'خطا',
+                text: 'لینک تصویر نامعتبر است. لطفاً یک لینک تصویر معتبر وارد کنید.',
+                confirmButtonText: 'تایید'
+            });
+        }
+    </script>
+</th:block>
+</body>

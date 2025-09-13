@@ -1,0 +1,255 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<th:block layout:fragment="pagetitle">
+  <!-- Page title -->
+  <div th:replace="partials/title-meta :: title-meta('فیلم ها')"></div>
+</th:block>
+
+<head>
+  <link rel="stylesheet" href="/assets/libs/glightbox/css/glightbox.min.css">
+  <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+  <link href="https://vjs.zencdn.net/8.0.0/video-js.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/libs/filepond/filepond.min.css" type="text/css" />
+  <link rel="stylesheet" href="/assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.css">
+
+
+</head>
+
+<body>
+<div layout:fragment="content">
+  <!-- Start page title -->
+  <div th:replace="partials/page-title :: page-title('گالری','فیلم ها')"></div>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="">
+        <div class="card-body">
+          <div class="row g-4 mb-2">
+            <div class="col-sm-auto">
+              <div>
+                <form method="get" action="/admin/gallery/list-videos" class="search-box ms-2 d-flex align-items-center">
+                  <div class="row g-1">
+                    <div class="col-8 col-md-10">
+                      <input type="text" class="form-control" id="searchProductList" th:value="${searchQuery}" name="search" placeholder="جستجو ویدیو.." />
+                    </div>
+                    <div class="col-4 col-md-2">
+                      <button type="submit" class="btn btn-primary btn-icon waves-effect"><i class="ri-search-line"></i></button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="col-sm">
+              <div class="d-flex justify-content-sm-end">
+                <button type="button" class="btn btn-primary" id="addvideo-btn" data-bs-toggle="modal" data-bs-target="#addVideo"><i class="ri-add-line align-bottom me-1"></i>افزودن ویدیو</button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="row gallery-wrapper">
+                <div th:each="video : ${videos}" class="element-item col-xxl-3 col-xl-4 col-sm-6">
+                  <div>
+                    <div>
+                      <div th:href="@{'/news/photos/' + ${video.videoImage}}" title="">
+                        <video id="news-video-player" class="video-js vjs-default-skin image-popup " controls preload="auto" height="175"
+                               th:poster="@{'/news/photos/' + ${video.videoImage}}"
+                               th:src="${video.videoSrc}">
+                          <source th:src="${video.videoSrc}" type="video/mp4">
+                          <source th:src="${video.videoSrc}" type="video/x-matroska">
+                          مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
+                        </video>
+                        <div class="gallery-overlay">
+                          <h5 th:text="${video.videoName}" class="overlay-caption"></h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row justify-content-end">
+                    <div class="col-sm-auto d-flex justify-content-end">
+                      <form th:action="@{/admin/gallery/list-videos-delete}" method="post" class="text-center mt-2 mb-2">
+                        <input type="hidden" name="name" th:value="${video.videoName}" />
+                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="confirmDelete(event)"><i class="ri-delete-bin-5-line"></i></button>
+                      </form>
+                      <div class="mt-2 mb-2">
+                        <button type="button" class="btn btn-primary btn-icon waves-effect waves-light ms-2" th:data-video-id="${video.id}" th:data-video-name=" ${video.videoName}" data-bs-toggle="modal" data-bs-target="#editVideo">
+                          <i class="ri-pencil-line"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End row -->
+        </div>
+        <!-- End card body -->
+      </div>
+      <!-- End card -->
+    </div>
+    <!-- End col -->
+  </div>
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="mt-4 mt-lg-0">
+        <nav aria-label="Page navigation">
+          <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+              <a class="page-link" th:href="@{/admin/gallery/list-videos(page=${currentPage - 1}, size=${pageSize})}">→ قبلی</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+              <a class="page-link" th:href="@{/admin/gallery/list-videos(page=${i}, size=${pageSize})}" th:text="${i + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+              <a class="page-link" th:href="@{/admin/gallery/list-videos(page=${currentPage + 1}, size=${pageSize})}">بعدی ←</a>
+            </li>
+          </ul>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+  <!-- End row -->
+</div>
+
+<th:block layout:fragment="modal">
+
+  <div class="modal fade" id="addVideo" tabindex="-1" aria-labelledby="addVideo" aria-modal="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addImageLabel">افزودن ویدیو</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row g-3">
+              <div class="col-xxl-12">
+                <div>
+                  <label class="form-label">فایل مورد نظر خود را وارد کنید:</label>
+                  <input type="file" class="filepond" name="video" data-allow-reorder="true" data-max-file-size="70MB" data-max-files="1">
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editVideo" tabindex="-1" aria-labelledby="editVideo" aria-modal="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalgridLabel">ویرایش اسم ویدیو</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form th:action="@{/gallery/list-videos-edit}" method="post">
+            <div class="row g-3">
+              <div class="col-xxl-12">
+                <input type="hidden" name="videoId" id="editVideoId" />
+                <div>
+                  <label for="editVideoName" class="form-label">اسم ویدیو:</label>
+                  <input type="text" class="form-control" id="editVideoName" name="videoName" placeholder="">
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <div class="hstack gap-2 justify-content-end">
+                  <button type="button" class="btn btn-light" data-bs-dismiss="modal">انصراف</button>
+                  <button type="submit" class="btn btn-primary">تایید</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</th:block>
+
+<th:block layout:fragment="pagejs">
+
+  <script src="/assets/libs/filepond/filepond.min.js"></script>
+  <script src="/assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
+  <script src="/assets/libs/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
+  <script src="/assets/libs/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
+  <script src="/assets/libs/filepond-plugin-file-encode/filepond-plugin-file-encode.min.js"></script>
+  <script src="/assets/libs/glightbox/js/glightbox.min.js"></script>
+  <script src="/assets/libs/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+  <script src="https://vjs.zencdn.net/8.0.0/video.min.js"></script>
+  <script src="/assets/js/crawler/gallery-video.js"></script>
+
+  <!-- Custom JS -->
+  <script>
+    // Optionally customize the Video.js player here
+    document.addEventListener('DOMContentLoaded', function () {
+      const players = document.querySelectorAll('.video-js');
+      players.forEach(player => {
+        videojs(player);
+      });
+    });
+  </script>
+
+  <script>
+    function confirmDelete(event) {
+      event.preventDefault();
+      const form = event.target.closest('form');
+
+      Swal.fire({
+        title: 'آیا مطمئن هستید؟',
+        text: 'این عمل قابل بازگشت نیست!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'بله، حذف کن',
+        cancelButtonText: 'لغو',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          form.submit();
+        }
+      });
+    }
+  </script>
+
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    var deleted = [[${deleted}]];
+    if (deleted === true) {
+      Swal.fire({
+        text: "ودیو شما با موفقیت حذف شد.",
+        icon: "success",
+        confirmButtonText: "تایید",
+        confirmButtonColor: "#556ee6"
+      });
+    }
+    /*]]>*/
+
+
+    var success = [[${success}]];
+    if (success === true) {
+      Swal.fire({
+        text: "ویدیو شما با موفقیت ذخیره شد.",
+        icon: "success",
+        confirmButtonText: "تایید",
+        confirmButtonColor: "#556ee6"
+      });
+    }
+
+    const errorMessage = /*[[${error}]]*/ '';
+    if (errorMessage) {
+      Swal.fire({
+        icon: 'error',
+        title: 'خطا',
+        text: errorMessage,
+        confirmButtonText: 'باشه',
+        confirmButtonColor: '#d33',
+      });
+    }
+  </script>
+</th:block>
+</body>
