@@ -1,0 +1,29 @@
+{
+    "name": "crawlerdummy",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "build": "esbuild src/yoastSEO.js --bundle --format=esm --platform=browser --target=es2020 --define:global=globalThis --outfile=src/main/resources/static/assets/js/yoastSEO.js"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/mpavesta2000/crawlerDummy.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+      "url": "https://github.com/mpavesta2000/crawlerDummy/issues"
+    },
+    "homepage": "https://github.com/mpavesta2000/crawlerDummy#readme",
+    "description": "",
+    "devDependencies": {
+      "buffer": "^6.0.3",
+      "esbuild": "^0.25.9",
+      "events": "^3.3.0",
+      "url": "^0.11.4",
+      "yoastseo": "^3.3.0"
+    }
+  }
+  

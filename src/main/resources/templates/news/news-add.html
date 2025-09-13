@@ -13,7 +13,9 @@
     <link rel="stylesheet" href="/assets/libs/filepond/filepond.min.css" type="text/css" />
     <link rel="stylesheet" href="/assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.css">
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
-
+    
+    <!-- YoastSEO Single File Integration -->
+    <script type="module" src="/assets/js/yoastSEO.js"></script>
 
     <style>
         .required::after {
@@ -134,6 +136,12 @@
                             </div>
                         </div>
                         <div class="mb-3">
+                            <label class="form-label" for="news-keyphrase-input">کلیدواژه اصلی (برای تحلیل سئو)</label>
+                            <input type="text" class="form-control" id="news-keyphrase-input"
+                                   placeholder="مثل: اخبار تکنولوژی">
+                            <div class="form-text">کلیدواژه‌ای که می‌خواهید محتوا برای آن بهینه‌سازی شود</div>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label required">متن خبر</label>
                             <textarea id="editor" th:field="*{body}" required></textarea>
                             <div class="invalid-feedback">
@@ -146,12 +154,37 @@
                     </div>
                 </div>
 
-                <div class="row mb-4 justify-content-end">
+                <!-- SEO Analysis Panel -->
+                <div class="card seo-panel">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0 fw-bolder">بخش سئو</h5>
+                    </div>
+                    <div class="card-body">
+                        
+                        <!-- YoastSEO.js Output Area -->
+                        <div id="yoast-seo-output" class="yoast-seo-output" style="margin: 15px 0; padding: 0; border: 1px solid #ddd; border-radius: 5px; background-color: #fff;">
+                            <div class="text-center p-3">
+                                <small class="text-muted">YoastSEO تجزیه و تحلیل در حال بارگذاری...</small>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="mt-3 d-flex justify-content-center">
+                            <button type="button" id="refresh-seo-analysis" class="btn btn-info btn-bg w-100">
+                                <i class="bx bx-refresh label-icon align-middle fs-18 me-2"></i>بروزرسانی تحلیل سئو
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="row mb-4 justify-content-end">
                     <div class="col-md-2 mt-2">
                         <button type="submit" class="btn btn-success w-100">ذخیره</button>
                     </div>
-                </div>
+                </div> -->
             </div>
+
+            
 
             <div class="col-lg-4">
                 <div class="card">
@@ -208,6 +241,9 @@
                                 <label class="btn btn-outline-success w-100 text-center" for="btn-check-outlined7">نمایش در اسلایدر</label>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-md-12 mt-2 d-flex align-items-center" style="margin-bottom: 0;">
+                        <button type="submit" class="btn btn-success w-100">ذخیره</button>
                     </div>
                 </div>
 
