@@ -459,7 +459,7 @@ class SimpleYoastSEO {
                 <div class="analysis-grid">
                     <!-- SEO Analysis -->
                     <div class="analysis-card">
-                        <div class="card-header">
+                        <div class="card-header" id="seo-panel-header">
                             <div class="header-icon">
                                 <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -477,7 +477,7 @@ class SimpleYoastSEO {
 
                     <!-- Readability Analysis -->
                     <div class="analysis-card">
-                        <div class="card-header">
+                        <div class="card-header" id="readability-panel-header">
                             <div class="header-icon">
                                 <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z M4 5a2 2 0 012-2v6h8V3a2 2 0 012 2v6l-3.5 4.5a1 1 0 01-1.414 0L8 11V5z"/>
@@ -530,7 +530,6 @@ class SimpleYoastSEO {
             }
 
              .seo-header {
-                 background:rgb(255, 255, 255);
                  padding: 20px;
                  text-align: center;
              }
@@ -643,7 +642,6 @@ class SimpleYoastSEO {
                  display: grid;
                  grid-template-columns: 1fr;
                  gap: 1px;
-                 background: #f1f3f4;
              }
 
             .analysis-card {
@@ -651,12 +649,11 @@ class SimpleYoastSEO {
                 overflow: hidden;
             }
 
-            .card-header {
+            #seo-panel-header, #readability-panel-header {
                 display: flex;
                 align-items: center;
                 gap: 12px;
                 padding: 16px 20px;
-                background: #fafbfc;
                 border-bottom: 1px solid #f1f3f4;
             }
 
@@ -706,7 +703,6 @@ class SimpleYoastSEO {
             }
 
             .modern-assessment:hover {
-                background: #f9fafb;
             }
 
             .modern-assessment:last-child {
