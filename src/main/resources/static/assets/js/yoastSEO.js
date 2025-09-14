@@ -54177,7 +54177,7 @@ var SimpleYoastSEO = class {
                 }
                 
                 .empty-message {
-                    background: white;
+                    background: var(--bs-body-bg, #ffffff);
                     padding: 40px 20px;
                     text-align: center;
                     border-top: 1px solid #f1f3f4;
@@ -54325,10 +54325,10 @@ var SimpleYoastSEO = class {
                 box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             }
 
-             .seo-header {
-                 background:rgb(255, 255, 255);
-                 padding: 20px;
-                 text-align: center;
+            .seo-header {
+                background: var(--bs-body-bg, #ffffff);
+                padding: 20px;
+                text-align: center;
              }
 
              .header-content {
@@ -54354,7 +54354,7 @@ var SimpleYoastSEO = class {
              .main-score-number {
                  font-size: 32px;
                  font-weight: 700;
-                 color: #1f2937;
+                 color: var(--bs-body-color, #1f2937);
              }
 
              .score-separator {
@@ -54442,12 +54442,12 @@ var SimpleYoastSEO = class {
                  background: #f1f3f4;
              }
 
-            .analysis-card {
-                background: white;
+            .modern-seo-analyzer .analysis-card {
+                background: var(--bs-body-bg, #ffffff);
                 overflow: hidden;
             }
 
-            .card-header {
+            .modern-seo-analyzer .card-header {
                 display: flex;
                 align-items: center;
                 gap: 12px;
@@ -54456,7 +54456,7 @@ var SimpleYoastSEO = class {
                 border-bottom: 1px solid #f1f3f4;
             }
 
-            .header-icon {
+            .modern-seo-analyzer .header-icon {
                 width: 32px;
                 height: 32px;
                 background: #e5e7eb;
@@ -54467,15 +54467,15 @@ var SimpleYoastSEO = class {
                 color: #6b7280;
             }
 
-            .card-title {
+            .modern-seo-analyzer .card-title {
                 flex: 1;
                 margin: 0;
                 font-size: 14px;
                 font-weight: 600;
-                color: #1f2937;
+                color: var(--bs-body-color, #1f2937);
             }
 
-            .card-badge {
+            .modern-seo-analyzer .card-badge {
                 padding: 4px 8px;
                 border-radius: 12px;
                 font-size: 11px;
@@ -54483,16 +54483,16 @@ var SimpleYoastSEO = class {
                 color: white;
             }
 
-            .card-badge.score-good { background: #10b981; }
-            .card-badge.score-ok { background: #f59e0b; }
-            .card-badge.score-bad { background: #ef4444; }
-            .card-badge.score-poor { background: #9ca3af; }
+            .modern-seo-analyzer .card-badge.score-good { background: #10b981; }
+            .modern-seo-analyzer .card-badge.score-ok { background: #f59e0b; }
+            .modern-seo-analyzer .card-badge.score-bad { background: #ef4444; }
+            .modern-seo-analyzer .card-badge.score-poor { background: #9ca3af; }
 
-            .card-content {
+            .modern-seo-analyzer .card-content {
                 padding: 0;
             }
 
-            .modern-assessment {
+            .modern-seo-analyzer .modern-assessment {
                 display: flex;
                 align-items: center;
                 gap: 12px;
@@ -54501,93 +54501,93 @@ var SimpleYoastSEO = class {
                 transition: background-color 0.2s ease;
             }
 
-            .modern-assessment:hover {
-                background: #f9fafb;
+            .modern-seo-analyzer .modern-assessment:hover {
+                background: var(--bs-secondary-bg, #f9fafb);
             }
 
-            .modern-assessment:last-child {
+            .modern-seo-analyzer .modern-assessment:last-child {
                 border-bottom: none;
             }
 
-            .assessment-status {
+            .modern-seo-analyzer .assessment-status {
                 width: 8px;
                 height: 8px;
                 border-radius: 50%;
                 flex-shrink: 0;
             }
 
-            .assessment-status.excellent { background: #10b981; }
-            .assessment-status.good { background: #f59e0b; }
-            .assessment-status.poor { background: #ef4444; }
-            .assessment-status.neutral { background: #9ca3af; }
+            .modern-seo-analyzer .assessment-status.excellent { background: #10b981; }
+            .modern-seo-analyzer .assessment-status.good { background: #f59e0b; }
+            .modern-seo-analyzer .assessment-status.poor { background: #ef4444; }
+            .modern-seo-analyzer .assessment-status.neutral { background: #9ca3af; }
 
-            .assessment-info {
+            .modern-seo-analyzer .assessment-info {
                 flex: 1;
                 min-width: 0;
             }
 
-            .assessment-name {
+            .modern-seo-analyzer .assessment-name {
                 font-weight: 500;
-                color: #1f2937;
+                color: var(--bs-body-color, #1f2937);
                 font-size: 13px;
                 margin: 0 0 2px 0;
             }
 
-            .assessment-feedback {
+            .modern-seo-analyzer .assessment-feedback {
                 color: #6b7280;
                 font-size: 12px;
                 line-height: 1.4;
                 margin: 0;
             }
 
-            .stats-section {
-                background: white;
+            .modern-seo-analyzer .stats-section {
+                background: var(--bs-body-bg, #ffffff);
                 padding: 20px;
                 border-top: 1px solid #f1f3f4;
             }
 
-             .stats-title {
+             .modern-seo-analyzer .stats-title {
                  margin: 0 0 16px 0;
                  font-size: 16px;
                  font-weight: 600;
-                 color: #1f2937;
+                 color: var(--bs-body-color, #1f2937);
                  text-align: center;
              }
 
-             .stats-list {
+             .modern-seo-analyzer .stats-list {
                  padding: 0;
              }
 
-             .stat-item {
+             .modern-seo-analyzer .stat-item {
                  display: flex;
                  justify-content: space-between;
                  padding: 12px 0;
                  border-bottom: 1px solid #f0f0f0;
              }
 
-             .stat-item:last-child {
+             .modern-seo-analyzer .stat-item:last-child {
                  border-bottom: none;
              }
 
-            .stat-label {
+            .modern-seo-analyzer .stat-label {
                 color: #6b7280;
                 font-size: 13px;
             }
 
-            .stat-value {
+            .modern-seo-analyzer .stat-value {
                 font-weight: 600;
-                color: #1f2937;
+                color: var(--bs-body-color, #1f2937);
                 font-size: 13px;
             }
 
 
              @media (max-width: 768px) {
-                 .header-content {
+                 .modern-seo-analyzer .header-content {
                      flex-direction: column;
                      gap: 16px;
                  }
                  
-                 .sub-scores-section {
+                 .modern-seo-analyzer .sub-scores-section {
                      flex-direction: column;
                      gap: 8px;
                  }
