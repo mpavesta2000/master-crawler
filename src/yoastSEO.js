@@ -49,7 +49,7 @@ class SimpleYoastSEO {
         // Get form elements
         const titleInput = document.getElementById('news-title-input');
         const metaDescInput = document.getElementById('meta-description-input');
-        const keywordInput = document.getElementById('meta-keywords-input');
+        const keywordInput = document.getElementById('news-keyphrase-input');
         const refreshButton = document.getElementById('refresh-seo-analysis');
 
         console.log('Form elements found:', {
@@ -92,7 +92,7 @@ class SimpleYoastSEO {
             console.log('Adding refresh button listener');
             refreshButton.addEventListener('click', () => {
                 console.log('Manual refresh triggered');
-                this.analyze();
+                this.handleManualRefresh();
             });
             refreshButton.dataset.yoastBound = 'true';
         }
@@ -138,7 +138,7 @@ class SimpleYoastSEO {
         // Get form field values
         const titleElement = document.getElementById('news-title-input');
         const metaDescElement = document.getElementById('meta-description-input');
-        const keywordElement = document.getElementById('meta-keywords-input');
+        const keywordElement = document.getElementById('news-keyphrase-input');
 
         const title = titleElement ? titleElement.value : '';
         const metaDescription = metaDescElement ? metaDescElement.value : '';
@@ -218,15 +218,100 @@ class SimpleYoastSEO {
         }, 500);
     }
 
+    handleManualRefresh() {
+        // Validate required fields when user manually clicks refresh
+        const validation = this.validateRequiredFields();
+        
+        if (!validation.isValid) {
+            this.showValidationAlert(validation.missingFields);
+            return;
+        }
+        
+        // If validation passes, run analysis
+        this.analyze();
+    }
+
+    validateRequiredFields() {
+        const titleElement = document.getElementById('news-title-input');
+        const keywordElement = document.getElementById('news-keyphrase-input');
+        const metaDescElement = document.getElementById('meta-description-input');
+        
+        let content = '';
+        if (this.editorInstance) {
+            content = this.editorInstance.getData();
+        } else {
+            const editorElement = document.getElementById('editor');
+            content = editorElement ? editorElement.value : '';
+        }
+        
+        const title = titleElement ? titleElement.value.trim() : '';
+        const keyword = keywordElement ? keywordElement.value.trim() : '';
+        const metaDesc = metaDescElement ? metaDescElement.value.trim() : '';
+        const contentText = content.replace(/<[^>]*>/g, '').trim(); // Remove HTML tags
+        
+        const missingFields = [];
+        
+        // Check required fields
+        if (!title || title.length < 5) {
+            missingFields.push('تیتر خبر (حداقل ۵ کاراکتر)');
+        }
+        
+        if (!keyword) {
+            missingFields.push('کلمه کلیدی متا');
+        }
+        
+        if (!contentText || contentText.length < 50) {
+            missingFields.push('محتوای خبر (حداقل ۵۰ کاراکتر)');
+        }
+        
+        if (!metaDesc || metaDesc.length < 30) {
+            missingFields.push('توضیحات متا (حداقل ۳۰ کاراکتر)');
+        }
+        
+        return {
+            isValid: missingFields.length === 0,
+            missingFields: missingFields
+        };
+    }
+
+    showValidationAlert(missingFields) {
+        const missingList = missingFields.map(field => `• ${field}`).join('\n');
+        
+        // Show SweetAlert if available, otherwise use regular alert
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'فیلدهای مورد نیاز خالی است',
+                html: `<div style="text-align: right; direction: rtl;">
+                        <p>برای انجام تحلیل سئو، لطفاً فیلدهای زیر را تکمیل کنید:</p>
+                        <div style="margin: 15px 0; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+                            ${missingFields.map(field => `<div style="margin: 5px 0;">• ${field}</div>`).join('')}
+                        </div>
+                        <p><small>پس از تکمیل این فیلدها، مجدداً دکمه "بروزرسانی تحلیل سئو" را کلیک کنید.</small></p>
+                    </div>`,
+                confirmButtonText: 'متوجه شدم',
+                confirmButtonColor: '#556ee6',
+                customClass: {
+                    popup: 'swal-rtl'
+                }
+            });
+        } else {
+            alert(`فیلدهای مورد نیاز خالی است:\n\n${missingList}\n\nلطفاً این فیلدها را تکمیل کنید و مجدداً تلاش کنید.`);
+        }
+        
+        // Update the output to show empty state with validation message
+        this.updateEmptyStateWithValidation(missingFields);
+    }
+
     analyze() {
         try {
             // Get form data
             const data = this.collectFormData();
             
-            // Check if we have meaningful content to analyze
-            const hasContent = data.title.length > 0 || data.keyword.length > 0 || data.text.length > 10;
+            // Check if we have meaningful content to analyze (less strict for auto-analysis)
+            const hasMinimalContent = data.title.length > 0 || data.keyword.length > 0 || data.text.length > 10;
             
-            if (!hasContent) {
+            if (!hasMinimalContent) {
                 console.log('Skipping analysis - no meaningful content yet');
                 this.updateEmptyState();
                 return;
@@ -288,7 +373,7 @@ class SimpleYoastSEO {
         // Quick validation check without full logging
         const titleElement = document.getElementById('news-title-input');
         const metaDescElement = document.getElementById('meta-description-input');
-        const keywordElement = document.getElementById('meta-keywords-input');
+        const keywordElement = document.getElementById('news-keyphrase-input');
 
         let content = '';
         if (this.editorInstance) {
@@ -304,6 +389,12 @@ class SimpleYoastSEO {
             title: titleElement ? titleElement.value : '',
             description: metaDescElement ? metaDescElement.value : ''
         };
+    }
+
+    // Helper method to check if all required fields are filled for automatic analysis
+    hasRequiredFieldsForAutoAnalysis() {
+        const validation = this.validateRequiredFields();
+        return validation.isValid;
     }
 
     updateEmptyState() {
@@ -395,10 +486,92 @@ class SimpleYoastSEO {
                     margin: 0 auto;
                     line-height: 1.5;
                 }
+                
+                .swal-rtl {
+                    direction: rtl !important;
+                    text-align: right !important;
+                }
                 </style>
             `;
         }
+    }
 
+    updateEmptyStateWithValidation(missingFields) {
+        const outputElement = document.getElementById('yoast-seo-output');
+        if (outputElement) {
+            const missingFieldsList = missingFields.map(field => `<li style="margin: 5px 0; color: #dc2626;">• ${field}</li>`).join('');
+            
+            outputElement.innerHTML = `
+                <div class="modern-seo-analyzer empty-state validation-required">
+                    <!-- Header Section -->
+                    
+
+                    <!-- Validation Message -->
+                    <div class="validation-message">
+                        <div class="validation-icon">⚠️</div>
+                        <h4 class="validation-title">فیلدهای زیر را تکمیل کنید:</h4>
+                        <ul class="missing-fields-list" style="text-align: right; direction: rtl; list-style: none; padding: 0;">
+                            ${missingFieldsList}
+                        </ul>
+                        <p class="validation-description">پس از تکمیل این فیلدها، دوباره دکمه "بروزرسانی تحلیل سئو" را کلیک کنید.</p>
+                    </div>
+
+                    <!-- Footer -->
+                    
+                </div>
+                
+                <style>
+                .modern-seo-analyzer.validation-required {
+                    background: linear-gradient(135deg, #fef3cd 0%, #fde68a 100%);
+                }
+                
+                .score-circle.warning {
+                    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+                    color: white;
+                }
+                
+                .score-circle.warning .score-number {
+                    font-size: 24px;
+                    font-weight: bold;
+                }
+                
+                .validation-message {
+                    background: var(--bs-body-bg, #ffffff);
+                    padding: 30px 20px;
+                    text-align: center;
+                    border-top: 1px solid #f1f3f4;
+                    direction: rtl;
+                }
+                
+                .validation-icon {
+                    font-size: 36px;
+                    margin-bottom: 12px;
+                }
+                
+                .validation-title {
+                    margin: 0 0 15px 0;
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #92400e;
+                }
+                
+                .missing-fields-list {
+                    margin: 15px 0;
+                    padding: 15px;
+                    background: #fef3cd;
+                    border-radius: 8px;
+                    border: 1px solid #f59e0b;
+                }
+                
+                .validation-description {
+                    margin: 15px 0 0 0;
+                    color: #6b7280;
+                    font-size: 13px;
+                    line-height: 1.5;
+                }
+                </style>
+            `;
+        }
     }
 
     updateUIWithDirectResults(results, data) {

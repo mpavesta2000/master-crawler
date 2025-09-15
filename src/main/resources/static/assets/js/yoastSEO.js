@@ -53926,7 +53926,7 @@ var SimpleYoastSEO = class {
     }
     const titleInput = document.getElementById("news-title-input");
     const metaDescInput = document.getElementById("meta-description-input");
-    const keywordInput = document.getElementById("meta-keywords-input");
+    const keywordInput = document.getElementById("news-keyphrase-input");
     const refreshButton = document.getElementById("refresh-seo-analysis");
     console.log("Form elements found:", {
       titleInput: !!titleInput,
@@ -53962,7 +53962,7 @@ var SimpleYoastSEO = class {
       console.log("Adding refresh button listener");
       refreshButton.addEventListener("click", () => {
         console.log("Manual refresh triggered");
-        this.analyze();
+        this.handleManualRefresh();
       });
       refreshButton.dataset.yoastBound = "true";
     }
@@ -53996,7 +53996,7 @@ var SimpleYoastSEO = class {
   collectFormData() {
     const titleElement = document.getElementById("news-title-input");
     const metaDescElement = document.getElementById("meta-description-input");
-    const keywordElement = document.getElementById("meta-keywords-input");
+    const keywordElement = document.getElementById("news-keyphrase-input");
     const title = titleElement ? titleElement.value : "";
     const metaDescription = metaDescElement ? metaDescElement.value : "";
     const keyword = keywordElement ? keywordElement.value : "";
@@ -54053,11 +54053,80 @@ var SimpleYoastSEO = class {
       this.analyze();
     }, 500);
   }
+  handleManualRefresh() {
+    const validation = this.validateRequiredFields();
+    if (!validation.isValid) {
+      this.showValidationAlert(validation.missingFields);
+      return;
+    }
+    this.analyze();
+  }
+  validateRequiredFields() {
+    const titleElement = document.getElementById("news-title-input");
+    const keywordElement = document.getElementById("news-keyphrase-input");
+    const metaDescElement = document.getElementById("meta-description-input");
+    let content = "";
+    if (this.editorInstance) {
+      content = this.editorInstance.getData();
+    } else {
+      const editorElement = document.getElementById("editor");
+      content = editorElement ? editorElement.value : "";
+    }
+    const title = titleElement ? titleElement.value.trim() : "";
+    const keyword = keywordElement ? keywordElement.value.trim() : "";
+    const metaDesc = metaDescElement ? metaDescElement.value.trim() : "";
+    const contentText = content.replace(/<[^>]*>/g, "").trim();
+    const missingFields = [];
+    if (!title || title.length < 5) {
+      missingFields.push("\u062A\u06CC\u062A\u0631 \u062E\u0628\u0631 (\u062D\u062F\u0627\u0642\u0644 \u06F5 \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631)");
+    }
+    if (!keyword) {
+      missingFields.push("\u06A9\u0644\u0645\u0647 \u06A9\u0644\u06CC\u062F\u06CC \u0645\u062A\u0627");
+    }
+    if (!contentText || contentText.length < 50) {
+      missingFields.push("\u0645\u062D\u062A\u0648\u0627\u06CC \u062E\u0628\u0631 (\u062D\u062F\u0627\u0642\u0644 \u06F5\u06F0 \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631)");
+    }
+    if (!metaDesc || metaDesc.length < 30) {
+      missingFields.push("\u062A\u0648\u0636\u06CC\u062D\u0627\u062A \u0645\u062A\u0627 (\u062D\u062F\u0627\u0642\u0644 \u06F3\u06F0 \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631)");
+    }
+    return {
+      isValid: missingFields.length === 0,
+      missingFields
+    };
+  }
+  showValidationAlert(missingFields) {
+    const missingList = missingFields.map((field) => `\u2022 ${field}`).join("\n");
+    if (typeof Swal !== "undefined") {
+      Swal.fire({
+        icon: "warning",
+        title: "\u0641\u06CC\u0644\u062F\u0647\u0627\u06CC \u0645\u0648\u0631\u062F \u0646\u06CC\u0627\u0632 \u062E\u0627\u0644\u06CC \u0627\u0633\u062A",
+        html: `<div style="text-align: right; direction: rtl;">
+                        <p>\u0628\u0631\u0627\u06CC \u0627\u0646\u062C\u0627\u0645 \u062A\u062D\u0644\u06CC\u0644 \u0633\u0626\u0648\u060C \u0644\u0637\u0641\u0627\u064B \u0641\u06CC\u0644\u062F\u0647\u0627\u06CC \u0632\u06CC\u0631 \u0631\u0627 \u062A\u06A9\u0645\u06CC\u0644 \u06A9\u0646\u06CC\u062F:</p>
+                        <div style="margin: 15px 0; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+                            ${missingFields.map((field) => `<div style="margin: 5px 0;">\u2022 ${field}</div>`).join("")}
+                        </div>
+                        <p><small>\u067E\u0633 \u0627\u0632 \u062A\u06A9\u0645\u06CC\u0644 \u0627\u06CC\u0646 \u0641\u06CC\u0644\u062F\u0647\u0627\u060C \u0645\u062C\u062F\u062F\u0627\u064B \u062F\u06A9\u0645\u0647 "\u0628\u0631\u0648\u0632\u0631\u0633\u0627\u0646\u06CC \u062A\u062D\u0644\u06CC\u0644 \u0633\u0626\u0648" \u0631\u0627 \u06A9\u0644\u06CC\u06A9 \u06A9\u0646\u06CC\u062F.</small></p>
+                    </div>`,
+        confirmButtonText: "\u0645\u062A\u0648\u062C\u0647 \u0634\u062F\u0645",
+        confirmButtonColor: "#556ee6",
+        customClass: {
+          popup: "swal-rtl"
+        }
+      });
+    } else {
+      alert(`\u0641\u06CC\u0644\u062F\u0647\u0627\u06CC \u0645\u0648\u0631\u062F \u0646\u06CC\u0627\u0632 \u062E\u0627\u0644\u06CC \u0627\u0633\u062A:
+
+${missingList}
+
+\u0644\u0637\u0641\u0627\u064B \u0627\u06CC\u0646 \u0641\u06CC\u0644\u062F\u0647\u0627 \u0631\u0627 \u062A\u06A9\u0645\u06CC\u0644 \u06A9\u0646\u06CC\u062F \u0648 \u0645\u062C\u062F\u062F\u0627\u064B \u062A\u0644\u0627\u0634 \u06A9\u0646\u06CC\u062F.`);
+    }
+    this.updateEmptyStateWithValidation(missingFields);
+  }
   analyze() {
     try {
       const data = this.collectFormData();
-      const hasContent = data.title.length > 0 || data.keyword.length > 0 || data.text.length > 10;
-      if (!hasContent) {
+      const hasMinimalContent = data.title.length > 0 || data.keyword.length > 0 || data.text.length > 10;
+      if (!hasMinimalContent) {
         console.log("Skipping analysis - no meaningful content yet");
         this.updateEmptyState();
         return;
@@ -54099,7 +54168,7 @@ var SimpleYoastSEO = class {
   collectFormDataForValidation() {
     const titleElement = document.getElementById("news-title-input");
     const metaDescElement = document.getElementById("meta-description-input");
-    const keywordElement = document.getElementById("meta-keywords-input");
+    const keywordElement = document.getElementById("news-keyphrase-input");
     let content = "";
     if (this.editorInstance) {
       content = this.editorInstance.getData();
@@ -54113,6 +54182,11 @@ var SimpleYoastSEO = class {
       title: titleElement ? titleElement.value : "",
       description: metaDescElement ? metaDescElement.value : ""
     };
+  }
+  // Helper method to check if all required fields are filled for automatic analysis
+  hasRequiredFieldsForAutoAnalysis() {
+    const validation = this.validateRequiredFields();
+    return validation.isValid;
   }
   updateEmptyState() {
     const outputElement = document.getElementById("yoast-seo-output");
@@ -54201,6 +54275,87 @@ var SimpleYoastSEO = class {
                     font-size: 14px;
                     max-width: 400px;
                     margin: 0 auto;
+                    line-height: 1.5;
+                }
+                
+                .swal-rtl {
+                    direction: rtl !important;
+                    text-align: right !important;
+                }
+                </style>
+            `;
+    }
+  }
+  updateEmptyStateWithValidation(missingFields) {
+    const outputElement = document.getElementById("yoast-seo-output");
+    if (outputElement) {
+      const missingFieldsList = missingFields.map((field) => `<li style="margin: 5px 0; color: #dc2626;">\u2022 ${field}</li>`).join("");
+      outputElement.innerHTML = `
+                <div class="modern-seo-analyzer empty-state validation-required">
+                    <!-- Header Section -->
+                    
+
+                    <!-- Validation Message -->
+                    <div class="validation-message">
+                        <div class="validation-icon">\u26A0\uFE0F</div>
+                        <h4 class="validation-title">\u0641\u06CC\u0644\u062F\u0647\u0627\u06CC \u0632\u06CC\u0631 \u0631\u0627 \u062A\u06A9\u0645\u06CC\u0644 \u06A9\u0646\u06CC\u062F:</h4>
+                        <ul class="missing-fields-list" style="text-align: right; direction: rtl; list-style: none; padding: 0;">
+                            ${missingFieldsList}
+                        </ul>
+                        <p class="validation-description">\u067E\u0633 \u0627\u0632 \u062A\u06A9\u0645\u06CC\u0644 \u0627\u06CC\u0646 \u0641\u06CC\u0644\u062F\u0647\u0627\u060C \u062F\u0648\u0628\u0627\u0631\u0647 \u062F\u06A9\u0645\u0647 "\u0628\u0631\u0648\u0632\u0631\u0633\u0627\u0646\u06CC \u062A\u062D\u0644\u06CC\u0644 \u0633\u0626\u0648" \u0631\u0627 \u06A9\u0644\u06CC\u06A9 \u06A9\u0646\u06CC\u062F.</p>
+                    </div>
+
+                    <!-- Footer -->
+                    
+                </div>
+                
+                <style>
+                .modern-seo-analyzer.validation-required {
+                    background: linear-gradient(135deg, #fef3cd 0%, #fde68a 100%);
+                }
+                
+                .score-circle.warning {
+                    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+                    color: white;
+                }
+                
+                .score-circle.warning .score-number {
+                    font-size: 24px;
+                    font-weight: bold;
+                }
+                
+                .validation-message {
+                    background: var(--bs-body-bg, #ffffff);
+                    padding: 30px 20px;
+                    text-align: center;
+                    border-top: 1px solid #f1f3f4;
+                    direction: rtl;
+                }
+                
+                .validation-icon {
+                    font-size: 36px;
+                    margin-bottom: 12px;
+                }
+                
+                .validation-title {
+                    margin: 0 0 15px 0;
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #92400e;
+                }
+                
+                .missing-fields-list {
+                    margin: 15px 0;
+                    padding: 15px;
+                    background: #fef3cd;
+                    border-radius: 8px;
+                    border: 1px solid #f59e0b;
+                }
+                
+                .validation-description {
+                    margin: 15px 0 0 0;
+                    color: #6b7280;
+                    font-size: 13px;
                     line-height: 1.5;
                 }
                 </style>
