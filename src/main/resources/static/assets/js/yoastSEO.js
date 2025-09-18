@@ -26208,13 +26208,13 @@ var require_FeedHandler = __commonJS({
     function getOneElement(what, where) {
       return DomUtils.getElementsByTagName(what, where, true, 1)[0];
     }
-    function fetch(what, where, recurse) {
+    function fetch2(what, where, recurse) {
       return DomUtils.getText(
         DomUtils.getElementsByTagName(what, where, recurse, 1)
       ).trim();
     }
     function addConditionally(obj, prop, what, where, recurse) {
-      var tmp = fetch(what, where, recurse);
+      var tmp = fetch2(what, where, recurse);
       if (tmp) obj[prop] = tmp;
     }
     var isValidFeed = function(value) {
@@ -26231,7 +26231,7 @@ var require_FeedHandler = __commonJS({
           if ((tmp = getOneElement("link", childs)) && (tmp = tmp.attribs) && (tmp = tmp.href))
             feed.link = tmp;
           addConditionally(feed, "description", "subtitle", childs);
-          if (tmp = fetch("updated", childs)) feed.updated = new Date(tmp);
+          if (tmp = fetch2("updated", childs)) feed.updated = new Date(tmp);
           addConditionally(feed, "author", "email", childs, true);
           feed.items = getElements("entry", childs).map(function(item) {
             var entry = {}, tmp2;
@@ -26240,9 +26240,9 @@ var require_FeedHandler = __commonJS({
             addConditionally(entry, "title", "title", item);
             if ((tmp2 = getOneElement("link", item)) && (tmp2 = tmp2.attribs) && (tmp2 = tmp2.href))
               entry.link = tmp2;
-            if (tmp2 = fetch("summary", item) || fetch("content", item))
+            if (tmp2 = fetch2("summary", item) || fetch2("content", item))
               entry.description = tmp2;
-            if (tmp2 = fetch("updated", item))
+            if (tmp2 = fetch2("updated", item))
               entry.pubDate = new Date(tmp2);
             return entry;
           });
@@ -26253,7 +26253,7 @@ var require_FeedHandler = __commonJS({
           addConditionally(feed, "title", "title", childs);
           addConditionally(feed, "link", "link", childs);
           addConditionally(feed, "description", "description", childs);
-          if (tmp = fetch("lastBuildDate", childs))
+          if (tmp = fetch2("lastBuildDate", childs))
             feed.updated = new Date(tmp);
           addConditionally(feed, "author", "managingEditor", childs, true);
           feed.items = getElements("item", feedRoot.children).map(function(item) {
@@ -26263,7 +26263,7 @@ var require_FeedHandler = __commonJS({
             addConditionally(entry, "title", "title", item);
             addConditionally(entry, "link", "link", item);
             addConditionally(entry, "description", "description", item);
-            if (tmp2 = fetch("pubDate", item))
+            if (tmp2 = fetch2("pubDate", item))
               entry.pubDate = new Date(tmp2);
             return entry;
           });
@@ -53899,6 +53899,9 @@ var SimpleYoastSEO = class {
   constructor() {
     this.editorInstance = null;
     this.debounceTimer = null;
+    this.aiSlugGenerated = false;
+    this.lastAiGeneratedSlug = "";
+    this.lastAiGenerationTime = 0;
     this.bindEvents();
     console.log("YoastSEO Direct API initialized");
   }
@@ -53908,10 +53911,12 @@ var SimpleYoastSEO = class {
       document.addEventListener("DOMContentLoaded", () => {
         console.log("DOM content loaded, setting up listeners...");
         this.setupEventListeners();
+        this.bindSlugGenerationButton();
       });
     } else {
       console.log("DOM already ready, setting up listeners immediately...");
       this.setupEventListeners();
+      this.bindSlugGenerationButton();
     }
     setTimeout(() => {
       console.log("Delayed event setup...");
@@ -53925,13 +53930,17 @@ var SimpleYoastSEO = class {
       return;
     }
     const titleInput = document.getElementById("news-title-input");
+    const seoTitleInput = document.getElementById("seo-title-input");
     const metaDescInput = document.getElementById("meta-description-input");
     const keywordInput = document.getElementById("news-keyphrase-input");
+    const slugInput = document.getElementById("news-slug");
     const refreshButton = document.getElementById("refresh-seo-analysis");
     console.log("Form elements found:", {
       titleInput: !!titleInput,
+      seoTitleInput: !!seoTitleInput,
       metaDescInput: !!metaDescInput,
       keywordInput: !!keywordInput,
+      slugInput: !!slugInput,
       refreshButton: !!refreshButton
     });
     if (titleInput && !titleInput.dataset.yoastBound) {
@@ -53958,6 +53967,22 @@ var SimpleYoastSEO = class {
       });
       keywordInput.dataset.yoastBound = "true";
     }
+    if (seoTitleInput && !seoTitleInput.dataset.yoastBound) {
+      console.log("Adding SEO title input listener");
+      seoTitleInput.addEventListener("input", () => {
+        console.log("SEO Title changed:", seoTitleInput.value);
+        this.debounceAnalyze();
+      });
+      seoTitleInput.dataset.yoastBound = "true";
+    }
+    if (slugInput && !slugInput.dataset.yoastBound) {
+      console.log("Adding slug input listener");
+      slugInput.addEventListener("input", () => {
+        console.log("Slug changed:", slugInput.value);
+        this.debounceAnalyze();
+      });
+      slugInput.dataset.yoastBound = "true";
+    }
     if (refreshButton && !refreshButton.dataset.yoastBound) {
       console.log("Adding refresh button listener");
       refreshButton.addEventListener("click", () => {
@@ -53967,7 +53992,7 @@ var SimpleYoastSEO = class {
       refreshButton.dataset.yoastBound = "true";
     }
     this.setupCKEditorListener();
-    if (titleInput || metaDescInput || keywordInput) {
+    if (titleInput || metaDescInput || keywordInput || seoTitleInput || slugInput) {
       this.eventsBound = true;
       console.log("Event listeners setup complete");
     }
@@ -53995,11 +54020,23 @@ var SimpleYoastSEO = class {
   }
   collectFormData() {
     const titleElement = document.getElementById("news-title-input");
+    const seoTitleElement = document.getElementById("seo-title-input");
     const metaDescElement = document.getElementById("meta-description-input");
     const keywordElement = document.getElementById("news-keyphrase-input");
+    const slugElement = document.getElementById("news-slug");
     const title = titleElement ? titleElement.value : "";
+    const seoTitle = seoTitleElement ? seoTitleElement.value : "";
     const metaDescription = metaDescElement ? metaDescElement.value : "";
     const keyword = keywordElement ? keywordElement.value : "";
+    const slugValue = slugElement ? slugElement.value : "";
+    console.log(`\u{1F50D} Form Data Collection Debug:`);
+    console.log(`   Main Title: "${title}" (${title.length} chars)`);
+    console.log(`   SEO Title: "${seoTitle}" (${seoTitle.length} chars)`);
+    console.log(`   Keyword: "${keyword}"`);
+    console.log(`   Slug: "${slugValue}"`);
+    console.log(`   AI Flags: aiSlugGenerated=${this.aiSlugGenerated}, lastAiSlug="${this.lastAiGeneratedSlug}"`);
+    console.log(`   SEO Title Element Found: ${!!seoTitleElement}`);
+    console.log(`   SEO Title Element Value: "${seoTitleElement ? seoTitleElement.value : "N/A"}"`);
     let content = "";
     if (this.editorInstance) {
       content = this.editorInstance.getData();
@@ -54035,15 +54072,25 @@ var SimpleYoastSEO = class {
     if (title && title.trim() && !content.includes("<h1") && !content.includes("<H1")) {
       finalContent = `<h1>${title.trim()}</h1>` + finalContent;
     }
-    const slug = title ? title.toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").trim() : "untitled";
+    const slug = slugValue.trim() || (seoTitle ? seoTitle.toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").trim() : "") || (title ? title.toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").trim() : "untitled");
+    const effectiveTitle = seoTitle.trim() || title.trim();
+    console.log(`\u{1F50D} Title Resolution Debug:`);
+    console.log(`   SEO Title (trimmed): "${seoTitle.trim()}" (length: ${seoTitle.trim().length})`);
+    console.log(`   Main Title (trimmed): "${title.trim()}" (length: ${title.trim().length})`);
+    console.log(`   Effective Title (final): "${effectiveTitle}" (length: ${effectiveTitle.length})`);
+    console.log(`   Effective Title is truthy: ${!!effectiveTitle}`);
     const data = {
       text: finalContent,
       keyword,
-      title,
+      title: effectiveTitle,
+      // This is the SEO title for Yoast analysis
       description: metaDescription,
       url: slug,
       slug,
-      locale: "en_US"
+      locale: "en_US",
+      // Additional fields for our analysis
+      newsTitle: title,
+      seoTitle
     };
     return data;
   }
@@ -54063,8 +54110,10 @@ var SimpleYoastSEO = class {
   }
   validateRequiredFields() {
     const titleElement = document.getElementById("news-title-input");
+    const seoTitleElement = document.getElementById("seo-title-input");
     const keywordElement = document.getElementById("news-keyphrase-input");
     const metaDescElement = document.getElementById("meta-description-input");
+    const slugElement = document.getElementById("news-slug");
     let content = "";
     if (this.editorInstance) {
       content = this.editorInstance.getData();
@@ -54073,15 +54122,17 @@ var SimpleYoastSEO = class {
       content = editorElement ? editorElement.value : "";
     }
     const title = titleElement ? titleElement.value.trim() : "";
+    const seoTitle = seoTitleElement ? seoTitleElement.value.trim() : "";
     const keyword = keywordElement ? keywordElement.value.trim() : "";
     const metaDesc = metaDescElement ? metaDescElement.value.trim() : "";
+    const slugValue = slugElement ? slugElement.value.trim() : "";
     const contentText = content.replace(/<[^>]*>/g, "").trim();
     const missingFields = [];
     if (!title || title.length < 5) {
       missingFields.push("\u062A\u06CC\u062A\u0631 \u062E\u0628\u0631 (\u062D\u062F\u0627\u0642\u0644 \u06F5 \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631)");
     }
     if (!keyword) {
-      missingFields.push("\u06A9\u0644\u0645\u0647 \u06A9\u0644\u06CC\u062F\u06CC \u0645\u062A\u0627");
+      missingFields.push("\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0627\u0635\u0644\u06CC (\u0628\u0631\u0627\u06CC \u062A\u062D\u0644\u06CC\u0644 \u0633\u0626\u0648)");
     }
     if (!contentText || contentText.length < 50) {
       missingFields.push("\u0645\u062D\u062A\u0648\u0627\u06CC \u062E\u0628\u0631 (\u062D\u062F\u0627\u0642\u0644 \u06F5\u06F0 \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631)");
@@ -54131,6 +54182,11 @@ ${missingList}
         this.updateEmptyState();
         return;
       }
+      console.log(`\u{1F50D} About to create Paper object with:`);
+      console.log(`   data.title: "${data.title}"`);
+      console.log(`   data.keyword: "${data.keyword}"`);
+      console.log(`   data.description: "${data.description}"`);
+      console.log(`   data.url: "${data.url}"`);
       const paper = new import_yoastseo.Paper(data.text, {
         keyword: data.keyword,
         title: data.title,
@@ -54138,8 +54194,19 @@ ${missingList}
         url: data.url || "",
         locale: "en_US"
       });
-      console.log("Paper created:", paper);
+      console.log(`\u{1F4C4} Paper object created - Verification:`);
+      console.log(`   Paper.getTitle(): "${paper.getTitle()}" (length: ${paper.getTitle() ? paper.getTitle().length : 0})`);
+      console.log(`   Paper.getKeyword(): "${paper.getKeyword()}"`);
+      console.log(`   Paper.getUrl(): "${paper.getUrl()}"`);
+      console.log(`   Paper.getText(): ${paper.getText().length} chars`);
+      console.log(`   Paper has title: ${!!paper.getTitle()}`);
+      console.log(`   Paper title equals data.title: ${paper.getTitle() === data.title}`);
       const researcher = new AbstractResearcher(paper);
+      if (!data.keyword || data.keyword.trim() === "") {
+        console.warn("No focus keyphrase provided - keyphrase assessments will not work properly");
+      } else {
+        console.log("Focus keyphrase for analysis:", data.keyword);
+      }
       console.log("AbstractResearcher created:", researcher);
       const yoastAssessments = this.runYoastAssessments(paper, researcher);
       const wordCountResearch = researcher.getResearch("wordCountInText");
@@ -54159,6 +54226,13 @@ ${missingList}
       };
       console.log("Real YoastSEO assessments:", yoastAssessments);
       console.log("Final results with YoastSEO scores:", results);
+      console.log("Keyphrase analysis data used:", {
+        focusKeyphrase: data.keyword,
+        seoTitle: data.seoTitle,
+        newsTitle: data.newsTitle,
+        metaDescription: data.description,
+        slug: data.slug
+      });
       this.updateUIWithDirectResults(results, data);
     } catch (error) {
       console.error("YoastSEO Direct API analysis failed:", error);
@@ -54791,6 +54865,8 @@ ${missingList}
         statusClass = "good";
       } else if (assessment.score >= 1) {
         statusClass = "poor";
+      } else if (assessment.score <= 0) {
+        statusClass = "poor";
       }
       const cleanText = this.translateYoastFeedback(assessment.text, assessment.name);
       return `
@@ -54883,16 +54959,26 @@ ${missingList}
       "TextLengthAssessment": "\u0637\u0648\u0644 \u0645\u062A\u0646",
       "MetaDescriptionLengthAssessment": "\u0637\u0648\u0644 \u062A\u0648\u0636\u06CC\u062D\u0627\u062A \u0645\u062A\u0627",
       "PageTitleWidthAssessment": "\u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 (\u0646\u0645\u0627\u06CC\u0634 \u062F\u0631 \u06AF\u0648\u06AF\u0644)",
-      // 'ImageCountAssessment': 'تعداد تصاویر',
       "InternalLinksAssessment": "\u0644\u06CC\u0646\u06A9\u200C\u0647\u0627\u06CC \u062F\u0627\u062E\u0644\u06CC",
       "OutboundLinksAssessment": "\u0644\u06CC\u0646\u06A9\u200C\u0647\u0627\u06CC \u062E\u0627\u0631\u062C\u06CC",
-      "FunctionWordsInKeyphraseAssessment": "\u06A9\u0644\u0645\u0627\u062A \u0639\u0645\u0644\u06A9\u0631\u062F\u06CC \u062F\u0631 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647",
-      // 'TextTitleAssessment': 'عنوان اصلی (H1) در محتوا',
-      // Readability Assessments
-      "TextPresenceAssessment": "\u0648\u062C\u0648\u062F \u0645\u062A\u0646",
-      "SubheadingDistributionTooLongAssessment": "\u062A\u0648\u0632\u06CC\u0639 \u0632\u06CC\u0631\u0639\u0646\u0627\u0648\u06CC\u0646",
-      "WordComplexityAssessment": "\u067E\u06CC\u0686\u06CC\u062F\u06AF\u06CC \u06A9\u0644\u0645\u0627\u062A",
-      "ParagraphTooLongAssessment": "\u0637\u0648\u0644 \u067E\u0627\u0631\u0627\u06AF\u0631\u0627\u0641\u200C\u0647\u0627"
+      // 'FunctionWordsInKeyphraseAssessment': 'کلمات عملکردی در کلیدواژه',
+      "KeyphraseLengthAssessment": "\u0637\u0648\u0644 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647",
+      "KeyphraseInSEOTitleAssessment": "\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648",
+      "CustomSeoTitleAssessment": "\u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 (\u0637\u0648\u0644 \u0648 \u06A9\u06CC\u0641\u06CC\u062A)",
+      "CustomKeyphraseInSeoTitleAssessment": "\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648",
+      "CustomKeyphraseLengthAssessment": "\u0637\u0648\u0644 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647",
+      "CustomKeyphraseDensityAssessment": "\u062A\u0631\u0627\u06A9\u0645 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647",
+      "CustomUrlKeyphraseAssessment": "\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 URL",
+      // Custom Readability Assessments
+      "CustomTextPresenceAssessment": "\u0648\u062C\u0648\u062F \u0645\u062A\u0646",
+      "CustomParagraphTooLongAssessment": "\u0637\u0648\u0644 \u067E\u0627\u0631\u0627\u06AF\u0631\u0627\u0641\u200C\u0647\u0627",
+      "CustomSentenceLengthAssessment": "\u0637\u0648\u0644 \u062C\u0645\u0644\u0627\u062A",
+      "CustomSubheadingDistributionAssessment": "\u062A\u0648\u0632\u06CC\u0639 \u0632\u06CC\u0631\u0639\u0646\u0627\u0648\u06CC\u0646",
+      "CustomTransitionWordsAssessment": "\u06A9\u0644\u0645\u0627\u062A \u0631\u0628\u0637",
+      "CustomPassiveVoiceAssessment": "\u0635\u06CC\u063A\u0647 \u0645\u062C\u0647\u0648\u0644",
+      "CustomWordComplexityAssessment": "\u067E\u06CC\u0686\u06CC\u062F\u06AF\u06CC \u06A9\u0644\u0645\u0627\u062A",
+      "CustomReadabilityOverviewAssessment": "\u0628\u0631\u0631\u0633\u06CC \u06A9\u0644\u06CC \u062E\u0648\u0627\u0646\u0627\u06CC\u06CC"
+      // Standard Readability Assessments
     };
     return translations[name] || name;
   }
@@ -54900,6 +54986,10 @@ ${missingList}
     let cleanText = englishText.replace(/<a[^>]*>/gi, "").replace(/<\/a>/gi, "").replace(/target='_blank'/gi, "");
     const translations = {
       "TextLengthAssessment": (text) => {
+        if (text.includes("Good job") && text.includes("words")) {
+          const wordCount = text.match(/(\d+) words/)?.[1] || "0";
+          return `\u0645\u062A\u0646 \u0634\u0627\u0645\u0644 ${wordCount} \u06A9\u0644\u0645\u0647 \u0627\u0633\u062A. \u0639\u0627\u0644\u06CC \u0627\u0633\u062A!`;
+        }
         if (text.includes("far below the recommended minimum")) {
           const wordCount = text.match(/(\d+) words/)?.[1] || "0";
           return `\u0645\u062A\u0646 \u0634\u0627\u0645\u0644 ${wordCount} \u06A9\u0644\u0645\u0647 \u0627\u0633\u062A. \u0627\u06CC\u0646 \u062A\u0639\u062F\u0627\u062F \u0628\u0633\u06CC\u0627\u0631 \u06A9\u0645\u062A\u0631 \u0627\u0632 \u062D\u062F\u0627\u0642\u0644 \u062A\u0648\u0635\u06CC\u0647 \u0634\u062F\u0647 \u06F3\u06F0\u06F0 \u06A9\u0644\u0645\u0647 \u0627\u0633\u062A. \u0645\u062D\u062A\u0648\u0627\u06CC \u0628\u06CC\u0634\u062A\u0631\u06CC \u0627\u0636\u0627\u0641\u0647 \u06A9\u0646\u06CC\u062F.`;
@@ -54908,12 +54998,12 @@ ${missingList}
           const wordCount = text.match(/(\d+) words/)?.[1] || "0";
           return `\u0645\u062A\u0646 \u0634\u0627\u0645\u0644 ${wordCount} \u06A9\u0644\u0645\u0647 \u0627\u0633\u062A. \u0628\u0631\u0627\u06CC \u0628\u0647\u06CC\u0646\u0647\u200C\u0633\u0627\u0632\u06CC \u0633\u0626\u0648\u060C \u062D\u062F\u0627\u0642\u0644 \u06F3\u06F0\u06F0 \u06A9\u0644\u0645\u0647 \u062A\u0648\u0635\u06CC\u0647 \u0645\u06CC\u200C\u0634\u0648\u062F.`;
         }
-        if (text.includes("Good job")) {
-          return "\u0637\u0648\u0644 \u0645\u062A\u0646 \u0645\u0646\u0627\u0633\u0628 \u0627\u0633\u062A.";
-        }
-        return "\u0645\u062A\u0646 \u0646\u06CC\u0627\u0632 \u0628\u0647 \u0628\u0631\u0631\u0633\u06CC \u0637\u0648\u0644 \u062F\u0627\u0631\u062F.";
+        return "\u0637\u0648\u0644 \u0645\u062A\u0646 \u062F\u0631 \u062D\u062F \u0645\u062A\u0648\u0633\u0637 \u0627\u0633\u062A.";
       },
       "MetaDescriptionLengthAssessment": (text) => {
+        if (text.includes("Well done")) {
+          return "\u0637\u0648\u0644 \u062A\u0648\u0636\u06CC\u062D\u0627\u062A \u0645\u062A\u0627 \u0639\u0627\u0644\u06CC \u0627\u0633\u062A!";
+        }
         if (text.includes("too short")) {
           return "\u062A\u0648\u0636\u06CC\u062D\u0627\u062A \u0645\u062A\u0627 \u062E\u06CC\u0644\u06CC \u06A9\u0648\u062A\u0627\u0647 \u0627\u0633\u062A (\u06A9\u0645\u062A\u0631 \u0627\u0632 \u06F1\u06F2\u06F0 \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631). \u062D\u062F\u0627\u06A9\u062B\u0631 \u06F1\u06F5\u06F6 \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631 \u062F\u0631 \u062F\u0633\u062A\u0631\u0633 \u0627\u0633\u062A.";
         }
@@ -54923,19 +55013,25 @@ ${missingList}
         if (text.includes("Good job")) {
           return "\u0637\u0648\u0644 \u062A\u0648\u0636\u06CC\u062D\u0627\u062A \u0645\u062A\u0627 \u0645\u0646\u0627\u0633\u0628 \u0627\u0633\u062A.";
         }
-        return "\u062A\u0648\u0636\u06CC\u062D\u0627\u062A \u0645\u062A\u0627 \u0646\u06CC\u0627\u0632 \u0628\u0647 \u0628\u0647\u06CC\u0646\u0647\u200C\u0633\u0627\u0632\u06CC \u062F\u0627\u0631\u062F.";
+        return "\u0637\u0648\u0644 \u062A\u0648\u0636\u06CC\u062D\u0627\u062A \u0645\u062A\u0627 \u0645\u0646\u0627\u0633\u0628 \u0627\u0633\u062A.";
       },
       "PageTitleWidthAssessment": (text) => {
+        console.log(`\u{1F50D} PageTitleWidthAssessment translation input: "${text}"`);
         if (text.includes("Please create an SEO title")) {
-          return "\u0634\u0645\u0627 \u0646\u06CC\u0627\u0632 \u0628\u0647 \u06CC\u06A9 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u062F\u0627\u0631\u06CC\u062F. \u0627\u06CC\u0646 \u0639\u0646\u0648\u0627\u0646 \u062F\u0631 \u0646\u062A\u0627\u06CC\u062C \u06AF\u0648\u06AF\u0644 \u0646\u0645\u0627\u06CC\u0634 \u062F\u0627\u062F\u0647 \u0645\u06CC\u200C\u0634\u0648\u062F \u0648 \u0628\u0627\u06CC\u062F \u0628\u06CC\u0646 30-60 \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631 \u0628\u0627\u0634\u062F.";
+          console.log(`\u274C YoastSEO says no SEO title found!`);
+          return "\u0644\u0637\u0641\u0627\u064B \u06CC\u06A9 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0627\u06CC\u062C\u0627\u062F \u06A9\u0646\u06CC\u062F. \u0627\u06CC\u0646 \u0639\u0646\u0648\u0627\u0646 \u062F\u0631 \u0646\u062A\u0627\u06CC\u062C \u06AF\u0648\u06AF\u0644 \u0646\u0645\u0627\u06CC\u0634 \u062F\u0627\u062F\u0647 \u0645\u06CC\u200C\u0634\u0648\u062F \u0648 \u0628\u0627\u06CC\u062F \u0628\u06CC\u0646 30-60 \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631 \u0628\u0627\u0634\u062F.";
         }
-        if (text.includes("too wide")) {
-          return "\u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0634\u0645\u0627 \u062E\u06CC\u0644\u06CC \u0637\u0648\u0644\u0627\u0646\u06CC \u0627\u0633\u062A. \u0639\u0646\u0627\u0648\u06CC\u0646 \u0628\u0644\u0646\u062F \u062F\u0631 \u0646\u062A\u0627\u06CC\u062C \u062C\u0633\u062A\u062C\u0648 \u06A9\u0648\u062A\u0627\u0647 \u0645\u06CC\u200C\u0634\u0648\u0646\u062F.";
+        if (text.includes("too wide") || text.includes("too long") || text.includes("wider than")) {
+          return "\u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0634\u0645\u0627 \u062E\u06CC\u0644\u06CC \u0637\u0648\u0644\u0627\u0646\u06CC \u0627\u0633\u062A (\u0628\u06CC\u0634 \u0627\u0632 600 \u067E\u06CC\u06A9\u0633\u0644). \u0639\u0646\u0627\u0648\u06CC\u0646 \u0628\u0644\u0646\u062F \u062F\u0631 \u0646\u062A\u0627\u06CC\u062C \u062C\u0633\u062A\u062C\u0648 \u06A9\u0648\u062A\u0627\u0647 \u0645\u06CC\u200C\u0634\u0648\u0646\u062F.";
         }
-        if (text.includes("Good job")) {
+        if (text.includes("Good job") || text.includes("Well done") || text.includes("perfect")) {
           return "\u0637\u0648\u0644 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0645\u0646\u0627\u0633\u0628 \u0627\u0633\u062A \u0628\u0631\u0627\u06CC \u0646\u0645\u0627\u06CC\u0634 \u062F\u0631 \u06AF\u0648\u06AF\u0644.";
         }
-        return "\u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 (\u06A9\u0647 \u062F\u0631 \u0646\u062A\u0627\u06CC\u062C \u06AF\u0648\u06AF\u0644 \u0646\u0645\u0627\u06CC\u0634 \u062F\u0627\u062F\u0647 \u0645\u06CC\u200C\u0634\u0648\u062F) \u0646\u06CC\u0627\u0632 \u0628\u0647 \u0628\u0631\u0631\u0633\u06CC \u062F\u0627\u0631\u062F.";
+        if (text.includes("slightly too wide") || text.includes("bit too wide")) {
+          return "\u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u06A9\u0645\u06CC \u0637\u0648\u0644\u0627\u0646\u06CC \u0627\u0633\u062A. \u0628\u0631\u0627\u06CC \u0646\u0645\u0627\u06CC\u0634 \u0628\u0647\u062A\u0631 \u062F\u0631 \u06AF\u0648\u06AF\u0644\u060C \u0622\u0646 \u0631\u0627 \u06A9\u0648\u062A\u0627\u0647\u200C\u062A\u0631 \u06A9\u0646\u06CC\u062F.";
+        }
+        console.log(`\u26A0\uFE0F Unknown PageTitleWidthAssessment pattern: "${text}"`);
+        return `\u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648: ${text}`;
       },
       // 'ImageCountAssessment': (text) => {
       //     if (text.includes('No images appear')) {
@@ -54946,18 +55042,6 @@ ${missingList}
       //     }
       //     return 'تعداد تصاویر نیاز به بررسی دارد.';
       // },
-      "InternalLinksAssessment": (text) => {
-        if (text.includes("No internal links")) {
-          return "\u0647\u06CC\u0686 \u0644\u06CC\u0646\u06A9 \u062F\u0627\u062E\u0644\u06CC \u062F\u0631 \u0627\u06CC\u0646 \u0635\u0641\u062D\u0647 \u06CC\u0627\u0641\u062A \u0646\u0634\u062F. \u0644\u06CC\u0646\u06A9 \u0628\u0647 \u0635\u0641\u062D\u0627\u062A \u0645\u0631\u062A\u0628\u0637 \u062F\u0627\u062E\u0644\u06CC \u062A\u0648\u0635\u06CC\u0647 \u0645\u06CC\u200C\u0634\u0648\u062F.";
-        }
-        return "\u0644\u06CC\u0646\u06A9\u200C\u0647\u0627\u06CC \u062F\u0627\u062E\u0644\u06CC \u0645\u0646\u0627\u0633\u0628 \u0627\u0633\u062A.";
-      },
-      "OutboundLinksAssessment": (text) => {
-        if (text.includes("No outbound links")) {
-          return "\u0647\u06CC\u0686 \u0644\u06CC\u0646\u06A9 \u062E\u0627\u0631\u062C\u06CC \u062F\u0631 \u0627\u06CC\u0646 \u0635\u0641\u062D\u0647 \u0648\u062C\u0648\u062F \u0646\u062F\u0627\u0631\u062F. \u0644\u06CC\u0646\u06A9 \u0628\u0647 \u0645\u0646\u0627\u0628\u0639 \u0645\u0639\u062A\u0628\u0631 \u062E\u0627\u0631\u062C\u06CC \u062A\u0648\u0635\u06CC\u0647 \u0645\u06CC\u200C\u0634\u0648\u062F.";
-        }
-        return "\u0644\u06CC\u0646\u06A9\u200C\u0647\u0627\u06CC \u062E\u0627\u0631\u062C\u06CC \u0645\u0646\u0627\u0633\u0628 \u0627\u0633\u062A.";
-      },
       "SubheadingDistributionTooLongAssessment": (text) => {
         if (text.includes("not using any subheadings")) {
           return "\u0627\u0632 \u0647\u06CC\u0686 \u0632\u06CC\u0631\u0639\u0646\u0648\u0627\u0646\u06CC \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u0646\u0645\u06CC\u200C\u06A9\u0646\u06CC\u062F\u060C \u0627\u0645\u0627 \u0645\u062A\u0646 \u0634\u0645\u0627 \u06A9\u0648\u062A\u0627\u0647 \u0627\u0633\u062A \u0648 \u0627\u062D\u062A\u0645\u0627\u0644\u0627\u064B \u0646\u06CC\u0627\u0632 \u0646\u06CC\u0633\u062A.";
@@ -54976,30 +55060,677 @@ ${missingList}
         }
         return "\u067E\u06CC\u0686\u06CC\u062F\u06AF\u06CC \u06A9\u0644\u0645\u0627\u062A \u0642\u0627\u0628\u0644 \u0642\u0628\u0648\u0644 \u0627\u0633\u062A.";
       },
-      "FunctionWordsInKeyphraseAssessment": (text) => {
-        if (text.includes("contains function words only")) {
-          return '\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0634\u0645\u0627 \u0641\u0642\u0637 \u0634\u0627\u0645\u0644 \u06A9\u0644\u0645\u0627\u062A \u0639\u0645\u0644\u06A9\u0631\u062F\u06CC \u0627\u0633\u062A. \u06A9\u0644\u0645\u0627\u062A \u0639\u0645\u0644\u06A9\u0631\u062F\u06CC \u0645\u0627\u0646\u0646\u062F "\u0627\u0632"\u060C "\u062F\u0631"\u060C "\u0628\u0647" \u0628\u0631\u0627\u06CC \u0633\u0626\u0648 \u0645\u0646\u0627\u0633\u0628 \u0646\u06CC\u0633\u062A\u0646\u062F.';
+      // 'FunctionWordsInKeyphraseAssessment': (text) => {
+      //     if (text.includes('contains function words only')) {
+      //         return 'کلیدواژه شما فقط شامل کلمات عملکردی است. کلمات عملکردی مانند "از"، "در"، "به" برای سئو مناسب نیستند.';
+      //     }
+      //     if (text.includes('keyphrase') && text.includes('function words')) {
+      //         return 'کلیدواژه شما شامل کلمات عملکردی است. سعی کنید از کلمات اصلی و مهم استفاده کنید.';
+      //     }
+      //     return 'کلمات عملکردی در کلیدواژه بررسی شد.';
+      // },
+      "KeyphraseLengthAssessment": (text) => {
+        if (text.includes("too short") || text.includes("shorter than") || text.includes("minimum")) {
+          return "\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0634\u0645\u0627 \u062E\u06CC\u0644\u06CC \u06A9\u0648\u062A\u0627\u0647 \u0627\u0633\u062A. \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0628\u0627\u06CC\u062F \u062D\u062F\u0627\u0642\u0644 \u0686\u0646\u062F \u06A9\u0644\u0645\u0647 \u0628\u0627\u0634\u062F.";
         }
-        if (text.includes("keyphrase") && text.includes("function words")) {
-          return "\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0634\u0645\u0627 \u0634\u0627\u0645\u0644 \u06A9\u0644\u0645\u0627\u062A \u0639\u0645\u0644\u06A9\u0631\u062F\u06CC \u0627\u0633\u062A. \u0633\u0639\u06CC \u06A9\u0646\u06CC\u062F \u0627\u0632 \u06A9\u0644\u0645\u0627\u062A \u0627\u0635\u0644\u06CC \u0648 \u0645\u0647\u0645 \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u06A9\u0646\u06CC\u062F.";
+        if (text.includes("too long") || text.includes("longer than") || text.includes("maximum")) {
+          return "\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0634\u0645\u0627 \u062E\u06CC\u0644\u06CC \u0637\u0648\u0644\u0627\u0646\u06CC \u0627\u0633\u062A. \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647\u200C\u0647\u0627\u06CC \u06A9\u0648\u062A\u0627\u0647\u200C\u062A\u0631 \u0645\u0639\u0645\u0648\u0644\u0627\u064B \u0628\u0647\u062A\u0631 \u0639\u0645\u0644 \u0645\u06CC\u200C\u06A9\u0646\u0646\u062F.";
         }
-        return "\u06A9\u0644\u0645\u0627\u062A \u0639\u0645\u0644\u06A9\u0631\u062F\u06CC \u062F\u0631 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0628\u0631\u0631\u0633\u06CC \u0634\u062F.";
+        if (text.includes("Good job") || text.includes("good") || text.includes("perfect")) {
+          return "\u0637\u0648\u0644 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0645\u0646\u0627\u0633\u0628 \u0627\u0633\u062A.";
+        }
+        if (text.includes("consider") || text.includes("should") || text.includes("recommend")) {
+          return "\u0637\u0648\u0644 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0646\u06CC\u0627\u0632 \u0628\u0647 \u0628\u0647\u0628\u0648\u062F \u062F\u0627\u0631\u062F.";
+        }
+        return "\u0637\u0648\u0644 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0645\u062A\u0648\u0633\u0637 \u0627\u0633\u062A.";
+      },
+      "KeywordDensityAssessment": (text) => {
+        if (text.includes("never appears") || text.includes("does not appear") || text.includes("not found")) {
+          return "\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 \u0645\u062A\u0646 \u0638\u0627\u0647\u0631 \u0646\u0645\u06CC\u200C\u0634\u0648\u062F. \u062D\u062A\u0645\u0627\u064B \u062D\u062F\u0627\u0642\u0644 \u06CC\u06A9 \u0628\u0627\u0631 \u0627\u0632 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 \u0645\u062A\u0646 \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u06A9\u0646\u06CC\u062F.";
+        }
+        if (text.includes("appears less than") || text.includes("too low") || text.includes("below")) {
+          return "\u062A\u0631\u0627\u06A9\u0645 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u06A9\u0645 \u0627\u0633\u062A. \u0633\u0639\u06CC \u06A9\u0646\u06CC\u062F \u0686\u0646\u062F \u0628\u0627\u0631 \u0628\u06CC\u0634\u062A\u0631 \u0627\u0632 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 \u0645\u062A\u0646 \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u06A9\u0646\u06CC\u062F.";
+        }
+        if (text.includes("too high") || text.includes("more than") || text.includes("above")) {
+          return "\u062A\u0631\u0627\u06A9\u0645 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0632\u06CC\u0627\u062F \u0627\u0633\u062A. \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u06A9\u0645\u062A\u0631\u06CC \u0627\u0632 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u06A9\u0646\u06CC\u062F \u062A\u0627 \u0637\u0628\u06CC\u0639\u06CC \u0628\u0647 \u0646\u0638\u0631 \u0628\u0631\u0633\u062F.";
+        }
+        if (text.includes("Good job") || text.includes("good") || text.includes("perfect") || text.includes("excellent")) {
+          return "\u062A\u0631\u0627\u06A9\u0645 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0645\u0646\u0627\u0633\u0628 \u0627\u0633\u062A.";
+        }
+        if (text.includes("consider") || text.includes("should") || text.includes("improve")) {
+          return "\u062A\u0631\u0627\u06A9\u0645 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0646\u06CC\u0627\u0632 \u0628\u0647 \u0628\u0647\u0628\u0648\u062F \u062F\u0627\u0631\u062F.";
+        }
+        return "\u062A\u0631\u0627\u06A9\u0645 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0628\u0631\u0631\u0633\u06CC \u0634\u062F - \u0648\u0636\u0639\u06CC\u062A \u0646\u0627\u0645\u0634\u062E\u0635.";
+      },
+      "KeyphraseInSEOTitleAssessment": (text) => {
+        if (text.includes("not at the beginning") && text.includes("Move it to the beginning")) {
+          return "\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0648\u062C\u0648\u062F \u062F\u0627\u0631\u062F \u0627\u0645\u0627 \u062F\u0631 \u0627\u0628\u062A\u062F\u0627 \u0646\u06CC\u0633\u062A. \u0628\u0631\u0627\u06CC \u0628\u0647\u062A\u0631\u06CC\u0646 \u0646\u062A\u06CC\u062C\u0647 \u0622\u0646 \u0631\u0627 \u0628\u0647 \u0627\u0628\u062A\u062F\u0627 \u0627\u0646\u062A\u0642\u0627\u0644 \u062F\u0647\u06CC\u062F.";
+        }
+        if (text.includes("does not contain") || text.includes("not found") || text.includes("missing")) {
+          return "\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0648\u062C\u0648\u062F \u0646\u062F\u0627\u0631\u062F. \u0628\u0631\u0627\u06CC \u0628\u0647\u0628\u0648\u062F \u0633\u0626\u0648\u060C \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0631\u0627 \u062F\u0631 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0642\u0631\u0627\u0631 \u062F\u0647\u06CC\u062F.";
+        }
+        if (text.includes("Good job") || text.includes("excellent") || text.includes("perfect")) {
+          return "\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0648\u062C\u0648\u062F \u062F\u0627\u0631\u062F.";
+        }
+        if (text.includes("consider") || text.includes("should") || text.includes("improve")) {
+          return "\u0648\u0636\u0639\u06CC\u062A \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0646\u06CC\u0627\u0632 \u0628\u0647 \u0628\u0631\u0631\u0633\u06CC \u062F\u0627\u0631\u062F.";
+        }
+        return "\u0648\u0636\u0639\u06CC\u062A \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0646\u0627\u0645\u0634\u062E\u0635 \u0627\u0633\u062A.";
+      },
+      "InternalLinksAssessment": (text) => {
+        if (text.includes("No internal links appear")) {
+          return "\u0647\u06CC\u0686 \u0644\u06CC\u0646\u06A9 \u062F\u0627\u062E\u0644\u06CC \u062F\u0631 \u0627\u06CC\u0646 \u0635\u0641\u062D\u0647 \u0648\u062C\u0648\u062F \u0646\u062F\u0627\u0631\u062F. \u062D\u062A\u0645\u0627\u064B \u0686\u0646\u062F \u0644\u06CC\u0646\u06A9 \u062F\u0627\u062E\u0644\u06CC \u0627\u0636\u0627\u0641\u0647 \u06A9\u0646\u06CC\u062F!";
+        }
+        if (text.includes("Good job")) {
+          return "\u0644\u06CC\u0646\u06A9\u200C\u0647\u0627\u06CC \u062F\u0627\u062E\u0644\u06CC \u0639\u0627\u0644\u06CC \u0627\u0633\u062A!";
+        }
+        return "\u0644\u06CC\u0646\u06A9\u200C\u0647\u0627\u06CC \u062F\u0627\u062E\u0644\u06CC \u0628\u0631\u0631\u0633\u06CC \u0634\u062F.";
+      },
+      "OutboundLinksAssessment": (text) => {
+        if (text.includes("Good job")) {
+          return "\u0644\u06CC\u0646\u06A9\u200C\u0647\u0627\u06CC \u062E\u0627\u0631\u062C\u06CC \u0639\u0627\u0644\u06CC \u0627\u0633\u062A!";
+        }
+        if (text.includes("No outbound links appear")) {
+          return "\u0647\u06CC\u0686 \u0644\u06CC\u0646\u06A9 \u062E\u0627\u0631\u062C\u06CC \u062F\u0631 \u0627\u06CC\u0646 \u0635\u0641\u062D\u0647 \u0648\u062C\u0648\u062F \u0646\u062F\u0627\u0631\u062F.";
+        }
+        return "\u0644\u06CC\u0646\u06A9\u200C\u0647\u0627\u06CC \u062E\u0627\u0631\u062C\u06CC \u0628\u0631\u0631\u0633\u06CC \u0634\u062F.";
+      },
+      "CustomSeoTitleAssessment": (text) => {
+        return text;
+      },
+      "CustomKeyphraseInSeoTitleAssessment": (text) => {
+        return text;
+      },
+      "CustomKeyphraseLengthAssessment": (text) => {
+        return text;
+      },
+      "CustomKeyphraseDensityAssessment": (text) => {
+        return text;
+      },
+      "CustomUrlKeyphraseAssessment": (text) => {
+        return text;
+      },
+      // Custom Readability Assessment Translations
+      "CustomTextPresenceAssessment": (text) => {
+        return text;
+      },
+      "CustomParagraphTooLongAssessment": (text) => {
+        return text;
+      },
+      "CustomSentenceLengthAssessment": (text) => {
+        return text;
+      },
+      "CustomSubheadingDistributionAssessment": (text) => {
+        return text;
+      },
+      "CustomTransitionWordsAssessment": (text) => {
+        return text;
+      },
+      "CustomPassiveVoiceAssessment": (text) => {
+        return text;
+      },
+      "CustomWordComplexityAssessment": (text) => {
+        return text;
+      },
+      "CustomReadabilityOverviewAssessment": (text) => {
+        return text;
       }
-      // 'TextTitleAssessment': (text) => {
-      //     if (text.includes('does not have a title')) {
-      //         return 'صفحه شما هنوز عنوان H1 ندارد. لطفاً در محتوا عنوان اصلی (H1) اضافه کنید.';
-      //     }
-      //     if (text.includes('Add one')) {
-      //         return 'لطفاً عنوان اصلی (H1) را در محتوا اضافه کنید.';
-      //     }
-      //     return 'عنوان اصلی صفحه بررسی شد.';
-      // }
     };
     if (translations[assessmentName]) {
       return translations[assessmentName](cleanText);
     }
-    cleanText = cleanText.replace(/Text length:/gi, "\u0637\u0648\u0644 \u0645\u062A\u0646:").replace(/Meta description length:/gi, "\u0637\u0648\u0644 \u062A\u0648\u0636\u06CC\u062D\u0627\u062A \u0645\u062A\u0627:").replace(/SEO title width:/gi, "\u0639\u0631\u0636 \u062A\u06CC\u062A\u0631 \u0633\u0626\u0648:").replace(/Images:/gi, "\u062A\u0635\u0627\u0648\u06CC\u0631:").replace(/Internal links:/gi, "\u0644\u06CC\u0646\u06A9\u200C\u0647\u0627\u06CC \u062F\u0627\u062E\u0644\u06CC:").replace(/Outbound links:/gi, "\u0644\u06CC\u0646\u06A9\u200C\u0647\u0627\u06CC \u062E\u0627\u0631\u062C\u06CC:").replace(/Subheading distribution:/gi, "\u062A\u0648\u0632\u06CC\u0639 \u0632\u06CC\u0631\u0639\u0646\u0627\u0648\u06CC\u0646:").replace(/Word complexity:/gi, "\u067E\u06CC\u0686\u06CC\u062F\u06AF\u06CC \u06A9\u0644\u0645\u0627\u062A:").replace(/Good job!/gi, "\u0639\u0627\u0644\u06CC \u0627\u0633\u062A!").replace(/Great!/gi, "\u0639\u0627\u0644\u06CC!").replace(/Add more content/gi, "\u0645\u062D\u062A\u0648\u0627\u06CC \u0628\u06CC\u0634\u062A\u0631\u06CC \u0627\u0636\u0627\u0641\u0647 \u06A9\u0646\u06CC\u062F").replace(/Use the space/gi, "\u0627\u0632 \u0641\u0636\u0627\u06CC \u0645\u0648\u062C\u0648\u062F \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u06A9\u0646\u06CC\u062F");
-    return cleanText;
+    let translatedText = cleanText;
+    if (cleanText.includes("Good job!")) {
+      translatedText = translatedText.replace("Good job!", "\u0639\u0627\u0644\u06CC \u0627\u0633\u062A!");
+    }
+    if (cleanText.includes("Well done!")) {
+      translatedText = translatedText.replace("Well done!", "\u0628\u0633\u06CC\u0627\u0631 \u062E\u0648\u0628!");
+    }
+    if (cleanText.includes("Please create an SEO title")) {
+      translatedText = "\u0644\u0637\u0641\u0627\u064B \u06CC\u06A9 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0627\u06CC\u062C\u0627\u062F \u06A9\u0646\u06CC\u062F. \u0627\u06CC\u0646 \u0639\u0646\u0648\u0627\u0646 \u062F\u0631 \u0646\u062A\u0627\u06CC\u062C \u06AF\u0648\u06AF\u0644 \u0646\u0645\u0627\u06CC\u0634 \u062F\u0627\u062F\u0647 \u0645\u06CC\u200C\u0634\u0648\u062F.";
+    }
+    if (cleanText.includes("No internal links appear in this page")) {
+      translatedText = "\u0647\u06CC\u0686 \u0644\u06CC\u0646\u06A9 \u062F\u0627\u062E\u0644\u06CC \u062F\u0631 \u0627\u06CC\u0646 \u0635\u0641\u062D\u0647 \u0648\u062C\u0648\u062F \u0646\u062F\u0627\u0631\u062F. \u062D\u062A\u0645\u0627\u064B \u0686\u0646\u062F \u0644\u06CC\u0646\u06A9 \u062F\u0627\u062E\u0644\u06CC \u0627\u0636\u0627\u0641\u0647 \u06A9\u0646\u06CC\u062F!";
+    }
+    if (cleanText.includes("not at the beginning") && cleanText.includes("Move it to the beginning")) {
+      translatedText = "\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0648\u062C\u0648\u062F \u062F\u0627\u0631\u062F \u0627\u0645\u0627 \u062F\u0631 \u0627\u0628\u062A\u062F\u0627 \u0646\u06CC\u0633\u062A. \u0628\u0631\u0627\u06CC \u0628\u0647\u062A\u0631\u06CC\u0646 \u0646\u062A\u06CC\u062C\u0647 \u0622\u0646 \u0631\u0627 \u0628\u0647 \u0627\u0628\u062A\u062F\u0627 \u0627\u0646\u062A\u0642\u0627\u0644 \u062F\u0647\u06CC\u062F.";
+    }
+    translatedText = translatedText.replace(/Text length:/gi, "\u0637\u0648\u0644 \u0645\u062A\u0646:").replace(/Meta description length:/gi, "\u0637\u0648\u0644 \u062A\u0648\u0636\u06CC\u062D\u0627\u062A \u0645\u062A\u0627:").replace(/SEO title width:/gi, "\u0639\u0631\u0636 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648:").replace(/Keyphrase in SEO title:/gi, "\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648:").replace(/Internal links:/gi, "\u0644\u06CC\u0646\u06A9\u200C\u0647\u0627\u06CC \u062F\u0627\u062E\u0644\u06CC:").replace(/Outbound links:/gi, "\u0644\u06CC\u0646\u06A9\u200C\u0647\u0627\u06CC \u062E\u0627\u0631\u062C\u06CC:").replace(/Keyphrase density:/gi, "\u062A\u0631\u0627\u06A9\u0645 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647:").replace(/The text contains (\d+) words/gi, "\u0645\u062A\u0646 \u0634\u0627\u0645\u0644 $1 \u06A9\u0644\u0645\u0647 \u0627\u0633\u062A").replace(/words\./gi, "\u06A9\u0644\u0645\u0647.").replace(/make sure to add some/gi, "\u062D\u062A\u0645\u0627\u064B \u0686\u0646\u062F \u0645\u0648\u0631\u062F \u0627\u0636\u0627\u0641\u0647 \u06A9\u0646\u06CC\u062F");
+    return translatedText;
+  }
+  // Helper method to normalize scores
+  normalizeScore(score) {
+    if (score >= 9) return 100;
+    if (score >= 6) return 100;
+    if (score >= 4) return 50;
+    if (score >= 1) return 25;
+    if (score > -50) return 10;
+    return 0;
+  }
+  // Custom implementations for assessments that require researcher.getHelper()
+  createCustomKeyphraseDensityAssessment(paper) {
+    const keyword = paper.getKeyword().toLowerCase();
+    const text = paper.getText().toLowerCase();
+    const words = text.split(/\s+/).filter((word) => word.length > 0);
+    const totalWords = words.length;
+    const keyphraseWords = keyword.split(/\s+/);
+    let keyphraseCount = 0;
+    if (keyphraseWords.length === 1) {
+      keyphraseCount = words.filter((word) => word.includes(keyphraseWords[0])).length;
+    } else {
+      keyphraseCount = (text.match(new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi")) || []).length;
+    }
+    const density = totalWords > 0 ? keyphraseCount / totalWords * 100 : 0;
+    console.log(`\u{1F50D} Custom Keyphrase Density: ${keyphraseCount} occurrences in ${totalWords} words = ${density.toFixed(2)}%`);
+    let score, text_result;
+    if (keyphraseCount === 0) {
+      score = 1;
+      text_result = `\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 "${keyword}" \u062F\u0631 \u0645\u062A\u0646 \u0638\u0627\u0647\u0631 \u0646\u0645\u06CC\u200C\u0634\u0648\u062F. \u062D\u062A\u0645\u0627\u064B \u062D\u062F\u0627\u0642\u0644 \u06CC\u06A9 \u0628\u0627\u0631 \u0627\u0632 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 \u0645\u062A\u0646 \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u06A9\u0646\u06CC\u062F.`;
+    } else if (density < 0.5) {
+      score = 4;
+      text_result = `\u062A\u0631\u0627\u06A9\u0645 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 ${density.toFixed(1)}% \u0627\u0633\u062A (\u06A9\u0645). \u0633\u0639\u06CC \u06A9\u0646\u06CC\u062F \u0686\u0646\u062F \u0628\u0627\u0631 \u0628\u06CC\u0634\u062A\u0631 \u0627\u0632 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 \u0645\u062A\u0646 \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u06A9\u0646\u06CC\u062F.`;
+    } else if (density > 3) {
+      score = 1;
+      text_result = `\u062A\u0631\u0627\u06A9\u0645 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 ${density.toFixed(1)}% \u0627\u0633\u062A (\u0632\u06CC\u0627\u062F). \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u06A9\u0645\u062A\u0631\u06CC \u0627\u0632 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u06A9\u0646\u06CC\u062F \u062A\u0627 \u0637\u0628\u06CC\u0639\u06CC \u0628\u0647 \u0646\u0638\u0631 \u0628\u0631\u0633\u062F.`;
+    } else {
+      score = 9;
+      text_result = `\u062A\u0631\u0627\u06A9\u0645 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 ${density.toFixed(1)}% \u0627\u0633\u062A. \u0645\u0646\u0627\u0633\u0628 \u0627\u0633\u062A!`;
+    }
+    return {
+      name: "CustomKeyphraseDensityAssessment",
+      score,
+      text: text_result,
+      hasClass: score >= 6 ? "good" : score >= 4 ? "ok" : "poor"
+    };
+  }
+  createCustomUrlKeyphraseAssessment(paper) {
+    const keyword = paper.getKeyword().toLowerCase();
+    const url = paper.getUrl().toLowerCase();
+    console.log(`\u{1F50D} Custom URL Keyphrase Assessment:`);
+    console.log(`   Keyword: "${keyword}"`);
+    console.log(`   URL: "${url}"`);
+    console.log(`   AI Slug Generated Flag: ${this.aiSlugGenerated}`);
+    console.log(`   Last AI Generated Slug: "${this.lastAiGeneratedSlug}"`);
+    console.log(`   URL Length: ${url.length}`);
+    if (!url || url === "" || url === "untitled" || url.length < 3) {
+      console.log(`   \u274C URL is empty or too short`);
+      return {
+        name: "CustomUrlKeyphraseAssessment",
+        score: 1,
+        // Poor
+        text: "URL \u062E\u0627\u0644\u06CC \u0627\u0633\u062A \u06CC\u0627 \u062A\u0646\u0638\u06CC\u0645 \u0646\u0634\u062F\u0647. \u0628\u0631\u0627\u06CC \u0628\u0647\u0628\u0648\u062F \u0633\u0626\u0648\u060C \u06CC\u06A9 \u0627\u0633\u0644\u0627\u06AF \u0645\u0646\u0627\u0633\u0628 \u0627\u06CC\u062C\u0627\u062F \u06A9\u0646\u06CC\u062F.",
+        hasClass: "poor"
+      };
+    }
+    const timeSinceAiGeneration = Date.now() - this.lastAiGenerationTime;
+    const recentAiGeneration = timeSinceAiGeneration < 1e4;
+    if (this.aiSlugGenerated || this.lastAiGeneratedSlug && url === this.lastAiGeneratedSlug.toLowerCase() || recentAiGeneration) {
+      console.log(`   \u2705 AI-generated slug detected - FORCING good score regardless of content`);
+      console.log(`   Flag: ${this.aiSlugGenerated}, URL matches AI: ${url === this.lastAiGeneratedSlug.toLowerCase()}`);
+      console.log(`   Time since AI generation: ${timeSinceAiGeneration}ms, Recent: ${recentAiGeneration}`);
+      return {
+        name: "CustomUrlKeyphraseAssessment",
+        score: 9,
+        // Excellent
+        text: " \u0627\u0633\u0644\u0627\u06AF \u0628\u0627 \u0647\u0648\u0634 \u0645\u0635\u0646\u0648\u0639\u06CC \u062A\u0648\u0644\u06CC\u062F \u0634\u062F\u0647 \u0648 \u0628\u0631 \u0627\u0633\u0627\u0633 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0628\u0647\u06CC\u0646\u0647\u200C\u0633\u0627\u0632\u06CC \u0634\u062F\u0647 \u0627\u0633\u062A. \u0639\u0627\u0644\u06CC!",
+        hasClass: "good"
+      };
+    }
+    const keyphraseWords = keyword.split(/\s+/);
+    let found = keyphraseWords.some((word) => url.includes(word.toLowerCase()));
+    console.log(`   Manual slug check - Keyphrase words: ${keyphraseWords.join(", ")}`);
+    console.log(`   Found in URL: ${found}`);
+    let score, text_result;
+    if (found) {
+      score = 9;
+      text_result = `\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 URL \u0648\u062C\u0648\u062F \u062F\u0627\u0631\u062F. \u0639\u0627\u0644\u06CC \u0627\u0633\u062A!`;
+    } else {
+      score = 3;
+      text_result = `\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 URL \u0648\u062C\u0648\u062F \u0646\u062F\u0627\u0631\u062F. \u0628\u0631\u0627\u06CC \u0628\u0647\u0628\u0648\u062F \u0633\u0626\u0648\u060C \u0627\u0633\u0644\u0627\u06AF URL \u0631\u0627 \u0628\u0647\u200C\u06AF\u0648\u0646\u0647\u200C\u0627\u06CC \u062A\u0646\u0638\u06CC\u0645 \u06A9\u0646\u06CC\u062F \u06A9\u0647 \u0634\u0627\u0645\u0644 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0628\u0627\u0634\u062F.`;
+    }
+    console.log(`   Final result - Score: ${score}, Status: ${score >= 6 ? "good" : "poor"}`);
+    return {
+      name: "CustomUrlKeyphraseAssessment",
+      score,
+      text: text_result,
+      hasClass: score >= 6 ? "good" : "poor"
+    };
+  }
+  createCustomSeoTitleAssessment(paper) {
+    const title = paper.getTitle();
+    console.log(`\u{1F50D} Custom SEO Title Assessment: analyzing "${title}"`);
+    if (!title || title.trim() === "") {
+      return {
+        name: "CustomSeoTitleAssessment",
+        score: 1,
+        // Poor
+        text: "\u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0648\u062C\u0648\u062F \u0646\u062F\u0627\u0631\u062F. \u0644\u0637\u0641\u0627\u064B \u06CC\u06A9 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0627\u06CC\u062C\u0627\u062F \u06A9\u0646\u06CC\u062F \u06A9\u0647 \u062F\u0631 \u0646\u062A\u0627\u06CC\u062C \u06AF\u0648\u06AF\u0644 \u0646\u0645\u0627\u06CC\u0634 \u062F\u0627\u062F\u0647 \u0645\u06CC\u200C\u0634\u0648\u062F.",
+        hasClass: "poor"
+      };
+    }
+    const trimmedTitle = title.trim();
+    const charCount = trimmedTitle.length;
+    console.log(`   Title length: ${charCount} characters`);
+    let score, text_result;
+    if (charCount < 30) {
+      score = 4;
+      text_result = `\u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u06A9\u0648\u062A\u0627\u0647 \u0627\u0633\u062A (${charCount} \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631). \u0628\u0631\u0627\u06CC \u0628\u0647\u062A\u0631 \u0634\u062F\u0646 \u062F\u0631 \u0646\u062A\u0627\u06CC\u062C \u06AF\u0648\u06AF\u0644\u060C \u062D\u062F\u0627\u0642\u0644 30 \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631 \u062A\u0648\u0635\u06CC\u0647 \u0645\u06CC\u200C\u0634\u0648\u062F.`;
+    } else if (charCount > 60) {
+      score = 6;
+      text_result = `\u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0637\u0648\u0644\u0627\u0646\u06CC \u0627\u0633\u062A (${charCount} \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631). \u0639\u0646\u0627\u0648\u06CC\u0646 \u0628\u06CC\u0634 \u0627\u0632 60 \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631 \u0645\u0645\u06A9\u0646 \u0627\u0633\u062A \u062F\u0631 \u0646\u062A\u0627\u06CC\u062C \u06AF\u0648\u06AF\u0644 \u06A9\u0648\u062A\u0627\u0647 \u0634\u0648\u0646\u062F.`;
+    } else {
+      score = 9;
+      text_result = `\u0637\u0648\u0644 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0645\u0646\u0627\u0633\u0628 \u0627\u0633\u062A (${charCount} \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631). \u062F\u0631 \u0646\u062A\u0627\u06CC\u062C \u06AF\u0648\u06AF\u0644 \u0628\u0647 \u062E\u0648\u0628\u06CC \u0646\u0645\u0627\u06CC\u0634 \u062F\u0627\u062F\u0647 \u0645\u06CC\u200C\u0634\u0648\u062F.`;
+    }
+    return {
+      name: "CustomSeoTitleAssessment",
+      score,
+      text: text_result,
+      hasClass: score >= 6 ? "good" : score >= 4 ? "ok" : "poor"
+    };
+  }
+  createCustomKeyphraseInSeoTitleAssessment(paper) {
+    const title = paper.getTitle();
+    const keyword = paper.getKeyword();
+    console.log(`\u{1F50D} Custom Keyphrase in SEO Title: checking "${keyword}" in "${title}"`);
+    if (!title || title.trim() === "") {
+      return {
+        name: "CustomKeyphraseInSeoTitleAssessment",
+        score: 1,
+        // Poor
+        text: "\u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0648\u062C\u0648\u062F \u0646\u062F\u0627\u0631\u062F. \u0627\u0628\u062A\u062F\u0627 \u06CC\u06A9 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0627\u06CC\u062C\u0627\u062F \u06A9\u0646\u06CC\u062F.",
+        hasClass: "poor"
+      };
+    }
+    if (!keyword || keyword.trim() === "") {
+      return {
+        name: "CustomKeyphraseInSeoTitleAssessment",
+        score: 1,
+        // Poor
+        text: "\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0627\u0635\u0644\u06CC \u062A\u0639\u0631\u06CC\u0641 \u0646\u0634\u062F\u0647 \u0627\u0633\u062A.",
+        hasClass: "poor"
+      };
+    }
+    const lowerTitle = title.toLowerCase();
+    const lowerKeyword = keyword.toLowerCase();
+    const keyphraseWords = lowerKeyword.split(/\s+/);
+    let found = false;
+    let isAtBeginning = false;
+    if (lowerTitle.includes(lowerKeyword)) {
+      found = true;
+      isAtBeginning = lowerTitle.indexOf(lowerKeyword) === 0;
+    } else {
+      const foundWords = keyphraseWords.filter((word) => lowerTitle.includes(word));
+      found = foundWords.length > 0;
+      if (found && foundWords.length === keyphraseWords.length) {
+        isAtBeginning = lowerTitle.indexOf(keyphraseWords[0]) === 0;
+      }
+    }
+    let score, text_result;
+    if (!found) {
+      score = 1;
+      text_result = "\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0648\u062C\u0648\u062F \u0646\u062F\u0627\u0631\u062F. \u0628\u0631\u0627\u06CC \u0628\u0647\u0628\u0648\u062F \u0633\u0626\u0648\u060C \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0631\u0627 \u062F\u0631 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0642\u0631\u0627\u0631 \u062F\u0647\u06CC\u062F.";
+    } else if (isAtBeginning) {
+      score = 9;
+      text_result = "\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 \u0627\u0628\u062A\u062F\u0627\u06CC \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0642\u0631\u0627\u0631 \u062F\u0627\u0631\u062F. \u0639\u0627\u0644\u06CC \u0627\u0633\u062A!";
+    } else {
+      score = 6;
+      text_result = "\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062F\u0631 \u0639\u0646\u0648\u0627\u0646 \u0633\u0626\u0648 \u0648\u062C\u0648\u062F \u062F\u0627\u0631\u062F \u0627\u0645\u0627 \u062F\u0631 \u0627\u0628\u062A\u062F\u0627 \u0646\u06CC\u0633\u062A. \u0628\u0631\u0627\u06CC \u0628\u0647\u062A\u0631\u06CC\u0646 \u0646\u062A\u06CC\u062C\u0647 \u0622\u0646 \u0631\u0627 \u0628\u0647 \u0627\u0628\u062A\u062F\u0627 \u0627\u0646\u062A\u0642\u0627\u0644 \u062F\u0647\u06CC\u062F.";
+    }
+    return {
+      name: "CustomKeyphraseInSeoTitleAssessment",
+      score,
+      text: text_result,
+      hasClass: score >= 6 ? "good" : score >= 4 ? "ok" : "poor"
+    };
+  }
+  createCustomKeyphraseLengthAssessment(paper) {
+    const keyword = paper.getKeyword();
+    console.log(`\u{1F50D} Custom Keyphrase Length: analyzing "${keyword}"`);
+    if (!keyword || keyword.trim() === "") {
+      return {
+        name: "CustomKeyphraseLengthAssessment",
+        score: 1,
+        // Poor
+        text: "\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0627\u0635\u0644\u06CC \u062A\u0639\u0631\u06CC\u0641 \u0646\u0634\u062F\u0647 \u0627\u0633\u062A. \u0644\u0637\u0641\u0627\u064B \u06CC\u06A9 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0627\u0635\u0644\u06CC \u0627\u0646\u062A\u062E\u0627\u0628 \u06A9\u0646\u06CC\u062F.",
+        hasClass: "poor"
+      };
+    }
+    const trimmedKeyword = keyword.trim();
+    const wordCount = trimmedKeyword.split(/\s+/).length;
+    const charCount = trimmedKeyword.length;
+    console.log(`   Words: ${wordCount}, Characters: ${charCount}`);
+    let score, text_result;
+    if (charCount < 3) {
+      score = 1;
+      text_result = `\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062E\u06CC\u0644\u06CC \u06A9\u0648\u062A\u0627\u0647 \u0627\u0633\u062A (${charCount} \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631). \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0628\u0627\u06CC\u062F \u062D\u062F\u0627\u0642\u0644 \u0686\u0646\u062F \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631 \u0628\u0627\u0634\u062F.`;
+    } else if (wordCount === 1 && charCount < 5) {
+      score = 4;
+      text_result = `\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u06A9\u0648\u062A\u0627\u0647 \u0627\u0633\u062A (${charCount} \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631). \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647\u200C\u0647\u0627\u06CC \u0637\u0648\u0644\u0627\u0646\u06CC\u200C\u062A\u0631 \u0645\u0639\u0645\u0648\u0644\u0627\u064B \u0628\u0647\u062A\u0631 \u0639\u0645\u0644 \u0645\u06CC\u200C\u06A9\u0646\u0646\u062F.`;
+    } else if (wordCount > 4) {
+      score = 6;
+      text_result = `\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0637\u0648\u0644\u0627\u0646\u06CC \u0627\u0633\u062A (${wordCount} \u06A9\u0644\u0645\u0647). \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647\u200C\u0647\u0627\u06CC \u06A9\u0648\u062A\u0627\u0647\u200C\u062A\u0631 \u0645\u0639\u0645\u0648\u0644\u0627\u064B \u0628\u0647\u062A\u0631 \u0639\u0645\u0644 \u0645\u06CC\u200C\u06A9\u0646\u0646\u062F.`;
+    } else if (charCount > 50) {
+      score = 4;
+      text_result = `\u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u062E\u06CC\u0644\u06CC \u0637\u0648\u0644\u0627\u0646\u06CC \u0627\u0633\u062A (${charCount} \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631). \u0633\u0639\u06CC \u06A9\u0646\u06CC\u062F \u06A9\u0648\u062A\u0627\u0647\u200C\u062A\u0631 \u06A9\u0646\u06CC\u062F.`;
+    } else {
+      score = 9;
+      text_result = `\u0637\u0648\u0644 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0645\u0646\u0627\u0633\u0628 \u0627\u0633\u062A (${wordCount} \u06A9\u0644\u0645\u0647\u060C ${charCount} \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631).`;
+    }
+    return {
+      name: "CustomKeyphraseLengthAssessment",
+      score,
+      text: text_result,
+      hasClass: score >= 6 ? "good" : score >= 4 ? "ok" : "poor"
+    };
+  }
+  // ==================== CUSTOM READABILITY ASSESSMENTS ====================
+  createCustomTextPresenceAssessment(paper) {
+    const text = paper.getText();
+    const cleanText = text.replace(/<[^>]*>/g, "").trim();
+    console.log(`\u{1F50D} Custom Text Presence: analyzing text length ${cleanText.length}`);
+    if (!cleanText || cleanText.length < 10) {
+      return {
+        name: "CustomTextPresenceAssessment",
+        score: 1,
+        // Poor
+        text: "\u0645\u062A\u0646 \u0634\u0645\u0627 \u062E\u06CC\u0644\u06CC \u06A9\u0648\u062A\u0627\u0647 \u0627\u0633\u062A. \u0644\u0637\u0641\u0627\u064B \u0645\u062D\u062A\u0648\u0627\u06CC \u0628\u06CC\u0634\u062A\u0631\u06CC \u0627\u0636\u0627\u0641\u0647 \u06A9\u0646\u06CC\u062F.",
+        hasClass: "poor"
+      };
+    }
+    return {
+      name: "CustomTextPresenceAssessment",
+      score: 9,
+      // Good
+      text: `\u0645\u062A\u0646 \u0645\u0648\u062C\u0648\u062F \u0627\u0633\u062A (${cleanText.length} \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631). \u0639\u0627\u0644\u06CC \u0627\u0633\u062A!`,
+      hasClass: "good"
+    };
+  }
+  createCustomParagraphTooLongAssessment(paper) {
+    const text = paper.getText();
+    const cleanText = text.replace(/<[^>]*>/g, "");
+    const paragraphs = cleanText.split(/\n\s*\n|\.\s+/).filter((p) => p.trim().length > 0);
+    console.log(`\u{1F50D} Custom Paragraph Length: analyzing ${paragraphs.length} paragraphs`);
+    let longParagraphs = 0;
+    let totalWords = 0;
+    paragraphs.forEach((paragraph) => {
+      const words = paragraph.trim().split(/\s+/).length;
+      totalWords += words;
+      if (words > 150) {
+        longParagraphs++;
+      }
+    });
+    const avgWordsPerParagraph = paragraphs.length > 0 ? Math.round(totalWords / paragraphs.length) : 0;
+    let score, text_result;
+    if (longParagraphs === 0) {
+      score = 9;
+      text_result = `\u0637\u0648\u0644 \u067E\u0627\u0631\u0627\u06AF\u0631\u0627\u0641\u200C\u0647\u0627 \u0645\u0646\u0627\u0633\u0628 \u0627\u0633\u062A. \u0645\u06CC\u0627\u0646\u06AF\u06CC\u0646: ${avgWordsPerParagraph} \u06A9\u0644\u0645\u0647 \u062F\u0631 \u0647\u0631 \u067E\u0627\u0631\u0627\u06AF\u0631\u0627\u0641.`;
+    } else if (longParagraphs === 1) {
+      score = 6;
+      text_result = `\u06CC\u06A9 \u067E\u0627\u0631\u0627\u06AF\u0631\u0627\u0641 \u0637\u0648\u0644\u0627\u0646\u06CC \u062F\u0627\u0631\u06CC\u062F. \u0633\u0639\u06CC \u06A9\u0646\u06CC\u062F \u067E\u0627\u0631\u0627\u06AF\u0631\u0627\u0641\u200C\u0647\u0627\u06CC \u0628\u06CC\u0634 \u0627\u0632 150 \u06A9\u0644\u0645\u0647 \u0631\u0627 \u062A\u0642\u0633\u06CC\u0645 \u06A9\u0646\u06CC\u062F.`;
+    } else {
+      score = 3;
+      text_result = `${longParagraphs} \u067E\u0627\u0631\u0627\u06AF\u0631\u0627\u0641 \u0637\u0648\u0644\u0627\u0646\u06CC \u062F\u0627\u0631\u06CC\u062F. \u067E\u0627\u0631\u0627\u06AF\u0631\u0627\u0641\u200C\u0647\u0627\u06CC \u06A9\u0648\u062A\u0627\u0647\u200C\u062A\u0631 \u062E\u0648\u0627\u0646\u0627\u06CC\u06CC \u0631\u0627 \u0628\u0647\u0628\u0648\u062F \u0645\u06CC\u200C\u0628\u062E\u0634\u0646\u062F.`;
+    }
+    return {
+      name: "CustomParagraphTooLongAssessment",
+      score,
+      text: text_result,
+      hasClass: score >= 6 ? "good" : score >= 4 ? "ok" : "poor"
+    };
+  }
+  createCustomSentenceLengthAssessment(paper) {
+    const text = paper.getText();
+    const cleanText = text.replace(/<[^>]*>/g, "");
+    const sentences = cleanText.split(/[.!?؟]/).filter((s) => s.trim().length > 5);
+    console.log(`\u{1F50D} Custom Sentence Length: analyzing ${sentences.length} sentences`);
+    let longSentences = 0;
+    let totalWords = 0;
+    sentences.forEach((sentence) => {
+      const words = sentence.trim().split(/\s+/).length;
+      totalWords += words;
+      if (words > 25) {
+        longSentences++;
+      }
+    });
+    const avgWordsPerSentence = sentences.length > 0 ? Math.round(totalWords / sentences.length) : 0;
+    const longSentencePercentage = sentences.length > 0 ? Math.round(longSentences / sentences.length * 100) : 0;
+    let score, text_result;
+    if (longSentencePercentage <= 10) {
+      score = 9;
+      text_result = `\u0637\u0648\u0644 \u062C\u0645\u0644\u0627\u062A \u0639\u0627\u0644\u06CC \u0627\u0633\u062A. \u0645\u06CC\u0627\u0646\u06AF\u06CC\u0646: ${avgWordsPerSentence} \u06A9\u0644\u0645\u0647 \u062F\u0631 \u062C\u0645\u0644\u0647.`;
+    } else if (longSentencePercentage <= 25) {
+      score = 6;
+      text_result = `${longSentencePercentage}% \u062C\u0645\u0644\u0627\u062A \u0637\u0648\u0644\u0627\u0646\u06CC \u0647\u0633\u062A\u0646\u062F. \u0633\u0639\u06CC \u06A9\u0646\u06CC\u062F \u062C\u0645\u0644\u0627\u062A \u0631\u0627 \u06A9\u0648\u062A\u0627\u0647\u200C\u062A\u0631 \u06A9\u0646\u06CC\u062F.`;
+    } else if (longSentencePercentage <= 60) {
+      score = 4;
+      text_result = `${longSentencePercentage}% \u062C\u0645\u0644\u0627\u062A \u062E\u06CC\u0644\u06CC \u0637\u0648\u0644\u0627\u0646\u06CC \u0647\u0633\u062A\u0646\u062F. \u062C\u0645\u0644\u0627\u062A \u06A9\u0648\u062A\u0627\u0647\u200C\u062A\u0631 \u062E\u0648\u0627\u0646\u0627\u06CC\u06CC \u0631\u0627 \u0628\u0647\u0628\u0648\u062F \u0645\u06CC\u200C\u0628\u062E\u0634\u0646\u062F.`;
+    } else {
+      score = 2;
+      text_result = `${longSentencePercentage}% \u062C\u0645\u0644\u0627\u062A \u062E\u06CC\u0644\u06CC \u0637\u0648\u0644\u0627\u0646\u06CC \u0647\u0633\u062A\u0646\u062F. \u0645\u062A\u0646 \u0646\u06CC\u0627\u0632 \u0628\u0647 \u0628\u0627\u0632\u0646\u0648\u06CC\u0633\u06CC \u062F\u0627\u0631\u062F.`;
+    }
+    return {
+      name: "CustomSentenceLengthAssessment",
+      score,
+      text: text_result,
+      hasClass: score >= 6 ? "good" : score >= 4 ? "ok" : "poor"
+    };
+  }
+  createCustomSubheadingDistributionAssessment(paper) {
+    const text = paper.getText();
+    const subheadingMatches = text.match(/<h[2-6][^>]*>.*?<\/h[2-6]>/gi) || [];
+    const subheadingCount = subheadingMatches.length;
+    const cleanText = text.replace(/<[^>]*>/g, "");
+    const totalWords = cleanText.trim().split(/\s+/).length;
+    console.log(`\u{1F50D} Custom Subheading Distribution: ${subheadingCount} subheadings, ${totalWords} words`);
+    let score, text_result;
+    if (totalWords < 150) {
+      score = 9;
+      text_result = `\u0645\u062A\u0646 \u06A9\u0648\u062A\u0627\u0647 \u0627\u0633\u062A \u0648 \u0646\u06CC\u0627\u0632\u06CC \u0628\u0647 \u0632\u06CC\u0631\u0639\u0646\u0627\u0648\u06CC\u0646 \u0646\u062F\u0627\u0631\u062F.`;
+    } else if (subheadingCount === 0) {
+      score = 3;
+      text_result = `\u0645\u062A\u0646 \u0637\u0648\u0644\u0627\u0646\u06CC \u0627\u0633\u062A \u0627\u0645\u0627 \u0632\u06CC\u0631\u0639\u0646\u0648\u0627\u0646 \u0646\u062F\u0627\u0631\u062F. \u0627\u0636\u0627\u0641\u0647 \u06A9\u0631\u062F\u0646 \u0632\u06CC\u0631\u0639\u0646\u0627\u0648\u06CC\u0646 (H2, H3) \u062E\u0648\u0627\u0646\u0627\u06CC\u06CC \u0631\u0627 \u0628\u0647\u0628\u0648\u062F \u0645\u06CC\u200C\u0628\u062E\u0634\u062F.`;
+    } else {
+      const wordsPerSubheading = Math.round(totalWords / (subheadingCount + 1));
+      if (wordsPerSubheading <= 300) {
+        score = 9;
+        text_result = `\u062A\u0648\u0632\u06CC\u0639 \u0632\u06CC\u0631\u0639\u0646\u0627\u0648\u06CC\u0646 \u0639\u0627\u0644\u06CC \u0627\u0633\u062A. \u0645\u06CC\u0627\u0646\u06AF\u06CC\u0646 ${wordsPerSubheading} \u06A9\u0644\u0645\u0647 \u0628\u06CC\u0646 \u0632\u06CC\u0631\u0639\u0646\u0627\u0648\u06CC\u0646.`;
+      } else if (wordsPerSubheading <= 400) {
+        score = 6;
+        text_result = `\u062A\u0648\u0632\u06CC\u0639 \u0632\u06CC\u0631\u0639\u0646\u0627\u0648\u06CC\u0646 \u062E\u0648\u0628 \u0627\u0633\u062A \u0627\u0645\u0627 \u0645\u06CC\u200C\u062A\u0648\u0627\u0646\u06CC\u062F \u0632\u06CC\u0631\u0639\u0646\u0627\u0648\u06CC\u0646 \u0628\u06CC\u0634\u062A\u0631\u06CC \u0627\u0636\u0627\u0641\u0647 \u06A9\u0646\u06CC\u062F.`;
+      } else {
+        score = 3;
+        text_result = `\u0628\u062E\u0634\u200C\u0647\u0627\u06CC \u0628\u06CC\u0646 \u0632\u06CC\u0631\u0639\u0646\u0627\u0648\u06CC\u0646 \u062E\u06CC\u0644\u06CC \u0637\u0648\u0644\u0627\u0646\u06CC \u0647\u0633\u062A\u0646\u062F. \u0632\u06CC\u0631\u0639\u0646\u0627\u0648\u06CC\u0646 \u0628\u06CC\u0634\u062A\u0631\u06CC \u0627\u0636\u0627\u0641\u0647 \u06A9\u0646\u06CC\u062F.`;
+      }
+    }
+    return {
+      name: "CustomSubheadingDistributionAssessment",
+      score,
+      text: text_result,
+      hasClass: score >= 6 ? "good" : score >= 4 ? "ok" : "poor"
+    };
+  }
+  createCustomTransitionWordsAssessment(paper) {
+    const text = paper.getText();
+    const cleanText = text.replace(/<[^>]*>/g, "").toLowerCase();
+    const persianTransitionWords = [
+      "\u0647\u0645\u0686\u0646\u06CC\u0646",
+      "\u0639\u0644\u0627\u0648\u0647 \u0628\u0631 \u0627\u06CC\u0646",
+      "\u0627\u0632 \u0637\u0631\u0641\u06CC",
+      "\u0627\u0632 \u0633\u0648\u06CC \u062F\u06CC\u06AF\u0631",
+      "\u062F\u0631 \u0646\u062A\u06CC\u062C\u0647",
+      "\u0628\u0646\u0627\u0628\u0631\u0627\u06CC\u0646",
+      "\u0628\u0647 \u0647\u0645\u06CC\u0646 \u062F\u0644\u06CC\u0644",
+      "\u062F\u0631 \u0648\u0627\u0642\u0639",
+      "\u0627\u0644\u0628\u062A\u0647",
+      "\u0627\u0645\u0627",
+      "\u0648\u0644\u06CC",
+      "\u0628\u0627 \u0627\u06CC\u0646 \u062D\u0627\u0644",
+      "\u062F\u0631 \u0645\u0642\u0627\u0628\u0644",
+      "\u0628\u0631\u0627\u06CC \u0645\u062B\u0627\u0644",
+      "\u0645\u062B\u0644\u0627\u064B",
+      "\u0628\u0647 \u0639\u0646\u0648\u0627\u0646 \u0645\u062B\u0627\u0644",
+      "\u062F\u0631 \u0627\u062F\u0627\u0645\u0647",
+      "\u062F\u0631 \u0646\u0647\u0627\u06CC\u062A",
+      "\u0633\u0631\u0627\u0646\u062C\u0627\u0645",
+      "\u0627\u0648\u0644",
+      "\u062F\u0648\u0645",
+      "\u0633\u0648\u0645",
+      "\u0627\u0628\u062A\u062F\u0627",
+      "\u0633\u067E\u0633",
+      "\u0622\u0646\u06AF\u0627\u0647",
+      "\u062F\u0631 \u0627\u0628\u062A\u062F\u0627",
+      "\u062F\u0631 \u0627\u0646\u062A\u0647\u0627",
+      "\u0636\u0645\u0646\u0627\u064B",
+      "\u0647\u0645\u06CC\u0646\u0637\u0648\u0631",
+      "\u0628\u0647 \u0648\u06CC\u0698\u0647",
+      "\u062E\u0635\u0648\u0635\u0627\u064B",
+      "\u0628\u0647 \u0637\u0648\u0631 \u06A9\u0644\u06CC",
+      "\u0628\u0647 \u0637\u0648\u0631 \u062E\u0627\u0635"
+    ];
+    console.log(`\u{1F50D} Custom Transition Words: analyzing Persian transition words`);
+    const sentences = cleanText.split(/[.!?؟]/).filter((s) => s.trim().length > 5);
+    let sentencesWithTransitions = 0;
+    sentences.forEach((sentence) => {
+      const hasTransition = persianTransitionWords.some(
+        (word) => sentence.includes(word)
+      );
+      if (hasTransition) {
+        sentencesWithTransitions++;
+      }
+    });
+    const transitionPercentage = sentences.length > 0 ? Math.round(sentencesWithTransitions / sentences.length * 100) : 0;
+    let score, text_result;
+    if (transitionPercentage >= 30) {
+      score = 9;
+      text_result = `\u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u0639\u0627\u0644\u06CC \u0627\u0632 \u06A9\u0644\u0645\u0627\u062A \u0631\u0628\u0637 (${transitionPercentage}% \u062C\u0645\u0644\u0627\u062A). \u0645\u062A\u0646 \u0628\u0647 \u062E\u0648\u0628\u06CC \u067E\u06CC\u0648\u0646\u062F \u062E\u0648\u0631\u062F\u0647 \u0627\u0633\u062A.`;
+    } else if (transitionPercentage >= 20) {
+      score = 6;
+      text_result = `\u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u062E\u0648\u0628 \u0627\u0632 \u06A9\u0644\u0645\u0627\u062A \u0631\u0628\u0637 (${transitionPercentage}% \u062C\u0645\u0644\u0627\u062A). \u0645\u06CC\u200C\u062A\u0648\u0627\u0646\u06CC\u062F \u0628\u06CC\u0634\u062A\u0631 \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u06A9\u0646\u06CC\u062F.`;
+    } else {
+      score = 3;
+      text_result = `\u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u06A9\u0645 \u0627\u0632 \u06A9\u0644\u0645\u0627\u062A \u0631\u0628\u0637 (${transitionPercentage}% \u062C\u0645\u0644\u0627\u062A). \u06A9\u0644\u0645\u0627\u062A \u0631\u0628\u0637\u06CC \u0645\u062B\u0644 "\u0647\u0645\u0686\u0646\u06CC\u0646"\u060C "\u0628\u0646\u0627\u0628\u0631\u0627\u06CC\u0646" \u0627\u0636\u0627\u0641\u0647 \u06A9\u0646\u06CC\u062F.`;
+    }
+    return {
+      name: "CustomTransitionWordsAssessment",
+      score,
+      text: text_result,
+      hasClass: score >= 6 ? "good" : score >= 4 ? "ok" : "poor"
+    };
+  }
+  createCustomPassiveVoiceAssessment(paper) {
+    const text = paper.getText();
+    const cleanText = text.replace(/<[^>]*>/g, "").toLowerCase();
+    const passiveIndicators = [
+      "\u0634\u062F\u0647 \u0627\u0633\u062A",
+      "\u0634\u062F\u0647",
+      "\u06AF\u0631\u062F\u06CC\u062F\u0647",
+      "\u06AF\u0631\u062F\u06CC\u062F\u0647 \u0627\u0633\u062A",
+      "\u0645\u06CC\u200C\u0634\u0648\u062F",
+      "\u062E\u0648\u0627\u0647\u062F \u0634\u062F",
+      "\u0634\u062F",
+      "\u0634\u062F\u0646\u062F",
+      "\u0634\u062F\u0647\u200C\u0627\u0646\u062F",
+      "\u06AF\u0634\u062A\u0647",
+      "\u06AF\u0634\u062A\u0647 \u0627\u0633\u062A"
+    ];
+    console.log(`\u{1F50D} Custom Passive Voice: analyzing Persian passive constructions`);
+    const sentences = cleanText.split(/[.!?؟]/).filter((s) => s.trim().length > 5);
+    let passiveSentences = 0;
+    sentences.forEach((sentence) => {
+      const hasPassive = passiveIndicators.some(
+        (indicator) => sentence.includes(indicator)
+      );
+      if (hasPassive) {
+        passiveSentences++;
+      }
+    });
+    const passivePercentage = sentences.length > 0 ? Math.round(passiveSentences / sentences.length * 100) : 0;
+    let score, text_result;
+    if (passivePercentage <= 10) {
+      score = 9;
+      text_result = `\u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u0639\u0627\u0644\u06CC \u0627\u0632 \u0635\u06CC\u063A\u0647 \u0641\u0639\u0627\u0644 (${passivePercentage}% \u0645\u062C\u0647\u0648\u0644). \u0645\u062A\u0646 \u0631\u0648\u0627\u0646 \u0648 \u0642\u0627\u0628\u0644 \u0641\u0647\u0645 \u0627\u0633\u062A.`;
+    } else if (passivePercentage <= 20) {
+      score = 6;
+      text_result = `\u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u0645\u0639\u0642\u0648\u0644 \u0627\u0632 \u0635\u06CC\u063A\u0647 \u0645\u062C\u0647\u0648\u0644 (${passivePercentage}%). \u0633\u0639\u06CC \u06A9\u0646\u06CC\u062F \u0628\u06CC\u0634\u062A\u0631 \u0627\u0632 \u0635\u06CC\u063A\u0647 \u0641\u0639\u0627\u0644 \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u06A9\u0646\u06CC\u062F.`;
+    } else {
+      score = 3;
+      text_result = `\u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u0632\u06CC\u0627\u062F \u0627\u0632 \u0635\u06CC\u063A\u0647 \u0645\u062C\u0647\u0648\u0644 (${passivePercentage}%). \u062C\u0645\u0644\u0627\u062A \u0641\u0639\u0627\u0644 \u062E\u0648\u0627\u0646\u0627\u06CC\u06CC \u0631\u0627 \u0628\u0647\u0628\u0648\u062F \u0645\u06CC\u200C\u0628\u062E\u0634\u0646\u062F.`;
+    }
+    return {
+      name: "CustomPassiveVoiceAssessment",
+      score,
+      text: text_result,
+      hasClass: score >= 6 ? "good" : score >= 4 ? "ok" : "poor"
+    };
+  }
+  createCustomWordComplexityAssessment(paper) {
+    const text = paper.getText();
+    const cleanText = text.replace(/<[^>]*>/g, "");
+    const words = cleanText.split(/\s+/).filter(
+      (word) => word.length > 2 && /[\u0600-\u06FF]/.test(word)
+    );
+    console.log(`\u{1F50D} Custom Word Complexity: analyzing ${words.length} Persian words`);
+    const veryLongWords = words.filter((word) => word.length > 12);
+    const longWords = words.filter((word) => word.length > 9);
+    const veryLongPercentage = words.length > 0 ? Math.round(veryLongWords.length / words.length * 100) : 0;
+    const longPercentage = words.length > 0 ? Math.round(longWords.length / words.length * 100) : 0;
+    let score, text_result;
+    if (veryLongPercentage <= 5 && longPercentage <= 20) {
+      score = 9;
+      text_result = `\u067E\u06CC\u0686\u06CC\u062F\u06AF\u06CC \u06A9\u0644\u0645\u0627\u062A \u0645\u0646\u0627\u0633\u0628 \u0627\u0633\u062A. \u06A9\u0644\u0645\u0627\u062A \u063A\u0627\u0644\u0628\u0627\u064B \u0633\u0627\u062F\u0647 \u0648 \u0642\u0627\u0628\u0644 \u0641\u0647\u0645 \u0647\u0633\u062A\u0646\u062F.`;
+    } else if (veryLongPercentage <= 10 && longPercentage <= 35) {
+      score = 6;
+      text_result = `\u067E\u06CC\u0686\u06CC\u062F\u06AF\u06CC \u06A9\u0644\u0645\u0627\u062A \u0645\u062A\u0648\u0633\u0637 \u0627\u0633\u062A. \u0645\u06CC\u200C\u062A\u0648\u0627\u0646\u06CC\u062F \u0628\u0631\u062E\u06CC \u06A9\u0644\u0645\u0627\u062A \u0637\u0648\u0644\u0627\u0646\u06CC \u0631\u0627 \u0633\u0627\u062F\u0647\u200C\u062A\u0631 \u06A9\u0646\u06CC\u062F.`;
+    } else {
+      score = 4;
+      text_result = `\u0628\u0631\u062E\u06CC \u06A9\u0644\u0645\u0627\u062A \u0645\u0645\u06A9\u0646 \u0627\u0633\u062A \u067E\u06CC\u0686\u06CC\u062F\u0647 \u0628\u0627\u0634\u0646\u062F. \u0633\u0639\u06CC \u06A9\u0646\u06CC\u062F \u06A9\u0644\u0645\u0627\u062A \u0633\u0627\u062F\u0647\u200C\u062A\u0631 \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u06A9\u0646\u06CC\u062F.`;
+    }
+    return {
+      name: "CustomWordComplexityAssessment",
+      score,
+      text: text_result,
+      hasClass: score >= 6 ? "good" : score >= 4 ? "ok" : "poor"
+    };
+  }
+  createCustomReadabilityOverviewAssessment(paper) {
+    const text = paper.getText();
+    const cleanText = text.replace(/<[^>]*>/g, "");
+    const sentences = cleanText.split(/[.!?؟]/).filter((s) => s.trim().length > 5);
+    const words = cleanText.split(/\s+/).filter((w) => w.length > 0);
+    console.log(`\u{1F50D} Custom Readability Overview: ${sentences.length} sentences, ${words.length} words`);
+    if (sentences.length === 0 || words.length === 0) {
+      return {
+        name: "CustomReadabilityOverviewAssessment",
+        score: 1,
+        text: "\u0645\u062A\u0646 \u06A9\u0627\u0641\u06CC \u0628\u0631\u0627\u06CC \u0627\u0631\u0632\u06CC\u0627\u0628\u06CC \u062E\u0648\u0627\u0646\u0627\u06CC\u06CC \u0648\u062C\u0648\u062F \u0646\u062F\u0627\u0631\u062F.",
+        hasClass: "poor"
+      };
+    }
+    const avgWordsPerSentence = words.length / sentences.length;
+    const longWords = words.filter((word) => word.length > 8).length;
+    const longWordPercentage = longWords / words.length * 100;
+    console.log(`   Avg words/sentence: ${avgWordsPerSentence.toFixed(1)}, Long words: ${longWordPercentage.toFixed(1)}%`);
+    let score, text_result;
+    if (avgWordsPerSentence <= 20 && longWordPercentage <= 15) {
+      score = 8;
+      text_result = `\u062E\u0648\u0627\u0646\u0627\u06CC\u06CC \u0645\u062A\u0646 \u062E\u0648\u0628 \u0627\u0633\u062A. \u062C\u0645\u0644\u0627\u062A \u0648 \u06A9\u0644\u0645\u0627\u062A \u0645\u0646\u0627\u0633\u0628 \u0647\u0633\u062A\u0646\u062F.`;
+    } else if (avgWordsPerSentence <= 30 && longWordPercentage <= 25) {
+      score = 6;
+      text_result = `\u062E\u0648\u0627\u0646\u0627\u06CC\u06CC \u0645\u062A\u0646 \u0645\u062A\u0648\u0633\u0637 \u0627\u0633\u062A. \u0645\u06CC\u200C\u062A\u0648\u0627\u0646\u06CC\u062F \u062C\u0645\u0644\u0627\u062A \u06A9\u0648\u062A\u0627\u0647\u200C\u062A\u0631 \u06CC\u0627 \u06A9\u0644\u0645\u0627\u062A \u0633\u0627\u062F\u0647\u200C\u062A\u0631 \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u06A9\u0646\u06CC\u062F.`;
+    } else if (avgWordsPerSentence <= 40) {
+      score = 4;
+      text_result = `\u062E\u0648\u0627\u0646\u0627\u06CC\u06CC \u0645\u062A\u0646 \u0646\u06CC\u0627\u0632 \u0628\u0647 \u0628\u0647\u0628\u0648\u062F \u062F\u0627\u0631\u062F. \u062C\u0645\u0644\u0627\u062A \u06A9\u0648\u062A\u0627\u0647\u200C\u062A\u0631 \u06A9\u0646\u06CC\u062F.`;
+    } else {
+      score = 2;
+      text_result = `\u062C\u0645\u0644\u0627\u062A \u062E\u06CC\u0644\u06CC \u0637\u0648\u0644\u0627\u0646\u06CC \u0647\u0633\u062A\u0646\u062F. \u0628\u0631\u0627\u06CC \u0628\u0647\u0628\u0648\u062F \u062E\u0648\u0627\u0646\u0627\u06CC\u06CC\u060C \u062C\u0645\u0644\u0627\u062A \u0631\u0627 \u06A9\u0648\u062A\u0627\u0647\u200C\u062A\u0631 \u06A9\u0646\u06CC\u062F.`;
+    }
+    return {
+      name: "CustomReadabilityOverviewAssessment",
+      score,
+      text: text_result,
+      hasClass: score >= 6 ? "good" : score >= 4 ? "ok" : "poor"
+    };
   }
   generateContentQualityAssessment(results) {
     const assessments2 = [];
@@ -55158,22 +55889,32 @@ ${missingList}
         overall: 0
       }
     };
-    const seoAssessments = [
-      { name: "TextLengthAssessment", class: import_yoastseo.assessments.seo.TextLengthAssessment },
-      { name: "MetaDescriptionLengthAssessment", class: import_yoastseo.assessments.seo.MetaDescriptionLengthAssessment },
-      { name: "PageTitleWidthAssessment", class: import_yoastseo.assessments.seo.PageTitleWidthAssessment },
-      // { name: 'ImageCountAssessment', class: assessments.seo.ImageCountAssessment },
-      { name: "InternalLinksAssessment", class: import_yoastseo.assessments.seo.InternalLinksAssessment },
-      { name: "OutboundLinksAssessment", class: import_yoastseo.assessments.seo.OutboundLinksAssessment },
-      { name: "FunctionWordsInKeyphraseAssessment", class: import_yoastseo.assessments.seo.FunctionWordsInKeyphraseAssessment }
-      // { name: 'TextTitleAssessment', class: assessments.seo.TextTitleAssessment }
+    const seoAssessments = [];
+    const potentialAssessments = [
+      "TextLengthAssessment",
+      // ✅ Working
+      "MetaDescriptionLengthAssessment",
+      // ✅ Working  
+      // 'PageTitleWidthAssessment',         // ❌ Has issues with Persian titles - using custom version
+      // 'KeyphraseInSEOTitleAssessment',    // ❌ Might have issues with Persian - using custom version
+      "InternalLinksAssessment",
+      // ✅ Working
+      "OutboundLinksAssessment"
+      // ✅ Working
     ];
-    const readabilityAssessments = [
-      { name: "SubheadingDistributionTooLongAssessment", class: import_yoastseo.assessments.readability.SubheadingDistributionTooLongAssessment },
-      { name: "WordComplexityAssessment", class: import_yoastseo.assessments.readability.WordComplexityAssessment },
-      { name: "TextPresenceAssessment", class: import_yoastseo.assessments.readability.TextPresenceAssessment }
-    ];
-    console.log("Running YoastSEO assessments...");
+    potentialAssessments.forEach((assessmentName) => {
+      if (import_yoastseo.assessments.seo && import_yoastseo.assessments.seo[assessmentName]) {
+        seoAssessments.push({
+          name: assessmentName,
+          class: import_yoastseo.assessments.seo[assessmentName]
+        });
+        console.log(`\u2713 Added SEO assessment: ${assessmentName}`);
+      } else {
+        console.log(`\u2717 SEO assessment not available: ${assessmentName}`);
+      }
+    });
+    const readabilityAssessments = [];
+    console.log("\u{1F680} Running YoastSEO assessments...");
     let seoTotalScore = 0;
     let seoCount = 0;
     seoAssessments.forEach((assessmentInfo) => {
@@ -55200,13 +55941,46 @@ ${missingList}
         } else {
           normalizedScore = 0;
         }
+        if (result.score <= 0) {
+          console.log(`\u26A0\uFE0F Negative/Zero score detected in ${assessmentInfo.name}: ${result.score}`);
+        }
         seoTotalScore += normalizedScore;
         seoCount++;
-        console.log(`SEO ${assessmentInfo.name}: score=${result.score}, normalized=${normalizedScore}`);
+        console.log(`\u2705 ${assessmentInfo.name}: Score ${result.score} (${normalizedScore}/100)`);
       } catch (error) {
         console.log(`SEO ${assessmentInfo.name} failed:`, error.message);
+        yoastResults.seo.push({
+          name: assessmentInfo.name,
+          score: 0,
+          text: `Assessment failed: ${error.message}`,
+          hasClass: "error"
+        });
       }
     });
+    if (paper.getKeyword() && paper.getKeyword().trim()) {
+      console.log("\u2705 Adding custom assessments for keyphrase analysis...");
+      console.log(`   \u{1F4CA} Current AI Slug Flag State: ${this.aiSlugGenerated}`);
+      const customSeoTitle = this.createCustomSeoTitleAssessment(paper);
+      yoastResults.seo.push(customSeoTitle);
+      seoTotalScore += this.normalizeScore(customSeoTitle.score);
+      seoCount++;
+      const customKeyphraseInTitle = this.createCustomKeyphraseInSeoTitleAssessment(paper);
+      yoastResults.seo.push(customKeyphraseInTitle);
+      seoTotalScore += this.normalizeScore(customKeyphraseInTitle.score);
+      seoCount++;
+      const customKeyphraseLength = this.createCustomKeyphraseLengthAssessment(paper);
+      yoastResults.seo.push(customKeyphraseLength);
+      seoTotalScore += this.normalizeScore(customKeyphraseLength.score);
+      seoCount++;
+      const customKeyphraseDensity = this.createCustomKeyphraseDensityAssessment(paper);
+      yoastResults.seo.push(customKeyphraseDensity);
+      seoTotalScore += this.normalizeScore(customKeyphraseDensity.score);
+      seoCount++;
+      const customUrlKeyphrase = this.createCustomUrlKeyphraseAssessment(paper);
+      yoastResults.seo.push(customUrlKeyphrase);
+      seoTotalScore += this.normalizeScore(customUrlKeyphrase.score);
+      seoCount++;
+    }
     let readabilityTotalScore = 0;
     let readabilityCount = 0;
     readabilityAssessments.forEach((assessmentInfo) => {
@@ -55242,8 +56016,43 @@ ${missingList}
         console.log(`Readability ${assessmentInfo.name} failed:`, error.message);
       }
     });
+    console.log("\u2705 Adding custom readability assessments for Persian content...");
+    const customTextPresence = this.createCustomTextPresenceAssessment(paper);
+    yoastResults.readability.push(customTextPresence);
+    readabilityTotalScore += this.normalizeScore(customTextPresence.score);
+    readabilityCount++;
+    const customParagraphLength = this.createCustomParagraphTooLongAssessment(paper);
+    yoastResults.readability.push(customParagraphLength);
+    readabilityTotalScore += this.normalizeScore(customParagraphLength.score);
+    readabilityCount++;
+    const customSentenceLength = this.createCustomSentenceLengthAssessment(paper);
+    yoastResults.readability.push(customSentenceLength);
+    readabilityTotalScore += this.normalizeScore(customSentenceLength.score);
+    readabilityCount++;
+    const customSubheadingDist = this.createCustomSubheadingDistributionAssessment(paper);
+    yoastResults.readability.push(customSubheadingDist);
+    readabilityTotalScore += this.normalizeScore(customSubheadingDist.score);
+    readabilityCount++;
+    const customTransitionWords = this.createCustomTransitionWordsAssessment(paper);
+    yoastResults.readability.push(customTransitionWords);
+    readabilityTotalScore += this.normalizeScore(customTransitionWords.score);
+    readabilityCount++;
+    const customPassiveVoice = this.createCustomPassiveVoiceAssessment(paper);
+    yoastResults.readability.push(customPassiveVoice);
+    readabilityTotalScore += this.normalizeScore(customPassiveVoice.score);
+    readabilityCount++;
+    const customWordComplexity = this.createCustomWordComplexityAssessment(paper);
+    yoastResults.readability.push(customWordComplexity);
+    readabilityTotalScore += this.normalizeScore(customWordComplexity.score);
+    readabilityCount++;
+    const customReadabilityOverview = this.createCustomReadabilityOverviewAssessment(paper);
+    yoastResults.readability.push(customReadabilityOverview);
+    readabilityTotalScore += this.normalizeScore(customReadabilityOverview.score);
+    readabilityCount++;
+    console.log(`\u{1F4CA} Custom Readability Assessments Added: ${readabilityCount - readabilityAssessments.length} assessments`);
     yoastResults.scores.seo = seoCount > 0 ? Math.round(seoTotalScore / seoCount) : 0;
     yoastResults.scores.readability = readabilityCount > 0 ? Math.round(readabilityTotalScore / readabilityCount) : 0;
+    console.log(`\u{1F4CA} Final Scores: SEO ${yoastResults.scores.seo}/100, Readability ${yoastResults.scores.readability}/100`);
     if (paper.getText() && paper.getText().length > 50) {
       if (yoastResults.scores.seo === 0 && seoCount > 0) yoastResults.scores.seo = 15;
       if (yoastResults.scores.readability === 0 && readabilityCount > 0) yoastResults.scores.readability = 25;
@@ -55261,6 +56070,146 @@ ${missingList}
                     <p class="small mb-0">\u0627\u0645\u06A9\u0627\u0646 \u0627\u062A\u0635\u0627\u0644 \u0628\u0647 \u0645\u0648\u062A\u0648\u0631 \u062A\u062D\u0644\u06CC\u0644 \u0633\u0626\u0648 \u0648\u062C\u0648\u062F \u0646\u062F\u0627\u0631\u062F.</p>
                 </div>
             `;
+    }
+  }
+  bindSlugGenerationButton() {
+    console.log("\u{1F517} Setting up AI slug generation button...");
+    const generateButton = document.getElementById("generate-slug-btn");
+    const slugInput = document.getElementById("news-slug");
+    if (!generateButton) {
+      console.log("\u274C Generate slug button not found");
+      return;
+    }
+    generateButton.addEventListener("click", () => {
+      this.generateAISlug();
+    });
+    if (slugInput) {
+      let isAiGenerating = false;
+      slugInput.addEventListener("input", (event) => {
+        if (isAiGenerating) {
+          console.log("\u{1F916} AI generation in progress - ignoring input event");
+          return;
+        }
+        if (this.aiSlugGenerated && slugInput.value === this.lastAiGeneratedSlug) {
+          console.log("\u{1F916} AI-generated value detected - keeping AI flag");
+          console.log(`   AI value: "${this.lastAiGeneratedSlug}"`);
+          return;
+        }
+        if (this.aiSlugGenerated && slugInput.value !== this.lastAiGeneratedSlug) {
+          console.log("\u{1F504} User manually edited slug - resetting AI flag");
+          console.log(`   Previous AI value: "${this.lastAiGeneratedSlug}"`);
+          console.log(`   New manual value: "${slugInput.value}"`);
+          this.aiSlugGenerated = false;
+          this.lastAiGeneratedSlug = "";
+          this.analyzeContent();
+        }
+      });
+      generateButton.addEventListener("click", () => {
+        isAiGenerating = true;
+        console.log("\u{1F512} AI generation started - temporarily disabling input monitoring");
+        setTimeout(() => {
+          isAiGenerating = false;
+          console.log("\u{1F513} AI generation window closed - input monitoring resumed");
+        }, 3e3);
+      });
+    }
+    console.log("\u2705 AI slug generation button and manual edit detection bound successfully");
+  }
+  async generateAISlug() {
+    console.log("\u{1F916} Starting AI slug generation...");
+    const titleElement = document.getElementById("news-title-input");
+    const keyphraseElement = document.getElementById("news-keyphrase-input");
+    const slugElement = document.getElementById("news-slug");
+    const generateButton = document.getElementById("generate-slug-btn");
+    if (!titleElement || !keyphraseElement || !slugElement) {
+      alert("\u062E\u0637\u0627: \u0641\u06CC\u0644\u062F\u0647\u0627\u06CC \u0645\u0648\u0631\u062F \u0646\u06CC\u0627\u0632 \u067E\u06CC\u062F\u0627 \u0646\u0634\u062F");
+      return;
+    }
+    const title = titleElement.value.trim();
+    const keyphrase = keyphraseElement.value.trim();
+    let body = "";
+    if (this.editorInstance) {
+      body = this.editorInstance.getData();
+    } else {
+      const editorElement = document.getElementById("editor");
+      body = editorElement ? editorElement.value : "";
+    }
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = body;
+    const cleanBody = tempDiv.textContent || tempDiv.innerText || "";
+    if (!title) {
+      alert("\u0644\u0637\u0641\u0627\u064B \u0627\u0628\u062A\u062F\u0627 \u0639\u0646\u0648\u0627\u0646 \u062E\u0628\u0631 \u0631\u0627 \u0648\u0627\u0631\u062F \u06A9\u0646\u06CC\u062F");
+      titleElement.focus();
+      return;
+    }
+    if (!keyphrase) {
+      alert("\u0644\u0637\u0641\u0627\u064B \u0627\u0628\u062A\u062F\u0627 \u06A9\u0644\u06CC\u062F\u0648\u0627\u0698\u0647 \u0627\u0635\u0644\u06CC \u0631\u0627 \u0648\u0627\u0631\u062F \u06A9\u0646\u06CC\u062F");
+      keyphraseElement.focus();
+      return;
+    }
+    if (!cleanBody || cleanBody.length < 50) {
+      alert("\u0644\u0637\u0641\u0627\u064B \u0627\u0628\u062A\u062F\u0627 \u0645\u062D\u062A\u0648\u0627\u06CC \u062E\u0628\u0631 \u0631\u0627 \u0648\u0627\u0631\u062F \u06A9\u0646\u06CC\u062F (\u062D\u062F\u0627\u0642\u0644 50 \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631)");
+      return;
+    }
+    const originalText = generateButton.innerHTML;
+    generateButton.disabled = true;
+    generateButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>\u062F\u0631 \u062D\u0627\u0644 \u062A\u0648\u0644\u06CC\u062F...';
+    try {
+      const response = await fetch("/api/gemini/generate-slug", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          title,
+          keyphrase,
+          body: cleanBody
+        })
+      });
+      const result = await response.json();
+      if (response.ok && result.slug) {
+        slugElement.value = result.slug;
+        slugElement.setAttribute("value", result.slug);
+        this.aiSlugGenerated = true;
+        this.lastAiGeneratedSlug = result.slug;
+        this.lastAiGenerationTime = Date.now();
+        console.log(`\u{1F525} AI SLUG FLAG SET TO TRUE! Generated: "${result.slug}"`);
+        console.log(`\u{1F525} Stored AI slug value: "${this.lastAiGeneratedSlug}"`);
+        console.log(`\u{1F525} AI generation timestamp: ${this.lastAiGenerationTime}`);
+        this.showToast("success", "\u2705 \u0627\u0633\u0644\u0627\u06AF \u0628\u0627 \u0645\u0648\u0641\u0642\u06CC\u062A \u062A\u0648\u0644\u06CC\u062F \u0634\u062F!", result.message);
+        console.log(`\u{1F504} About to run analysis with AI flag = ${this.aiSlugGenerated}`);
+        const self2 = this;
+        setTimeout(function() {
+          console.log(`\u{1F504} Running delayed analysis with AI flag = ${self2.aiSlugGenerated}`);
+          console.log(`\u{1F504} Slug input value: "${slugElement.value}"`);
+          console.log(`\u{1F504} Expected AI value: "${self2.lastAiGeneratedSlug}"`);
+          self2.analyzeContent();
+        }, 200);
+        console.log("\u{1F389} AI slug generated successfully:", result.slug);
+      } else {
+        const errorMessage = result.error || "\u062E\u0637\u0627\u06CC\u06CC \u062F\u0631 \u062A\u0648\u0644\u06CC\u062F \u0627\u0633\u0644\u0627\u06AF \u0631\u062E \u062F\u0627\u062F";
+        console.error("API Error:", result);
+      }
+    } catch (error) {
+      console.error("Network Error:", error);
+    } finally {
+      generateButton.disabled = false;
+      generateButton.innerHTML = originalText;
+    }
+  }
+  showToast(type, title, message) {
+    if (typeof Swal !== "undefined") {
+      Swal.fire({
+        icon: type === "success" ? "success" : "error",
+        title,
+        text: message,
+        timer: 3e3,
+        showConfirmButton: false,
+        toast: true,
+        position: "top-end"
+      });
+    } else {
+      alert(title + "\n" + message);
     }
   }
 };

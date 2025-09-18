@@ -129,4 +129,44 @@ public class GeminiService {
 
         return response != null ? response : "No response from Gemini.";
     }
+
+    public String generateSlug(String persianKeyphrase, String title, String body) {
+        StringBuilder slugPrompt = new StringBuilder();
+        slugPrompt.append("Generate an SEO-friendly URL slug based on the following Persian content:\n\n");
+        slugPrompt.append("Main Keyphrase (Focus): ").append(persianKeyphrase).append("\n");
+        slugPrompt.append("Title: ").append(title).append("\n");
+        slugPrompt.append("Content Preview: ").append(body.substring(0, Math.min(500, body.length()))).append("...\n\n");
+        
+        slugPrompt.append("Requirements:\n");
+        slugPrompt.append("1- Translate the Persian keyphrase to English and use it as the main focus\n");
+        slugPrompt.append("2- Create a concise, SEO-friendly slug (3-6 words maximum)\n");
+        slugPrompt.append("3- Use lowercase letters only\n");
+        slugPrompt.append("4- Use hyphens (-) to separate words, no spaces or underscores\n");
+        slugPrompt.append("5- Remove all special characters, numbers, and punctuation\n");
+        slugPrompt.append("6- Make it relevant to the news content and keyphrase\n");
+        slugPrompt.append("7- Keep it under 60 characters total\n");
+        slugPrompt.append("8- Return ONLY the slug, nothing else (no explanations or extra text)\n");
+        slugPrompt.append("9- Example format: 'artificial-intelligence-news' or 'iran-foreign-policy'\n\n");
+        
+        String response = chatLanguageModel.chat(slugPrompt.toString());
+        
+        if (response != null) {
+            // Clean up the response to ensure it's a proper slug
+            response = response.trim()
+                             .toLowerCase()
+                             .replaceAll("[^a-z0-9\\s-]", "") // Remove special characters
+                             .replaceAll("\\s+", "-")         // Replace spaces with hyphens
+                             .replaceAll("-+", "-")           // Replace multiple hyphens with single
+                             .replaceAll("^-|-$", "");       // Remove leading/trailing hyphens
+            
+            // Ensure it's not too long
+            if (response.length() > 60) {
+                response = response.substring(0, 60).replaceAll("-[^-]*$", "");
+            }
+            
+            return response.isEmpty() ? "generated-slug" : response;
+        }
+        
+        return "generated-slug";
+    }
 }

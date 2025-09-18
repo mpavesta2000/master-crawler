@@ -127,9 +127,20 @@
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label" for="news-slug">لینک خارجی خبر</label>
+                                    <label class="form-label d-flex justify-content-between" for="news-slug">
+                                        اسلاگ URL (URL Slug)
+                                        <button type="button" class="text-info" id="generate-slug-btn"
+                                                style="background: none; border: none; cursor: pointer; font-size: inherit;">
+                                            (تولید اسلاگ با هوش مصنوعی)
+                                        </button>
+                                    </label>
                                     <input type="text" th:field="*{slug}" class="form-control" id="news-slug"
-                                           placeholder="">
+                                           placeholder="keyphrase-in-url-slug">
+                                    <div class="form-text">
+                                        <strong>اسلاگ URL:</strong> بخشی از آدرس اینترنتی خبر<br>
+                                        • بهتر است شامل کلیدواژه اصلی باشد<br>
+                                        • فقط از حروف انگلیسی، اعداد و خط تیره استفاده کنید<br>
+                                    </div>
                                     <div class="valid-feedback">
                                         تکمیل شده است.
                                     </div>
@@ -137,10 +148,30 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" for="news-keyphrase-input">کلیدواژه اصلی (برای تحلیل سئو)</label>
+                            <label class="form-label required" for="news-keyphrase-input">کلیدواژه اصلی (Focus Keyphrase)</label>
                             <input type="text" class="form-control" id="news-keyphrase-input"
-                                   placeholder="مثل: اخبار تکنولوژی">
-                            <div class="form-text">کلیدواژه‌ای که می‌خواهید محتوا برای آن بهینه‌سازی شود</div>
+                                   placeholder="مثل: اخبار تکنولوژی"
+                                   required>
+                            <div class="form-text">
+                                <strong>کلیدواژه اصلی:</strong> این کلیدواژه در تحلیل سئو بررسی می‌شود.<br>
+                                • باید در عنوان سئو، توضیحات متا و محتوا ظاهر شود<br>
+                                • تراکم مناسب در متن داشته باشد<br>
+                                • در اسلاگ URL استفاده شود
+                            </div>
+                            <div class="invalid-feedback">
+                                لطفا کلیدواژه اصلی را برای تحلیل سئو وارد کنید.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="seo-title-input">عنوان سئو (SEO Title)</label>
+                            <input type="text" class="form-control" id="seo-title-input"
+                                   placeholder="عنوانی که در گوگل نمایش می‌شود - شامل کلیدواژه اصلی">
+                            <div class="form-text">
+                                <strong>عنوان سئو:</strong> عنوانی که در نتایج جستجوی گوگل نمایش می‌شود<br>
+                                • باید شامل کلیدواژه اصلی باشد<br>
+                                • طول بهینه: 30-60 کاراکتر<br>
+                                • اگر خالی باشد، از تیتر خبر استفاده می‌شود
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label required">متن خبر</label>
