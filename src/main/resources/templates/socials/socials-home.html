@@ -1,0 +1,364 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<th:block layout:fragment="pagetitle">
+    <div th:replace="partials/title-meta :: title-meta('شبکه‌های اجتماعی')"></div>
+</th:block>
+
+<head>
+    <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+    
+    <style>
+        .platform-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .platform-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .platform-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .account-badge {
+            font-size: 0.8rem;
+        }
+        .status-connected { color: #28a745; }
+        .status-disconnected { color: #dc3545; }
+        .status-global { color: #007bff; }
+    </style>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div th:replace="partials/page-title :: page-title('شبکه‌های اجتماعی','مدیریت حساب‌ها')"></div>
+
+    <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${param.success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${param.error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">پلتفرم‌های اجتماعی</h5>
+                    <div class="row">
+                        <!-- X Platform -->
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="card platform-card h-100" onclick="location.href='/socials/x'">
+                                <div class="card-body text-center">
+                                    <div class="platform-icon">
+                                        <i class="ri-twitter-x-line" style="color: #000;"></i>
+                                    </div>
+                                    <h6 class="card-title">ایکس (X)</h6>
+                                    <div class="mt-2">
+                                        <span th:if="${userAccounts.?[platform.name() == 'X'].size() > 0}" 
+                                              class="badge bg-success account-badge status-connected">متصل</span>
+                                        <span th:unless="${userAccounts.?[platform.name() == 'X'].size() > 0}" 
+                                              class="badge bg-secondary account-badge status-disconnected">قطع</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Telegram Platform -->
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="card platform-card h-100" onclick="location.href='/socials/telegram'">
+                                <div class="card-body text-center">
+                                    <div class="platform-icon">
+                                        <i class="ri-telegram-line" style="color: #0088cc;"></i>
+                                    </div>
+                                    <h6 class="card-title">تلگرام</h6>
+                                    <div class="mt-2">
+                                        <span th:if="${globalAccounts.?[platform.name() == 'TELEGRAM'].size() > 0}" 
+                                              class="badge bg-primary account-badge status-global">سایت</span>
+                                        <span th:if="${userAccounts.?[platform.name() == 'TELEGRAM'].size() > 0}" 
+                                              class="badge bg-success account-badge status-connected">شخصی</span>
+                                        <span th:unless="${globalAccounts.?[platform.name() == 'TELEGRAM'].size() > 0 or userAccounts.?[platform.name() == 'TELEGRAM'].size() > 0}" 
+                                              class="badge bg-secondary account-badge status-disconnected">قطع</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Eitaa Platform -->
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="card platform-card h-100" onclick="location.href='/socials/eitaa'">
+                                <div class="card-body text-center">
+                                    <div class="platform-icon">
+                                        <i class="ri-message-line" style="color: #ff6b35;"></i>
+                                    </div>
+                                    <h6 class="card-title">ایتا</h6>
+                                    <div class="mt-2">
+                                        <span th:if="${globalAccounts.?[platform.name() == 'EITAA'].size() > 0}" 
+                                              class="badge bg-primary account-badge status-global">سایت</span>
+                                        <span th:if="${userAccounts.?[platform.name() == 'EITAA'].size() > 0}" 
+                                              class="badge bg-success account-badge status-connected">شخصی</span>
+                                        <span th:unless="${globalAccounts.?[platform.name() == 'EITAA'].size() > 0 or userAccounts.?[platform.name() == 'EITAA'].size() > 0}" 
+                                              class="badge bg-secondary account-badge status-disconnected">قطع</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bale Platform -->
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="card platform-card h-100" onclick="location.href='/socials/bale'">
+                                <div class="card-body text-center">
+                                    <div class="platform-icon">
+                                        <i class="ri-chat-1-line" style="color: #00d4aa;"></i>
+                                    </div>
+                                    <h6 class="card-title">بله</h6>
+                                    <div class="mt-2">
+                                        <span th:if="${globalAccounts.?[platform.name() == 'BALE'].size() > 0}" 
+                                              class="badge bg-primary account-badge status-global">سایت</span>
+                                        <span th:if="${userAccounts.?[platform.name() == 'BALE'].size() > 0}" 
+                                              class="badge bg-success account-badge status-connected">شخصی</span>
+                                        <span th:unless="${globalAccounts.?[platform.name() == 'BALE'].size() > 0 or userAccounts.?[platform.name() == 'BALE'].size() > 0}" 
+                                              class="badge bg-secondary account-badge status-disconnected">قطع</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Accounts -->
+    <div class="row mb-4" th:if="${!userAccounts.empty}">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">حساب‌های شما</h5>
+                    <div class="table-responsive">
+                        <table class="table table-nowrap">
+                            <thead>
+                                <tr>
+                                    <th>پلتفرم</th>
+                                    <th>نام حساب</th>
+                                    <th>وضعیت</th>
+                                    <th>تاریخ اتصال</th>
+                                    <th>عملیات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="account : ${userAccounts}">
+                                    <td>
+                                        <i th:class="${account.platform.name() == 'X' ? 'ri-twitter-x-line' : 
+                                                     account.platform.name() == 'TELEGRAM' ? 'ri-telegram-line' : 
+                                                     account.platform.name() == 'EITAA' ? 'ri-message-line' : 
+                                                     'ri-chat-1-line'}" 
+                                           th:style="${account.platform.name() == 'X' ? 'color: #000;' : 
+                                                     account.platform.name() == 'TELEGRAM' ? 'color: #0088cc;' : 
+                                                     account.platform.name() == 'EITAA' ? 'color: #ff6b35;' : 
+                                                     'color: #00d4aa;'}"></i>
+                                        <span th:text="${account.platform.name() == 'X' ? 'ایکس' : 
+                                                       account.platform.name() == 'TELEGRAM' ? 'تلگرام' : 
+                                                       account.platform.name() == 'EITAA' ? 'ایتا' : 'بله'}"></span>
+                                    </td>
+                                    <td th:text="${account.accountName ?: 'نامشخص'}"></td>
+                                    <td>
+                                        <span th:if="${account.isActive}" class="badge bg-success">فعال</span>
+                                        <span th:unless="${account.isActive}" class="badge bg-danger">غیرفعال</span>
+                                    </td>
+                                    <td th:text="${#temporals.format(account.createdAt, 'yyyy/MM/dd HH:mm')}"></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary" 
+                                                th:onclick="|validateAccount(${account.id})|">
+                                            <i class="ri-check-line"></i> تست
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-warning" 
+                                                th:if="${account.isActive}"
+                                                th:onclick="|toggleAccount(${account.id}, false)|">
+                                            <i class="ri-pause-line"></i> غیرفعال
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-success" 
+                                                th:unless="${account.isActive}"
+                                                th:onclick="|toggleAccount(${account.id}, true)|">
+                                            <i class="ri-play-line"></i> فعال
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Accounts (Admin only) -->
+    <div class="row" th:if="${#authorization.expression('hasAuthority(''Admin'')')} and ${!globalAccounts.empty}">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">حساب‌های سایت (مدیر)</h5>
+                    <div class="table-responsive">
+                        <table class="table table-nowrap">
+                            <thead>
+                                <tr>
+                                    <th>پلتفرم</th>
+                                    <th>نام حساب</th>
+                                    <th>وضعیت</th>
+                                    <th>تاریخ ایجاد</th>
+                                    <th>عملیات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="account : ${globalAccounts}">
+                                    <td>
+                                        <i th:class="${account.platform.name() == 'TELEGRAM' ? 'ri-telegram-line' : 
+                                                     account.platform.name() == 'EITAA' ? 'ri-message-line' : 
+                                                     'ri-chat-1-line'}" 
+                                           th:style="${account.platform.name() == 'TELEGRAM' ? 'color: #0088cc;' : 
+                                                     account.platform.name() == 'EITAA' ? 'color: #ff6b35;' : 
+                                                     'color: #00d4aa;'}"></i>
+                                        <span th:text="${account.platform.name() == 'TELEGRAM' ? 'تلگرام' : 
+                                                       account.platform.name() == 'EITAA' ? 'ایتا' : 'بله'}"></span>
+                                    </td>
+                                    <td th:text="${account.accountName ?: 'بات سایت'}"></td>
+                                    <td>
+                                        <span th:if="${account.isActive}" class="badge bg-success">فعال</span>
+                                        <span th:unless="${account.isActive}" class="badge bg-danger">غیرفعال</span>
+                                    </td>
+                                    <td th:text="${#temporals.format(account.createdAt, 'yyyy/MM/dd HH:mm')}"></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary" 
+                                                th:onclick="|validateAccount(${account.id})|">
+                                            <i class="ri-check-line"></i> تست
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" 
+                                                th:onclick="|deleteAccount(${account.id})|">
+                                            <i class="ri-delete-bin-line"></i> حذف
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+
+<th:block layout:fragment="pagejs">
+    <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    
+    <script>
+        function validateAccount(accountId) {
+            fetch(`/api/socials/accounts/${accountId}/validate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.valid) {
+                    Swal.fire({
+                        title: 'موفقیت',
+                        text: 'حساب معتبر است و می‌تواند برای انتشار استفاده شود.',
+                        icon: 'success'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'خطا',
+                        text: 'حساب نامعتبر است. لطفاً دوباره متصل شوید.',
+                        icon: 'error'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'خطا',
+                    text: 'خطا در بررسی حساب.',
+                    icon: 'error'
+                });
+            });
+        }
+
+        function toggleAccount(accountId, activate) {
+            const action = activate ? 'activate' : 'deactivate';
+            const actionText = activate ? 'فعال‌سازی' : 'غیرفعال‌سازی';
+            
+            fetch(`/api/socials/accounts/${accountId}/${action}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                Swal.fire({
+                    title: 'موفقیت',
+                    text: `حساب با موفقیت ${actionText} شد.`,
+                    icon: 'success'
+                }).then(() => {
+                    location.reload();
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'خطا',
+                    text: `خطا در ${actionText} حساب.`,
+                    icon: 'error'
+                });
+            });
+        }
+
+        function deleteAccount(accountId) {
+            Swal.fire({
+                title: 'آیا مطمئن هستید؟',
+                text: 'این عمل قابل بازگشت نیست.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'بله، حذف کن',
+                cancelButtonText: 'انصراف'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/api/socials/admin/accounts/${accountId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        Swal.fire({
+                            title: 'حذف شد',
+                            text: 'حساب با موفقیت حذف شد.',
+                            icon: 'success'
+                        }).then(() => {
+                            location.reload();
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'خطا',
+                            text: 'خطا در حذف حساب.',
+                            icon: 'error'
+                        });
+                    });
+                }
+            });
+        }
+    </script>
+</th:block>
+
+</html>

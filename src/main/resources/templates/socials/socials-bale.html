@@ -1,0 +1,391 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<th:block layout:fragment="pagetitle">
+    <div th:replace="partials/title-meta :: title-meta('بله')"></div>
+</th:block>
+
+<head>
+    <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div th:replace="partials/page-title :: page-title('شبکه‌های اجتماعی','بله')"></div>
+
+    <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${param.success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${param.error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="row">
+        <!-- Current Status -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="flex-shrink-0">
+                            <i class="ri-chat-1-line" style="font-size: 2rem; color: #00d4aa;"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="card-title mb-0">بله</h5>
+                            <p class="text-muted mb-0">تنظیمات ربات بله برای انتشار اخبار</p>
+                        </div>
+                    </div>
+
+                    <!-- Global Bot Status -->
+                    <div class="mb-4">
+                        <h6>ربات سایت</h6>
+                        <div th:if="${globalAccount == null}" class="alert alert-warning">
+                            <i class="ri-warning-line me-2"></i>
+                            ربات سایت تنظیم نشده است. برای انتشار خودکار، مدیر باید ربات را تنظیم کند.
+                        </div>
+                        <div th:if="${globalAccount != null}" class="alert alert-success">
+                            <i class="ri-checkbox-circle-line me-2"></i>
+                            ربات سایت تنظیم شده: <strong th:text="${globalAccount.accountName}"></strong>
+                            <br>
+                            <small>آخرین بروزرسانی: <span th:text="${#temporals.format(globalAccount.updatedAt, 'yyyy/MM/dd HH:mm')}"></span></small>
+                        </div>
+                    </div>
+
+                    <!-- User's Personal Bots -->
+                    <div>
+                        <h6>ربات‌های شخصی شما</h6>
+                        <div th:if="${baleAccounts.empty}" class="text-center py-4">
+                            <div class="mb-4">
+                                <i class="ri-chat-1-line" style="font-size: 3rem; color: #ddd;"></i>
+                            </div>
+                            <p class="text-muted">شما ربات شخصی بله ندارید.</p>
+                        </div>
+
+                        <div th:unless="${baleAccounts.empty}">
+                            <div class="table-responsive">
+                                <table class="table table-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>نام ربات</th>
+                                            <th>چت ID</th>
+                                            <th>وضعیت</th>
+                                            <th>عملیات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="account : ${baleAccounts}">
+                                            <td th:text="${account.accountName ?: 'نامشخص'}"></td>
+                                            <td>
+                                                <code th:text="${account.settings != null ? 
+                                                    T(com.fasterxml.jackson.databind.ObjectMapper).new().readTree(account.settings).path('chatId').asText('نامشخص') : 
+                                                    'نامشخص'}"></code>
+                                            </td>
+                                            <td>
+                                                <span th:if="${account.isActive}" class="badge bg-success">فعال</span>
+                                                <span th:unless="${account.isActive}" class="badge bg-danger">غیرفعال</span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary me-1" 
+                                                        th:onclick="|validateAccount(${account.id})|">
+                                                    <i class="ri-check-line"></i> تست
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" 
+                                                        th:onclick="|deleteAccount(${account.id})|">
+                                                    <i class="ri-delete-bin-line"></i> حذف
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bot Setup Form (Admin only) -->
+            <div th:if="${#authorization.expression('hasAuthority(''Admin'')')}" class="card mt-4">
+                <div class="card-body">
+                    <h6 class="card-title">تنظیمات ربات سایت (مدیر)</h6>
+                    <form id="botConfigForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="botToken" class="form-label">توکن ربات <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="botToken" placeholder="TOKEN_FROM_BALE..." required>
+                                    <div class="form-text">توکن ربات را از BotFather بله دریافت کنید.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="chatId" class="form-label">چت ID <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="chatId" placeholder="CHAT_ID" required>
+                                    <div class="form-text">ID کانال یا گروه مقصد در بله.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="botName" class="form-label">نام ربات</label>
+                            <input type="text" class="form-control" id="botName" placeholder="@MyBaleBot">
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-primary" onclick="testBot()">
+                                <i class="ri-play-line"></i> تست ربات
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ri-save-line"></i> ذخیره ربات
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help & Instructions -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">راهنمای تنظیم ربات بله</h6>
+                    
+                    <div class="mb-3">
+                        <h6 class="text-primary">۱. ایجاد ربات:</h6>
+                        <ol class="text-muted small">
+                            <li>در بله، @BotFather را پیدا کنید</li>
+                            <li>دستور /newbot را ارسال کنید</li>
+                            <li>نام و نام کاربری ربات را انتخاب کنید</li>
+                            <li>توکن دریافتی را کپی کنید</li>
+                        </ol>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="text-primary">۲. تنظیم کانال:</h6>
+                        <ol class="text-muted small">
+                            <li>ربات را به کانال اضافه کنید</li>
+                            <li>دسترسی مدیریت پیام‌ها را بدهید</li>
+                            <li>ID کانال را پیدا کنید</li>
+                            <li>ID را در فرم وارد کنید</li>
+                        </ol>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="text-primary">یافتن Chat ID:</h6>
+                        <ul class="text-muted small">
+                            <li>از ربات‌های شناسایی ID استفاده کنید</li>
+                            <li>برای کانال‌ها ID منفی است</li>
+                            <li>برای گروه‌ها ID منفی است</li>
+                        </ul>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="ri-information-line me-2"></i>
+                        <small>
+                            پس از تنظیم، تمام کاربران می‌توانند از این ربات 
+                            برای انتشار اخبار در بله استفاده کنند.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+
+<th:block layout:fragment="pagejs">
+    <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    
+    <script>
+        document.getElementById('botConfigForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveBot();
+        });
+
+        function saveBot() {
+            const botToken = document.getElementById('botToken').value;
+            const chatId = document.getElementById('chatId').value;
+            const botName = document.getElementById('botName').value;
+
+            if (!botToken || !chatId) {
+                Swal.fire({
+                    title: 'خطا',
+                    text: 'لطفاً توکن ربات و چت ID را وارد کنید.',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            const data = {
+                platform: 'BALE',
+                botToken: botToken,
+                chatId: chatId,
+                accountName: botName
+            };
+
+            fetch('/api/socials/admin/bot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                Swal.fire({
+                    title: 'موفقیت',
+                    text: 'ربات بله با موفقیت تنظیم شد.',
+                    icon: 'success'
+                }).then(() => {
+                    location.reload();
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'خطا',
+                    text: 'خطا در تنظیم ربات: ' + error.message,
+                    icon: 'error'
+                });
+            });
+        }
+
+        function testBot() {
+            const botToken = document.getElementById('botToken').value;
+            const chatId = document.getElementById('chatId').value;
+
+            if (!botToken || !chatId) {
+                Swal.fire({
+                    title: 'خطا',
+                    text: 'لطفاً توکن ربات و چت ID را وارد کنید.',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            const data = {
+                platform: 'BALE',
+                botToken: botToken,
+                chatId: chatId
+            };
+
+            Swal.fire({
+                title: 'در حال تست...',
+                text: 'لطفاً صبر کنید',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            fetch('/api/socials/admin/test-bot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.valid) {
+                    Swal.fire({
+                        title: 'موفقیت',
+                        text: 'ربات معتبر است و می‌تواند پیام ارسال کند.',
+                        icon: 'success'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'خطا',
+                        text: data.message || 'ربات نامعتبر است.',
+                        icon: 'error'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'خطا',
+                    text: 'خطا در تست ربات.',
+                    icon: 'error'
+                });
+            });
+        }
+
+        function validateAccount(accountId) {
+            fetch(`/api/socials/accounts/${accountId}/validate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.valid) {
+                    Swal.fire({
+                        title: 'موفقیت',
+                        text: 'ربات معتبر است.',
+                        icon: 'success'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'خطا',
+                        text: 'ربات نامعتبر است.',
+                        icon: 'error'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'خطا',
+                    text: 'خطا در بررسی ربات.',
+                    icon: 'error'
+                });
+            });
+        }
+
+        function deleteAccount(accountId) {
+            Swal.fire({
+                title: 'آیا مطمئن هستید؟',
+                text: 'این ربات حذف خواهد شد.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'بله، حذف کن',
+                cancelButtonText: 'انصراف'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/api/socials/admin/accounts/${accountId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        Swal.fire({
+                            title: 'حذف شد',
+                            text: 'ربات با موفقیت حذف شد.',
+                            icon: 'success'
+                        }).then(() => {
+                            location.reload();
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'خطا',
+                            text: 'خطا در حذف ربات.',
+                            icon: 'error'
+                        });
+                    });
+                }
+            });
+        }
+    </script>
+</th:block>
+
+</html>

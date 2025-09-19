@@ -1,0 +1,256 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<th:block layout:fragment="pagetitle">
+    <div th:replace="partials/title-meta :: title-meta('ایکس (X)')"></div>
+</th:block>
+
+<head>
+    <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div th:replace="partials/page-title :: page-title('شبکه‌های اجتماعی','ایکس (X)')"></div>
+
+    <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${param.success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${param.error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="flex-shrink-0">
+                            <i class="ri-twitter-x-line" style="font-size: 2rem; color: #000;"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="card-title mb-0">حساب ایکس (X)</h5>
+                            <p class="text-muted mb-0">برای انتشار در ایکس، نیاز به اتصال OAuth دارید.</p>
+                        </div>
+                    </div>
+
+                    <div th:if="${xAccounts.empty}" class="text-center py-4">
+                        <div class="mb-4">
+                            <i class="ri-twitter-x-line" style="font-size: 4rem; color: #ddd;"></i>
+                        </div>
+                        <h6>حساب ایکس متصل نیست</h6>
+                        <p class="text-muted mb-3">برای انتشار اخبار در ایکس، ابتدا حساب خود را متصل کنید.</p>
+                        <a href="/socials/x/connect" class="btn btn-primary">
+                            <i class="ri-link"></i> اتصال حساب ایکس
+                        </a>
+                    </div>
+
+                    <div th:unless="${xAccounts.empty}">
+                        <div class="table-responsive">
+                            <table class="table table-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>نام کاربری</th>
+                                        <th>وضعیت</th>
+                                        <th>تاریخ اتصال</th>
+                                        <th>عملیات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="account : ${xAccounts}">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="ri-twitter-x-line me-2" style="color: #000;"></i>
+                                                <span th:text="${account.accountName}"></span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span th:if="${account.isActive}" class="badge bg-success">فعال</span>
+                                            <span th:unless="${account.isActive}" class="badge bg-danger">غیرفعال</span>
+                                        </td>
+                                        <td th:text="${#temporals.format(account.createdAt, 'yyyy/MM/dd HH:mm')}"></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary me-1" 
+                                                    th:onclick="|validateAccount(${account.id})|">
+                                                <i class="ri-check-line"></i> تست اتصال
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-warning me-1" 
+                                                    th:if="${account.isActive}"
+                                                    th:onclick="|toggleAccount(${account.id}, false)|">
+                                                <i class="ri-pause-line"></i> غیرفعال
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-success me-1" 
+                                                    th:unless="${account.isActive}"
+                                                    th:onclick="|toggleAccount(${account.id}, true)|">
+                                                <i class="ri-play-line"></i> فعال
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" 
+                                                    th:onclick="|disconnectAccount(${account.id})|">
+                                                <i class="ri-unlink"></i> قطع اتصال
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <a href="/socials/x/connect" class="btn btn-outline-primary">
+                                <i class="ri-add-line"></i> اتصال حساب جدید
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">راهنما</h6>
+                    <div class="mb-3">
+                        <h6 class="text-primary">مراحل اتصال:</h6>
+                        <ol class="text-muted small">
+                            <li>روی "اتصال حساب ایکس" کلیک کنید</li>
+                            <li>وارد حساب ایکس خود شوید</li>
+                            <li>دسترسی‌های مورد نیاز را تأیید کنید</li>
+                            <li>به صفحه بازگردانده می‌شوید</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6 class="text-primary">دسترسی‌های مورد نیاز:</h6>
+                        <ul class="text-muted small">
+                            <li>خواندن اطلاعات کاربری</li>
+                            <li>انتشار توئیت</li>
+                            <li>آپلود تصاویر</li>
+                        </ul>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="ri-information-line me-2"></i>
+                        <small>
+                            برای انتشار در ایکس، نیاز به Developer Account ندارید. 
+                            فقط کافی است حساب معمولی داشته باشید.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+
+<th:block layout:fragment="pagejs">
+    <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    
+    <script>
+        function validateAccount(accountId) {
+            fetch(`/api/socials/accounts/${accountId}/validate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.valid) {
+                    Swal.fire({
+                        title: 'موفقیت',
+                        text: 'حساب ایکس معتبر است و آماده انتشار است.',
+                        icon: 'success'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'خطا',
+                        text: 'حساب نامعتبر است. ممکن است توکن منقضی شده باشد.',
+                        icon: 'error'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'خطا',
+                    text: 'خطا در بررسی حساب.',
+                    icon: 'error'
+                });
+            });
+        }
+
+        function toggleAccount(accountId, activate) {
+            const action = activate ? 'activate' : 'deactivate';
+            const actionText = activate ? 'فعال‌سازی' : 'غیرفعال‌سازی';
+            
+            fetch(`/api/socials/accounts/${accountId}/${action}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                Swal.fire({
+                    title: 'موفقیت',
+                    text: `حساب با موفقیت ${actionText} شد.`,
+                    icon: 'success'
+                }).then(() => {
+                    location.reload();
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'خطا',
+                    text: `خطا در ${actionText} حساب.`,
+                    icon: 'error'
+                });
+            });
+        }
+
+        function disconnectAccount(accountId) {
+            Swal.fire({
+                title: 'آیا مطمئن هستید؟',
+                text: 'اتصال حساب ایکس قطع خواهد شد.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'بله، قطع کن',
+                cancelButtonText: 'انصراف'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/api/socials/accounts/${accountId}/deactivate`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        Swal.fire({
+                            title: 'قطع شد',
+                            text: 'اتصال حساب ایکس با موفقیت قطع شد.',
+                            icon: 'success'
+                        }).then(() => {
+                            location.reload();
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'خطا',
+                            text: 'خطا در قطع اتصال.',
+                            icon: 'error'
+                        });
+                    });
+                }
+            });
+        }
+    </script>
+</th:block>
+
+</html>
