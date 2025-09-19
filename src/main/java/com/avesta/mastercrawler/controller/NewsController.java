@@ -3,6 +3,7 @@ package com.avesta.mastercrawler.controller;
 import com.avesta.mastercrawler.dto.NewsDto;
 import com.avesta.mastercrawler.model.*;
 import com.avesta.mastercrawler.service.*;
+import com.avesta.mastercrawler.service.cms.AasaamCmsUploader;
 import com.avesta.mastercrawler.utility.ImageDownloadUtil;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -34,6 +36,7 @@ public class NewsController {
     private final IUserProfileService iUserProfileService;
     private final ITagsService iTagsService;
     private final ICommentsService iCommentsService;
+    private final AasaamCmsUploader aasaamCmsUploader;
 
     @GetMapping("/add")
     public String addForm(Model model) {
