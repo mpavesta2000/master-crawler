@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -57,6 +58,11 @@ public interface NewsRepository extends JpaRepository<News, Integer> {
     List<News> findTop2ByOrderByCreatedAtDesc();
 
     List<News> findByBreakingNewsTrue();
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE news SET created_at = ?2 WHERE id = ?1", nativeQuery = true)
+    void updateCreatedAtById(Integer id, LocalDateTime createdAt);
 
 
 }

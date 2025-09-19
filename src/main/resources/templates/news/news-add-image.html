@@ -13,6 +13,8 @@
     <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="/assets/libs/filepond/filepond.min.css" type="text/css" />
     <link rel="stylesheet" href="/assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.css">
+    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
     <style>
         .required::after {
             content: " *";
@@ -137,10 +139,6 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="text-end mb-4">
-                    <button type="submit" class="btn btn-success w-sm">ذخیره</button>
-                </div>
             </div>
 
             <div class="col-lg-4">
@@ -165,6 +163,34 @@
                     </div>
 
                     <div class="card-body">
+                        <div>
+                            <label for="persian-date-picker" class="form-label">تاریخ انتشار</label>
+                            <div class="input-group">
+                                <input type="text"
+                                       id="persian-date-picker"
+                                       class="form-control"
+                                       placeholder="انتخاب تاریخ انتشار"
+                                       readonly>
+                                <!-- Hidden input with name="date" for backend -->
+                                <input type="hidden"
+                                       id="gregorian-date-input"
+                                       name="date"
+                                       th:value="${#temporals.format(news.createdAt, 'yyyy-MM-dd HH:mm:ss')}"
+                                       value="">
+                                <span class="input-group-text" onclick="openDatePicker()">
+                                    <i class="ri-calendar-line"></i>
+                                </span>
+                            </div>
+                            <div class="form-text text-muted mt-2">
+                                <i class="ri-information-line text-info"></i>
+                                <strong>راهنما:</strong> در صورت خالی گذاشتن این فیلد، سیستم به صورت خودکار زمان فعلی را در نظر خواهد گرفت.
+                                <br><small class="text-muted">فرمت ارسالی: YYYY-MM-DD HH:mm:ss</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <label class="form-label">جایگاه اخبار</label>
                         <div class="row">
                             <div class="col-sm-6">
                                 <input type="checkbox" name="breakingNews" class="btn-check" id="btn-check-outlined1" th:checked="${news.breakingNews == true}">
@@ -175,9 +201,7 @@
                                 <label class="btn btn-outline-success w-100 text-center" for="btn-check-outlined2">سرخط خبرها</label>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="card-body">
                         <div class="row">
                             <div class="col-sm-6">
                                 <input type="checkbox" name="showComments" class="btn-check" id="btn-check-outlined3" th:checked="${news.showComments == true}">
@@ -188,13 +212,8 @@
                                 <label class="btn btn-outline-success w-100 text-center" for="btn-check-outlined4">نمایش در پربیننده ترین‌ها</label>
                             </div>
                         </div>
-                        <div class="row mt-4" th:if="${#authorization.expression('hasAuthority(''VogIran'')')}">
-                            <div class="col-sm-12">
-                                <input type="checkbox" name="sendToVog" class="btn-check" id="btn-check-outlined5">
-                                <label class="btn btn-outline-danger w-100 text-center" for="btn-check-outlined5">ارسال به وگ ایران</label>
-                            </div>
-                        </div>
-                        <div class="row mt-4">
+
+                        <div class="row">
                             <div class="col-sm-6">
                                 <input type="checkbox" name="translate" class="btn-check" id="btn-check-outlined6" th:checked="${news.getTranslated == true}">
                                 <label class="btn btn-outline-warning w-100 text-center" for="btn-check-outlined6">ارسال برای ترجمه</label>
@@ -202,6 +221,39 @@
                             <div class="col-sm-6">
                                 <input type="checkbox" name="slider" class="btn-check" id="btn-check-outlined7" th:checked="${news.slider == true}">
                                 <label class="btn btn-outline-success w-100 text-center" for="btn-check-outlined7">نمایش در اسلایدر</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <label class="form-label">شبکه‌های اجتماعی</label>
+                        <div class="row">
+                            <div class="col-sm-6 mt-2">
+                                <button type="button" class="btn btn-outline-dark w-100" onclick="postToX()"
+                                        data-bs-toggle="tooltip" title="انتشار در ایکس">
+                                    <i class="ri-twitter-x-line me-1"></i> ارسال به ایکس
+                                </button>
+                            </div>
+                            <div class="col-sm-6 mt-2">
+                                <button type="button" class="btn btn-outline-info w-100" onclick="postToBale()"
+                                        data-bs-toggle="tooltip" title="انتشار در بله">
+                                    <i class="ri-twitter-x-line me-1"></i>ارسال به بله
+                                </button>
+                            </div>
+
+                            <div class="col-sm-12 mt-2">
+                                <button type="button" class="btn btn-outline-primary w-100" onclick="openSocialModal()"
+                                        data-bs-toggle="tooltip" title="انتشار در چندین پلتفرم">
+                                    <i class="ri-twitter-x-line me-1"></i>انتشار گروهی
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-success w-100">ذخیره</button>
                             </div>
                         </div>
                     </div>
@@ -449,7 +501,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="galleryModalLabel">لیست عکس ها</h5>
+                    <h5 class="modal-title" id="galleryModalLabel">لیست عکس‌ها</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                 </div>
                 <div class="modal-body">
@@ -798,8 +850,11 @@
     <script src="/assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
     <script src="/assets/libs/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
     <script src="/assets/libs/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
+    <script src="https://unpkg.com/persian-date@1.1.0/dist/persian-date.min.js"></script>
+    <script src="https://unpkg.com/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
     <script src="/assets/libs/filepond-plugin-file-encode/filepond-plugin-file-encode.min.js"></script>
     <script src="/assets/js/crawler/news-add-image.js"></script>
+    <script src="/assets/js/socials/social-publisher.js"></script>
     <script th:inline="javascript">
 
 

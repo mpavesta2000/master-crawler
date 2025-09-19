@@ -123,6 +123,14 @@ public class News extends BaseEntity{
     @Lob
     private String slug;
 
+    @Column(name = "focus_keyphrase", columnDefinition = "TEXT")
+    @Lob
+    private String focusKeyphrase;
+
+    @Column(name = "seo_title", columnDefinition = "TEXT")
+    @Lob
+    private String seoTitle;
+
 
 
 

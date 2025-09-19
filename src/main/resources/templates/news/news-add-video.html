@@ -14,7 +14,7 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
     <link href="https://vjs.zencdn.net/8.0.4/video-js.css" rel="stylesheet">
-    <script src="https://vjs.zencdn.net/8.0.4/video.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
     <style>
         .required::after {
             content: " *";
@@ -141,9 +141,6 @@
                     </div>
                 </div>
 
-                <div class="text-end mb-4">
-                    <button type="submit" class="btn btn-success w-sm">ذخیره</button>
-                </div>
             </div>
 
             <div class="col-lg-4">
@@ -168,6 +165,34 @@
                     </div>
 
                     <div class="card-body">
+                        <div>
+                            <label for="persian-date-picker" class="form-label">تاریخ انتشار</label>
+                            <div class="input-group">
+                                <input type="text"
+                                       id="persian-date-picker"
+                                       class="form-control"
+                                       placeholder="انتخاب تاریخ انتشار"
+                                       readonly>
+                                <!-- Hidden input with name="date" for backend -->
+                                <input type="hidden"
+                                       id="gregorian-date-input"
+                                       name="date"
+                                       th:value="${#temporals.format(news.createdAt, 'yyyy-MM-dd HH:mm:ss')}"
+                                       value="">
+                                <span class="input-group-text" onclick="openDatePicker()">
+                                    <i class="ri-calendar-line"></i>
+                                </span>
+                            </div>
+                            <div class="form-text text-muted mt-2">
+                                <i class="ri-information-line text-info"></i>
+                                <strong>راهنما:</strong> در صورت خالی گذاشتن این فیلد، سیستم به صورت خودکار زمان فعلی را در نظر خواهد گرفت.
+                                <br><small class="text-muted">فرمت ارسالی: YYYY-MM-DD HH:mm:ss</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <label class="form-label">جایگاه اخبار</label>
                         <div class="row">
                             <div class="col-sm-6">
                                 <input type="checkbox" name="breakingNews" class="btn-check" id="btn-check-outlined1" th:checked="${news.breakingNews == true}">
@@ -178,9 +203,7 @@
                                 <label class="btn btn-outline-success w-100 text-center" for="btn-check-outlined2">سرخط خبرها</label>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="card-body">
                         <div class="row">
                             <div class="col-sm-6">
                                 <input type="checkbox" name="showComments" class="btn-check" id="btn-check-outlined3" th:checked="${news.showComments == true}">
@@ -191,13 +214,8 @@
                                 <label class="btn btn-outline-success w-100 text-center" for="btn-check-outlined4">نمایش در پربیننده ترین‌ها</label>
                             </div>
                         </div>
-                        <div class="row mt-4" th:if="${#authorization.expression('hasAuthority(''VogIran'')')}">
-                            <div class="col-sm-12">
-                                <input type="checkbox" name="sendToVog" class="btn-check" id="btn-check-outlined5">
-                                <label class="btn btn-outline-danger w-100 text-center" for="btn-check-outlined5">ارسال به وگ ایران</label>
-                            </div>
-                        </div>
-                        <div class="row mt-4">
+
+                        <div class="row">
                             <div class="col-sm-6">
                                 <input type="checkbox" name="translate" class="btn-check" id="btn-check-outlined6" th:checked="${news.getTranslated == true}">
                                 <label class="btn btn-outline-warning w-100 text-center" for="btn-check-outlined6">ارسال برای ترجمه</label>
@@ -205,6 +223,39 @@
                             <div class="col-sm-6">
                                 <input type="checkbox" name="slider" class="btn-check" id="btn-check-outlined7" th:checked="${news.slider == true}">
                                 <label class="btn btn-outline-success w-100 text-center" for="btn-check-outlined7">نمایش در اسلایدر</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <label class="form-label">شبکه‌های اجتماعی</label>
+                        <div class="row">
+                            <div class="col-sm-6 mt-2">
+                                <button type="button" class="btn btn-outline-dark w-100" onclick="postToX()"
+                                        data-bs-toggle="tooltip" title="انتشار در ایکس">
+                                    <i class="ri-twitter-x-line me-1"></i> ارسال به ایکس
+                                </button>
+                            </div>
+                            <div class="col-sm-6 mt-2">
+                                <button type="button" class="btn btn-outline-info w-100" onclick="postToBale()"
+                                        data-bs-toggle="tooltip" title="انتشار در بله">
+                                    <i class="ri-twitter-x-line me-1"></i>ارسال به بله
+                                </button>
+                            </div>
+
+                            <div class="col-sm-12 mt-2">
+                                <button type="button" class="btn btn-outline-primary w-100" onclick="openSocialModal()"
+                                        data-bs-toggle="tooltip" title="انتشار در چندین پلتفرم">
+                                    <i class="ri-twitter-x-line me-1"></i>انتشار گروهی
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-success w-100">ذخیره</button>
                             </div>
                         </div>
                     </div>
@@ -419,7 +470,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="galleryModalLabel">لیست عکس ها</h5>
+                    <h5 class="modal-title" id="galleryModalLabel">لیست عکس‌ها</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                 </div>
                 <div class="modal-body">
@@ -717,6 +768,105 @@
         </div>
     </div>
 
+    <!-- Social Publishing Modal -->
+    <div class="modal fade" id="socialPublishModal" tabindex="-1" role="dialog" aria-labelledby="socialPublishModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="socialPublishModalLabel">
+                        <i class="ri-share-line me-2"></i>انتشار در شبکه‌های اجتماعی
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="socialPublishForm">
+                        <!-- Platform Selection -->
+                        <div class="mb-4">
+                            <h6 class="form-label">انتخاب پلتفرم‌ها:</h6>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="platform_X" value="X">
+                                        <label class="form-check-label" for="platform_X">
+                                            <i class="ri-twitter-x-line me-1"></i> ایکس
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="platform_TELEGRAM" value="TELEGRAM">
+                                        <label class="form-check-label" for="platform_TELEGRAM">
+                                            <i class="ri-telegram-line me-1"></i> تلگرام
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="platform_EITAA" value="EITAA">
+                                        <label class="form-check-label" for="platform_EITAA">
+                                            <i class="ri-message-line me-1"></i> ایتا
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="platform_BALE" value="BALE">
+                                        <label class="form-check-label" for="platform_BALE">
+                                            <i class="ri-chat-1-line me-1"></i> بله
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Publishing Settings -->
+                        <div class="mb-3">
+                            <h6 class="form-label">تنظیمات انتشار:</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="includeImage" checked>
+                                        <label class="form-check-label" for="includeImage">
+                                            شامل تصویر شود
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="includeUrl" checked>
+                                        <label class="form-check-label" for="includeUrl">
+                                            شامل لینک خبر شود
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Custom Message -->
+                        <div class="mb-3">
+                            <label for="customMessage" class="form-label">پیام سفارشی (اختیاری):</label>
+                            <textarea class="form-control" id="customMessage" rows="3"
+                                      placeholder="پیام اضافی که قبل از عنوان خبر نمایش داده شود..."></textarea>
+                        </div>
+
+                        <!-- Schedule Publishing -->
+                        <div class="mb-3">
+                            <label for="scheduleTime" class="form-label">زمان‌بندی انتشار (اختیاری):</label>
+                            <input type="datetime-local" class="form-control" id="scheduleTime">
+                            <small class="form-text text-muted">اگر خالی بگذارید، فوراً منتشر می‌شود.</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                    <button type="button" class="btn btn-primary" onclick="publishToSocials()">
+                        <i class="ri-send-plane-line me-1"></i>انتشار
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </th:block>
 
 <th:block layout:fragment="pagejs">
@@ -732,9 +882,13 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="/assets/js/pages/select2.init.js"></script>
     <script src="/assets/js/pages/form-validation.init.js"></script>
+    <script src="https://vjs.zencdn.net/8.0.4/video.min.js"></script>
     <script src="/assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script src="https://unpkg.com/persian-date@1.1.0/dist/persian-date.min.js"></script>
+    <script src="https://unpkg.com/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
     <script src="/assets/libs/prismjs/prism.js"></script>
     <script src="/assets/js/crawler/news-add-video.js"></script>
+    <script src="/assets/js/socials/social-publisher.js"></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
         var success = [[${success}]];

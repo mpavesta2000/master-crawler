@@ -904,7 +904,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Render pagination links
     function renderPagination(currentPage, totalPages) {
-        console.log("Rendering pagination:", { currentPage, totalPages });
+        console.log("Rendering pagination:", {currentPage, totalPages});
 
         paginationContainer.innerHTML = ""; // Clear existing pagination
         if (totalPages <= 1) return; // Skip pagination if only one page
@@ -1416,8 +1416,157 @@ async function produceMeta() {
         preloader.style.display = 'none';
         button.style.width = '100%';
     }
-
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Initialize Persian Date Picker with format conversion
+    $('#persian-date-picker').persianDatepicker({
+        initialValue: false,
+        format: 'YYYY/MM/DD HH:mm',
+        autoClose: true,
+        timePicker: {
+            enabled: true,
+            meridiem: {
+                enabled: false
+            }
+        },
+        calendar: {
+            persian: {
+                locale: 'fa',
+                showHint: true,
+                leapYearMode: 'algorithmic'
+            }
+        },
+        navigator: {
+            enabled: true,
+            scroll: {
+                enabled: true
+            },
+            text: {
+                btnNextText: "بعد",
+                btnPrevText: "قبل"
+            }
+        },
+        toolbox: {
+            enabled: true,
+            calendarSwitch: {
+                enabled: true,
+                format: 'MMMM'
+            },
+            todayButton: {
+                enabled: true,
+                text: {
+                    fa: "امروز"
+                }
+            },
+            submitButton: {
+                enabled: true,
+                text: {
+                    fa: "تایید"
+                }
+            }
+        },
+        dayPicker: {
+            enabled: true,
+            titleFormat: 'YYYY MMMM'
+        },
+        responsive: true,
+        inline: false,
+        fontSize: 13,
+        calendarType: 'persian',
+        inputDelay: 800,
+        observer: true,
+        onSelect: function (unix) {
+            // Convert Persian date to Gregorian format for backend
+            convertAndSetDate(unix);
+        }
+    });
+
+    // Function to convert Unix timestamp to Gregorian format
+    function convertAndSetDate(unixTimestamp) {
+        try {
+            // Convert to JavaScript Date object
+            const jsDate = new Date(unixTimestamp);
+
+            // Format for backend: YYYY-MM-DD HH:mm:ss
+            const gregorianFormatted = formatDateForBackend(jsDate);
+
+            // Set the hidden input value that will be sent to backend
+            document.getElementById('gregorian-date-input').value = gregorianFormatted;
+
+            console.log('Date converted:', {
+                persian: document.getElementById('persian-date-picker').value,
+                gregorian: gregorianFormatted,
+                unix: unixTimestamp
+            });
+
+        } catch (error) {
+            console.error('Error converting date:', error);
+        }
+    }
+
+    // Format date for backend
+    function formatDateForBackend(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        const microseconds = String(date.getMilliseconds() * 1000).padStart(6, '0');
+
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${microseconds}`;
+    }
+
+
+    // Function to open date picker when clicking calendar icon
+    window.openDatePicker = function () {
+        $('#persian-date-picker').focus();
+    };
+
+    // Set initial date if editing existing news
+    function setInitialDate() {
+        const gregorianInput = document.getElementById('gregorian-date-input');
+        if (gregorianInput && gregorianInput.value) {
+            try {
+                const jsDate = new Date(gregorianInput.value);
+                const persianDate = new persianDate(jsDate);
+                const persianFormatted = persianDate.format('YYYY/MM/DD HH:mm');
+
+                $('#persian-date-picker').val(persianFormatted);
+                console.log('Initial date set:', {
+                    gregorian: gregorianInput.value,
+                    persian: persianFormatted
+                });
+            } catch (error) {
+                console.error('Error setting initial date:', error);
+            }
+        }
+    }
+
+    // Set initial date after a short delay to ensure DOM is ready
+    setTimeout(setInitialDate, 500);
+
+    // Enhanced form validation (keeps your existing validation)
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            const dateInput = document.getElementById('persian-date-picker');
+            const gregorianInput = document.getElementById('gregorian-date-input');
+
+            // If Persian date is empty but we want to allow empty dates for auto-setting
+            if (!dateInput.value.trim()) {
+                gregorianInput.value = ''; // Ensure hidden field is also empty
+                const confirmMsg = 'تاریخ انتشار خالی است. سیستم زمان فعلی را در نظر خواهد گرفت. ادامه می‌دهید؟';
+                if (!confirm(confirmMsg)) {
+                    e.preventDefault();
+                    dateInput.focus();
+                    return false;
+                }
+            }
+        });
+    }
+});
 
 
 

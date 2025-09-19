@@ -17,6 +17,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
@@ -65,7 +67,8 @@ public class NewsController {
                                 @RequestParam(required = false) boolean showMostViewed,
                                 @RequestParam(required = false) boolean slider,
                                 @RequestParam(required = false) boolean translate,
-                                @RequestParam(required = false) List<String> newsTags) {
+                                @RequestParam(required = false) List<String> newsTags,
+                                @RequestParam(required = false) String date) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -161,12 +164,19 @@ public class NewsController {
                 savedNews = iNewsService.save(news);
             }
 
+            // Edit date if its not null
+            if(date != null && !date.trim().isEmpty()) {
+                LocalDateTime parsedDate = LocalDateTime.parse(date,
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
+                iNewsService.updateCreatedAtById(savedNews.getId(), parsedDate);
+            }
+
             // After successful video news save, awake SweetAlert
             if (savedNews.getId() != null) {
                 redirectAttributes.addFlashAttribute("success", true);
             }
         }
-        return "redirect:/news/add-video-news";
+        return "redirect:/admin/news/add-video-news";
     }
 
     @GetMapping("/video/edit/{id}")
@@ -203,7 +213,8 @@ public class NewsController {
                                 @RequestParam(required = false) boolean showMostViewed,
                                 @RequestParam(required = false) boolean slider,
                                 @RequestParam(required = false) boolean translate,
-                                @RequestParam(required = false) List<String> newsTags) {
+                                @RequestParam(required = false) List<String> newsTags,
+                                @RequestParam(required = false) String date) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -312,12 +323,19 @@ public class NewsController {
                 savedNews = iNewsService.save(news);
             }
 
+            // Edit date if its not null
+            if(date != null && !date.trim().isEmpty()) {
+                LocalDateTime parsedDate = LocalDateTime.parse(date,
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
+                iNewsService.updateCreatedAtById(savedNews.getId(), parsedDate);
+            }
+
             //After successful Gallery news save awake sweetalert
             if(savedNews.getId() != null) {
                 redirectAttributes.addFlashAttribute("success", true);
             }
         }
-        return "redirect:/news/add-image-news";
+        return "redirect:/admin/news/add-image-news";
     }
 
     @GetMapping("/images-news/edit/{id}")
@@ -345,7 +363,8 @@ public class NewsController {
                            @RequestParam(required = false) boolean showMostViewed,
                            @RequestParam(required = false) boolean slider,
                            @RequestParam(required = false) boolean translate,
-                           @RequestParam(required = false) List<String> newsTags) {
+                           @RequestParam(required = false) List<String> newsTags,
+                           @RequestParam(required = false) String date) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -437,6 +456,13 @@ public class NewsController {
             if (mainVideo != null) {
                 news.setMainVideo(mainVideo);
                 savedNews = iNewsService.save(news);
+            }
+
+            // Edit date if its not null
+            if(date != null && !date.trim().isEmpty()) {
+                LocalDateTime parsedDate = LocalDateTime.parse(date,
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
+                iNewsService.updateCreatedAtById(savedNews.getId(), parsedDate);
             }
 
             // After successful save, trigger SweetAlert

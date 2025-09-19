@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -194,5 +195,10 @@ public class NewsServiceImpl implements INewsService {
     @Override
     public List<News> getTwoNews() {
         return newsRepository.findTop2ByOrderByCreatedAtDesc();
+    }
+
+    @Override
+    public void updateCreatedAtById(Integer id, LocalDateTime createdAt) {
+        newsRepository.updateCreatedAtById(id,createdAt);
     }
 }
