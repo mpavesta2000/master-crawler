@@ -4,7 +4,7 @@
     "main": "index.js",
     "scripts": {
       "test": "echo \"Error: no test specified\" && exit 1",
-      "build": "esbuild src/yoastSEO.js --bundle --format=esm --platform=browser --target=es2020 --define:global=globalThis --outfile=src/main/resources/static/assets/js/yoastSEO.js"
+      "build": "echo 'YoastSEO already compiled and moved to /assets/js/crawler/yoastSEO.js'"
     },
     "repository": {
       "type": "git",

@@ -14,7 +14,9 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
     <link href="https://vjs.zencdn.net/8.0.4/video-js.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">    
+    <!-- YoastSEO Single File Integration -->
+    <script type="module" src="/assets/js/crawler/yoastSEO.js"></script>
     <style>
         .required::after {
             content: " *";
@@ -119,13 +121,50 @@
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label" for="news-slug">لینک خارجی خبر</label>
+                                    <label class="form-label d-flex justify-content-between" for="news-slug">
+                                        اسلاگ URL (URL Slug)
+                                        <button type="button" class="text-info" id="generate-slug-btn"
+                                                style="background: none; border: none; cursor: pointer; font-size: inherit;">
+                                            (تولید اسلاگ با هوش مصنوعی)
+                                        </button>
+                                    </label>
                                     <input type="text" th:field="*{slug}" class="form-control" id="news-slug"
-                                           placeholder="">
+                                           placeholder="keyphrase-in-url-slug">
+                                    <div class="form-text">
+                                        <strong>اسلاگ URL:</strong> بخشی از آدرس اینترنتی خبر<br>
+                                        • بهتر است شامل کلیدواژه اصلی باشد<br>
+                                        • فقط از حروف انگلیسی، اعداد و خط تیره استفاده کنید<br>
+                                    </div>
                                     <div class="valid-feedback">
                                         تکمیل شده است.
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required" for="news-keyphrase-input">کلیدواژه اصلی (Focus Keyphrase)</label>
+                            <input type="text" th:field="*{focusKeyphrase}" class="form-control" id="news-keyphrase-input"
+                                   placeholder="مثل: اخبار تکنولوژی"
+                                   required>
+                            <div class="form-text">
+                                <strong>کلیدواژه اصلی:</strong> این کلیدواژه در تحلیل سئو بررسی می‌شود.<br>
+                                • باید در عنوان سئو، توضیحات متا و محتوا ظاهر شود<br>
+                                • تراکم مناسب در متن داشته باشد<br>
+                                • در اسلاگ URL استفاده شود
+                            </div>
+                            <div class="invalid-feedback">
+                                لطفا کلیدواژه اصلی را برای تحلیل سئو وارد کنید.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="seo-title-input">عنوان سئو (SEO Title)</label>
+                            <input type="text" th:field="*{seoTitle}" class="form-control" id="seo-title-input"
+                                   placeholder="عنوانی که در گوگل نمایش می‌شود - شامل کلیدواژه اصلی">
+                            <div class="form-text">
+                                <strong>عنوان سئو:</strong> عنوانی که در نتایج جستجوی گوگل نمایش می‌شود<br>
+                                • باید شامل کلیدواژه اصلی باشد<br>
+                                • طول بهینه: 30-60 کاراکتر<br>
+                                • اگر خالی باشد، از تیتر خبر استفاده می‌شود
                             </div>
                         </div>
                         <div class="mb-3">
@@ -137,6 +176,26 @@
                             <div class="valid-feedback">
                                 تکمیل شده است.
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEO Analysis Panel -->
+                <div class="card seo-panel">
+                    <div class="card-header" id="seo-panel-header">
+                        <h5 class="card-title mb-0 fw-bolder">بخش سئو</h5>
+                    </div>
+                    <div class="card-body">
+                        
+                        <!-- YoastSEO.js Output Area -->
+                        <div id="yoast-seo-output" class="yoast-seo-output" style="margin: 15px 0; padding: 0; border-radius: 5px;">
+                            <!-- SEO Analysis will be displayed here -->
+                        </div>
+                        
+                        <div class="mt-3 d-flex justify-content-center">
+                            <button type="button" id="refresh-seo-analysis" class="btn btn-info btn-bg w-100">
+                                <i class="bx bx-refresh label-icon align-middle fs-18 me-2"></i>بروزرسانی تحلیل سئو
+                            </button>
                         </div>
                     </div>
                 </div>
