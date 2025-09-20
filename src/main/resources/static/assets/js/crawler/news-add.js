@@ -718,6 +718,20 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+// Tinn button
+document.addEventListener("DOMContentLoaded", function () {
+    const checkbox = document.getElementById("btn-check-outlined5");
+    const aasaamCard = document.getElementById("aasaam-tinn-card");
+
+    checkbox.addEventListener("change", function () {
+        if (checkbox.checked) {
+            aasaamCard.style.display = "block";
+        } else {
+            aasaamCard.style.display = "none";
+        }
+    });
+});
+
 // Select video from file manager
 function selectVideo(videoElement) {
     const videoUrl = videoElement.getAttribute("data-video");

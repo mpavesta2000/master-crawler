@@ -189,22 +189,41 @@ public class AasaamCmsUploader {
         }
     }
 
-    public String uploadNews(News news, List<String> category,String serverDomain) {
+    public String uploadNews(News news, List<String> category,String serverDomain, String status) {
+        System.out.println(news.getCreatedAt());
         String type = "2";
-        String publish = "0";
+        String publish = status;
         String productionType = "1";
-        String primaryFileId = uploadFileAndGetId(serverDomain+news.getMainImage());
+        String title = news.getTitle();
+        String upTitle = news.getHeadline() != null ? news.getHeadline() : "";
+//        String primaryFileId = uploadFileAndGetId(serverDomain+news.getMainImage());
+        String primaryFileId = "264154";
         String content = processAllNewsBodyImages(news.getBody());
-        String publishTime = formatDate(news.getCreatedAt().toString());
+//        String publishTime = formatDate(news.getCreatedAt().toString());
         String slug = news.getSlug();
         String tags = news.getTags().stream()
                 .map(tag -> tag.getName())
                 .collect(Collectors.joining(","));
         String categories = category.stream()
                 .collect(Collectors.joining(","));
-        
 
-        return null;
+        HttpResponse<String> response = Unirest.post("https://www.tinn.ir/newsstudioapis/add?APIKEY=" + API_KEY)
+                .header("accept", "application/json, text/plain, */*")
+                .field("upTitle", upTitle)
+                .field("lead", news.getLead())
+                .field("slug", slug)
+                .field("primary_file_id", primaryFileId)
+                .field("title", title)
+//                .field("publish_time", publishTime)
+                .field("publish", publish)
+                .field("type", type)
+                .field("productiontype", productionType)
+                .field("categories", categories)
+                .field("tags", tags)
+                .field("content", content)
+                .asString();
+
+        return response.getBody();
     }
 
 }

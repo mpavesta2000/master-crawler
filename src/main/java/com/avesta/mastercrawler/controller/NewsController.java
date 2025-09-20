@@ -42,6 +42,7 @@ public class NewsController {
     public String addForm(Model model) {
         List<Category> categoryList = iCategoryService.findAll();
 
+        model.addAttribute("aasaamCategories", aasaamCmsUploader.getCategories());
         model.addAttribute("categories", categoryList);
         model.addAttribute("news", new News());
 
@@ -216,8 +217,11 @@ public class NewsController {
                                 @RequestParam(required = false) boolean showMostViewed,
                                 @RequestParam(required = false) boolean slider,
                                 @RequestParam(required = false) boolean translate,
+                                @RequestParam(required = false) boolean sendToTinn,
                                 @RequestParam(required = false) List<String> newsTags,
-                                @RequestParam(required = false) String date) {
+                                @RequestParam(required = false) String date,
+                                @RequestParam(required = false, name = "aasaamTinnCategories") List<String> aasaamTinnCategories,
+                                @RequestParam(required = false, name = "aasaamTinnStatus") String aasaamTinnStatus) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -333,6 +337,7 @@ public class NewsController {
                 iNewsService.updateCreatedAtById(savedNews.getId(), parsedDate);
             }
 
+
             //After successful Gallery news save awake sweetalert
             if(savedNews.getId() != null) {
                 redirectAttributes.addFlashAttribute("success", true);
@@ -366,8 +371,11 @@ public class NewsController {
                            @RequestParam(required = false) boolean showMostViewed,
                            @RequestParam(required = false) boolean slider,
                            @RequestParam(required = false) boolean translate,
+                           @RequestParam(required = false) boolean sendToTinn,
                            @RequestParam(required = false) List<String> newsTags,
-                           @RequestParam(required = false) String date) {
+                           @RequestParam(required = false) String date,
+                           @RequestParam(required = false, name = "aasaamTinnCategories") List<String> aasaamTinnCategories,
+                           @RequestParam(required = false, name = "aasaamTinnStatus") String aasaamTinnStatus) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -383,6 +391,7 @@ public class NewsController {
             Users user = iUsersService.findByEmail(authentication.getName()).orElseThrow(()->new UsernameNotFoundException("user not found."));
             NewsType newsType = iNewsTypeService.findById(3)
                     .orElseThrow(() -> new IllegalArgumentException("NewsType with id 3 not found"));
+
 
             //Add comment based on news
             if (news.getId() != null) {
@@ -464,8 +473,16 @@ public class NewsController {
             // Edit date if its not null
             if(date != null && !date.trim().isEmpty()) {
                 LocalDateTime parsedDate = LocalDateTime.parse(date,
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
                 iNewsService.updateCreatedAtById(savedNews.getId(), parsedDate);
+            }
+
+            System.out.println(savedNews.getCreatedAt());
+
+            if(sendToTinn) {
+                System.out.println("im in here");
+                String response = aasaamCmsUploader.uploadNews(savedNews, aasaamTinnCategories, "",aasaamTinnStatus);
+                System.out.println(response);
             }
 
             // After successful save, trigger SweetAlert
@@ -528,6 +545,7 @@ public class NewsController {
             List<Category> categoryList = iCategoryService.findAll();
             List<String> images = iNewsService.fileManagerImages();
 
+            model.addAttribute("aasaamCategories", aasaamCmsUploader.getCategories());
             model.addAttribute("images", images);
             model.addAttribute("categories", categoryList);
             model.addAttribute("news", foundNews.get());

@@ -347,10 +347,46 @@
                     </div>
 
                     <div class="card-body">
+                        <label class="form-label">ارسال به پنل مدیریتی</label>
+                        <div class="row mt-2">
+                            <div class="col-sm-12">
+                                <input type="checkbox" name="sendToTinn" class="btn-check" id="btn-check-outlined5">
+                                <label class="btn btn-outline-danger w-100 text-center" for="btn-check-outlined5">ارسال به تین نیوز</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-sm-12">
                                 <button type="submit" class="btn btn-success w-100">ذخیره</button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4" id="aasaam-tinn-card" style="display: none;">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0 fw-bolder">تنظیمات تین نیوز (آسام)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label required">دسته‌بندی‌ها</label>
+                            <select id="aasaam-tinn-categories" name="aasaamTinnCategories" class="js-example-disabled-multi form-control" multiple="multiple">
+                                <option th:each="entry : ${aasaamCategories.entrySet()}"
+                                        th:value="${entry.key}"
+                                        th:text="${entry.value}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <label for="choices-privacy-aasaam-status-input" class="form-label required">وضیعت ارسال</label>
+                            <select name="aasaamTinnStatus" class="form-select" id="choices-privacy-aasaam-status-input" required>
+                                <option value="0" selected>پیش نویس</option>
+                                <option value="1">انتشار</option>
+                            </select>
                         </div>
                     </div>
                 </div>
