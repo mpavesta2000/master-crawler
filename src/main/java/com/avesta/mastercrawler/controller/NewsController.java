@@ -544,6 +544,7 @@ public class NewsController {
             Optional<News> foundNews = iNewsService.findById(id);
             List<Category> categoryList = iCategoryService.findAll();
             List<String> images = iNewsService.fileManagerImages();
+            System.out.println(aasaamCmsUploader.getCategories());
 
             model.addAttribute("aasaamCategories", aasaamCmsUploader.getCategories());
             model.addAttribute("images", images);

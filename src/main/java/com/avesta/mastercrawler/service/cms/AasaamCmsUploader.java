@@ -8,6 +8,7 @@ import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import kong.unirest.json.JSONArray;
+import kong.unirest.json.JSONObject;
 import lombok.AllArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -189,41 +190,54 @@ public class AasaamCmsUploader {
         }
     }
 
-    public String uploadNews(News news, List<String> category,String serverDomain, String status) {
-        System.out.println(news.getCreatedAt());
-        String type = "2";
-        String publish = status;
-        String productionType = "1";
-        String title = news.getTitle();
-        String upTitle = news.getHeadline() != null ? news.getHeadline() : "";
-//        String primaryFileId = uploadFileAndGetId(serverDomain+news.getMainImage());
-        String primaryFileId = "264154";
-        String content = processAllNewsBodyImages(news.getBody());
-//        String publishTime = formatDate(news.getCreatedAt().toString());
-        String slug = news.getSlug();
-        String tags = news.getTags().stream()
-                .map(tag -> tag.getName())
-                .collect(Collectors.joining(","));
-        String categories = category.stream()
-                .collect(Collectors.joining(","));
+    public String uploadNews(News news, List<String> category, String serverDomain, String status) {
+        try {
+            String type = "1";
+            String productionType = "2";
+            String publish = status;
+            String upTitle = news.getHeadline() != null ? news.getHeadline() : "";
+            String title = news.getTitle();
+            String primaryFileId = "264208"; // or uploadFileAndGetId(...)
+            String content = processAllNewsBodyImages(news.getBody());
+            String slug = news.getSlug();
+            String tags = news.getTags().stream()
+                    .map(tag -> tag.getName())
+                    .collect(Collectors.joining(","));
+            String categories = category.stream()
+                    .collect(Collectors.joining(","));
 
-        HttpResponse<String> response = Unirest.post("https://www.tinn.ir/newsstudioapis/add?APIKEY=" + API_KEY)
-                .header("accept", "application/json, text/plain, */*")
-                .field("upTitle", upTitle)
-                .field("lead", news.getLead())
-                .field("slug", slug)
-                .field("primary_file_id", primaryFileId)
-                .field("title", title)
-//                .field("publish_time", publishTime)
-                .field("publish", publish)
-                .field("type", type)
-                .field("productiontype", productionType)
-                .field("categories", categories)
-                .field("tags", tags)
-                .field("content", content)
-                .asString();
 
-        return response.getBody();
+            System.out.println(categories);
+
+
+            JSONObject body = new JSONObject();
+            body.put("upTitle", upTitle);
+            body.put("lead", news.getLead() != null ? news.getLead() : "");
+            body.put("url", "");
+            body.put("primary_file_id", primaryFileId);
+            body.put("title", title);
+            body.put("publish", Integer.parseInt(publish));
+            body.put("type", Integer.parseInt(type));
+            body.put("productiontype", Integer.parseInt(productionType));
+            body.put("user_id", 2);
+            body.put("categories", categories);
+            body.put("tags", tags);
+            body.put("audio_id", "");
+            body.put("video_id", "");
+            body.put("file_id", "");
+            body.put("content", content);
+
+            HttpResponse<String> response = Unirest.post("https://www.tinn.ir/newsstudioapis/add?APIKEY=" + API_KEY)
+                    .header("Accept", "application/json, text/plain, */*")
+                    .header("Content-Type", "application/json;charset=utf-8")
+                    .body(body.toString())
+                    .asString();
+
+            return response.getBody();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
     }
 
 }

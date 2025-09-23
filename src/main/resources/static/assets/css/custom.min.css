@@ -9,3 +9,28 @@ body, h1, h2, h3, h4, h5, h6, li, a, span , button{
 .datepicker-plot-area * {
     font-family: 'Shabnam' !important;
 }
+
+/*:root{*/
+/*    --vz-primary: #8E0100;*/
+/*    --vz-primary-rgb: 142, 1, 0;*/
+/*    --vz-input-focus-border: #8E0100;*/
+/*    --vz-vertical-menu-item-active-color: #8E0100;*/
+/*    --vz-vertical-menu-sub-item-active-color: #8E0100;*/
+/*    --vz-vertical-menu-item-hover-color: #8E0100;*/
+/*    --vz-vertical-menu-sub-item-hover-color: #8E0100;*/
+/*    --vz-btn-bg: #8E0100;*/
+/*}*/
+/*.btn-primary {*/
+/*    --vz-btn-bg: #8E0100;*/
+/*    --vz-btn-border-color: #ffffff;*/
+/*    --vz-btn-color: #ffffff;*/
+/*    --vz-btn-hover-bg: #be0301;*/
+/*    --vz-btn-hover-border-color: #f8f9fa;*/
+/*    --vz-btn-hover-color: #ffffff;*/
+/*    --vz-btn-active-bg: #e9ecef;*/
+/*    --vz-btn-active-border-color: #e9ecef;*/
+/*}*/
+
+/*.ribbon-box .ribbon-primary {*/
+/*    background: #8E0100;*/
+/*}*/
