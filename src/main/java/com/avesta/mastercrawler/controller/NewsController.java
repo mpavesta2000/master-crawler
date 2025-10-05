@@ -496,6 +496,8 @@ public class NewsController {
                 return "news/news-add";
             }
 
+            System.out.println(yoastPoint);
+
             Users user = iUsersService.findByEmail(authentication.getName()).orElseThrow(()->new UsernameNotFoundException("user not found."));
             NewsType newsType = iNewsTypeService.findById(3)
                     .orElseThrow(() -> new IllegalArgumentException("NewsType with id 3 not found"));

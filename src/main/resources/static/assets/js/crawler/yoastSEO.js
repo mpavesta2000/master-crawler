@@ -54440,6 +54440,11 @@ ${missingList}
     console.log("Updating UI with direct YoastSEO results:", results);
     this.updateTrafficLightsDirect(results);
     this.updateDetailedOutput(results, data);
+    
+    // Also update the hidden input if refreshed
+    if (results && results.scores && results.scores.overall !== undefined) {
+      this.updateYoastPointInput(results.scores.overall);
+    }
     console.log("UI updated successfully with direct results");
   }
   updateDetailedOutput(results, data) {
@@ -56059,8 +56064,27 @@ ${missingList}
     }
     yoastResults.scores.overall = Math.round((yoastResults.scores.seo + yoastResults.scores.readability) / 2);
     console.log("YoastSEO final scores:", yoastResults.scores);
+    
+    // Update the hidden input 
+    this.updateYoastPointInput(yoastResults.scores.overall);
+    
     return yoastResults;
   }
+  // Helper method to update hidden inpuut
+  updateYoastPointInput(finalScore) {
+    try {
+      const yoastPointInput = document.querySelector('input[name="yoastPoint"]');
+      if (yoastPointInput) {
+        yoastPointInput.value = finalScore;
+        console.log(`AVESTA--- YoastSEO: Updated yoastPoint input field with score: ${finalScore}`);
+      } else {
+        console.warn('AVESTA YoastSEO: yoastPoint input field not found');
+      }
+    } catch (error) {
+      console.error('AVESTA YoastSEO: Error updating yoastPoint input field:', error);
+    }
+  }
+
   showError() {
     const outputElement = document.getElementById("yoast-seo-output");
     if (outputElement) {
