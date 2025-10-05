@@ -49,9 +49,9 @@ public class AnalyticsController {
         
         for (Users editor : allUsers) {
             // Skip admin users, only count editors
-            if (editor.getUserTypeId().getUserTypeName().equals("Admin")) {
-                continue;
-            }
+            // if (editor.getUserTypeId().getUserTypeName().equals("Admin")) {
+            //     continue;
+            // }
             
             List<News> editorNews = iNewsService.findByUserId(editor);
             List<UserMonthlyReport> editorReports = editor.getMonthlyReports();
