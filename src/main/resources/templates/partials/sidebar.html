@@ -44,6 +44,14 @@
 									<a href="/" class="nav-link" data-key="t-analytics">
 										اصلی </a>
 								</li>
+								<li class="nav-item" th:if="${#authorization.expression('hasAuthority(''Admin'')')}">
+									<a href="/admin/full-users/report" class="nav-link" data-key="t-admin-analytics">
+										آمار مدیریت </a>
+								</li>
+								<li class="nav-item" th:if="${#authorization.expression('hasAuthority(''User'')')}">
+									<a href="/admin/user/report" class="nav-link" data-key="t-editor-analytics">
+										آمار خبرنگار </a>
+								</li>
 							</ul>
 						</div>
 					</li>

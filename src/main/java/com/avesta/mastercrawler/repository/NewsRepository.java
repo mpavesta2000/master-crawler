@@ -1,6 +1,7 @@
 package com.avesta.mastercrawler.repository;
 
 import com.avesta.mastercrawler.model.News;
+import com.avesta.mastercrawler.model.Users;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface NewsRepository extends JpaRepository<News, Integer> {
@@ -28,13 +30,15 @@ public interface NewsRepository extends JpaRepository<News, Integer> {
             "AND (:statusFilter IS NULL OR :statusFilter = '' OR n.status = :statusFilter) " +
             "AND (:newsTypeFilter IS NULL OR :newsTypeFilter = '' OR n.newsTypeId.newsTypeName = :newsTypeFilter) " +
             "AND (:userFilter IS NULL OR :userFilter = '' OR n.userId.email = :userFilter) " +
-            "AND (:idFilter IS NULL OR n.id = :idFilter)")
+            "AND (:idFilter IS NULL OR n.id = :idFilter)" +
+            "AND (:chapChinFilter IS NULL OR n.ChapChin = :chapChinFilter)")
     Page<News> findByFilters(
             @Param("searchValue") String searchValue,
             @Param("statusFilter") String statusFilter,
             @Param("newsTypeFilter") String newsTypeFilter,
             @Param("userFilter") String userFilter,
             @Param("idFilter") Integer idFilter,
+            @Param("chapChinFilter") Boolean chapChinFilter,
             Pageable pageable);
 
     Page<News> findAllByGetTranslatedTrue(Pageable pageable);
@@ -64,5 +68,10 @@ public interface NewsRepository extends JpaRepository<News, Integer> {
     @Query(value = "UPDATE news SET created_at = ?2 WHERE id = ?1", nativeQuery = true)
     void updateCreatedAtById(Integer id, LocalDateTime createdAt);
 
+    Optional<News> findByTitle(String title);
+
+    List<News> findByUserIdAndCreatedAtBetween(Users user, LocalDateTime localDateTime, LocalDateTime localDateTime1);
+
+    List<News> findByUserId(Users user);
 
 }

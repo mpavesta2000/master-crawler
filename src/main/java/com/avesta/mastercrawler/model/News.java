@@ -131,7 +131,10 @@ public class News extends BaseEntity{
     @Lob
     private String seoTitle;
 
+    @Column(name = "yoast_seo_point")
+    private long yoastSeoPoint;
 
-
+    @Column(name = "chap_chin")
+    private Boolean ChapChin = false;
 
 }

@@ -2,6 +2,7 @@ package com.avesta.mastercrawler.service.impl;
 
 import com.avesta.mastercrawler.model.Images;
 import com.avesta.mastercrawler.model.News;
+import com.avesta.mastercrawler.model.Users;
 import com.avesta.mastercrawler.repository.ImagesRepository;
 import com.avesta.mastercrawler.repository.NewsRepository;
 import com.avesta.mastercrawler.service.INewsService;
@@ -39,6 +40,11 @@ public class NewsServiceImpl implements INewsService {
     @Override
     public Page<News> findAll(Pageable pageable) {
         return newsRepository.findAll(pageable);
+    }
+
+    @Override
+    public Optional<News> findByTitle(String title) {
+        return newsRepository.findByTitle(title);
     }
 
     @Override
@@ -90,16 +96,17 @@ public class NewsServiceImpl implements INewsService {
     }
 
     @Override
-    public Page<News> findAllWithFilters(String searchValue, String statusFilter, String newsTypeFilter, String userFilter, Integer idFilter, Pageable pageable) {
+    public Page<News> findAllWithFilters(String searchValue, String statusFilter, String newsTypeFilter, String userFilter, Integer idFilter, Pageable pageable, Boolean chapChinFilter) {
 
         if ((searchValue == null || searchValue.trim().isEmpty()) &&
                 (statusFilter == null || statusFilter.trim().isEmpty()) &&
                 (newsTypeFilter == null || newsTypeFilter.trim().isEmpty()) &&
                 (userFilter == null || userFilter.trim().isEmpty()) &&
-                (idFilter == null)){
+                (idFilter == null) &&
+                (chapChinFilter == null)){
             return newsRepository.findAll(pageable);
         } else {
-            return newsRepository.findByFilters(searchValue, statusFilter, newsTypeFilter, userFilter, idFilter,pageable);
+            return newsRepository.findByFilters(searchValue, statusFilter, newsTypeFilter, userFilter, idFilter, chapChinFilter,pageable);
         }
     }
 
@@ -200,5 +207,10 @@ public class NewsServiceImpl implements INewsService {
     @Override
     public void updateCreatedAtById(Integer id, LocalDateTime createdAt) {
         newsRepository.updateCreatedAtById(id,createdAt);
+    }
+
+    @Override
+    public List<News> findByUserId(Users user) {
+        return newsRepository.findByUserId(user);
     }
 }

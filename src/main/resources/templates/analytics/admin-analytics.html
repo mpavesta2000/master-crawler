@@ -1,0 +1,166 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout}">
+
+<th:block layout:fragment="pagetitle">
+	<!--page title-->
+	<div th:replace="partials/title-meta :: title-meta('Admin Analytics')"></div>
+</th:block>
+
+<head>
+	<!-- gridjs css -->
+	<link rel="stylesheet" href="/assets/libs/gridjs/theme/mermaid.min.css">
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<!-- start page title -->
+		<div th:replace="partials/page-title :: page-title('داشبورد','آمار و تحلیل مدیریت')"></div>
+		<!-- end page title -->
+
+		<!-- System-wide Stats Cards -->
+		<div class="row">
+			<div class="col-xl-3 col-md-6">
+				<div class="card card-animate">
+					<div class="card-body">
+						<div class="d-flex align-items-center">
+							<div class="flex-grow-1 overflow-hidden">
+								<p class="text-uppercase fw-medium text-muted text-truncate mb-0">کل اخبار اضافه شده</p>
+								<h4 class="fs-22 fw-semibold ff-secondary mb-4">
+									<span class="counter-value" th:data-target="${totalNewsAdded}">0</span>
+								</h4>
+							</div>
+							<div class="flex-shrink-0">
+								<div id="total_news_sparkline" data-colors='["--vz-primary"]' class="apex-charts" dir="ltr"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xl-3 col-md-6">
+				<div class="card card-animate">
+					<div class="card-body">
+						<div class="d-flex align-items-center">
+							<div class="flex-grow-1 overflow-hidden">
+								<p class="text-uppercase fw-medium text-muted text-truncate mb-0">کل اخبار ویرایش شده</p>
+								<h4 class="fs-22 fw-semibold ff-secondary mb-4">
+									<span class="counter-value" th:data-target="${totalEdits}">0</span>
+								</h4>
+							</div>
+							<div class="flex-shrink-0">
+								<div id="total_edits_sparkline" data-colors='["--vz-success"]' class="apex-charts" dir="ltr"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xl-3 col-md-6">
+				<div class="card card-animate">
+					<div class="card-body">
+						<div class="d-flex align-items-center">
+							<div class="flex-grow-1 overflow-hidden">
+								<p class="text-uppercase fw-medium text-muted text-truncate mb-0">اخبار تولید شده با چپ چین</p>
+								<h4 class="fs-22 fw-semibold ff-secondary mb-4">
+									<span class="counter-value" th:data-target="${totalChapChinUsage}">0</span>
+								</h4>
+							</div>
+							<div class="flex-shrink-0">
+								<div id="ai_articles_sparkline" data-colors='["--vz-info"]' class="apex-charts" dir="ltr"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xl-3 col-md-6">
+				<div class="card card-animate">
+					<div class="card-body">
+						<div class="d-flex align-items-center">
+							<div class="flex-grow-1 overflow-hidden">
+								<p class="text-uppercase fw-medium text-muted text-truncate mb-0">درصد کل استفاده از چپ چین</p>
+								<h4 class="fs-22 fw-semibold ff-secondary mb-4">
+									<span class="counter-value" th:data-target="${aiPercentage}">0</span>%
+								</h4>
+							</div>
+							<div class="flex-shrink-0">
+								<div id="ai_percentage_sparkline" data-colors='["--vz-warning"]' class="apex-charts" dir="ltr"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Charts Row -->
+		<div class="row">
+			<!-- News Added Per Day Chart -->
+			<div class="col-xl-6">
+				<div class="card">
+					<div class="card-header">
+						<h4 class="card-title mb-0">اخبار اضافه شده در 7 روز گذشته</h4>
+					</div>
+					<div class="card-body">
+						<div id="news_per_day_chart" data-colors='["--vz-primary", "--vz-success"]' class="apex-charts" dir="ltr"></div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Editor Contribution Comparison -->
+			<div class="col-xl-6">
+				<div class="card">
+					<div class="card-header">
+						<h4 class="card-title mb-0">مقایسه فعالیت خبرنگاران</h4>
+					</div>
+					<div class="card-body">
+						<div id="editor_contribution_chart" data-colors='["--vz-primary", "--vz-warning"]' class="apex-charts" dir="ltr"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Recent Top Edits Table -->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card">
+					<div class="card-header">
+						<h4 class="card-title mb-0">آخرین ویرایش ها </h4>
+					</div>
+					<div class="card-body">
+						<div id="recent-edits-table"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<th:block layout:fragment="pagejs">
+		<!-- apexcharts -->
+		<script src="/assets/libs/apexcharts/apexcharts.min.js"></script>
+		<!-- gridjs js -->
+		<script src="/assets/libs/gridjs/gridjs.umd.js"></script>
+		<!-- Admin Analytics init -->
+		<script th:inline="javascript">
+			// Pass admin data from backend to frontend
+			var adminData = {
+				totalNewsAdded: /*[[${totalNewsAdded}]]*/ 0,
+				totalEdits: /*[[${totalEdits}]]*/ 0,
+				totalChapChinUsage: /*[[${totalChapChinUsage}]]*/ 0,
+				aiPercentage: /*[[${aiPercentage}]]*/ 0,
+				weeklyData: {
+					weekLabels: /*[[${weekLabels}]]*/ [],
+					weeklyNewsData: /*[[${weeklyNewsData}]]*/ [],
+					weeklyEditsData: /*[[${weeklyEditsData}]]*/ [],
+					weeklyChapChinData: /*[[${weeklyChapChinData}]]*/ []
+				},
+				editorContributions: /*[[${editorContributions}]]*/ [],
+				recentNewsSimple: /*[[${recentNewsSimple}]]*/ []
+			};
+		</script>
+		<script src="/assets/js/pages/admin-analytics.init.js"></script>
+	</th:block>
+</body>
+
+</html>

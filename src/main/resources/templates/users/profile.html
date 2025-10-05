@@ -1,0 +1,467 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layout}">
+
+<th:block layout:fragment="pagetitle">
+	<div th:replace="partials/title-meta :: title-meta('پروفایل')"></div>
+</th:block>
+
+<head>
+	<!-- swiper css -->
+	<link rel="stylesheet" href="/assets/libs/swiper/swiper-bundle.min.css">
+</head>
+
+<body>
+<div layout:fragment="content">
+	<div class="profile-foreground position-relative mx-n4 mt-n4">
+		<div class="profile-wid-bg">
+			<img src="/assets/images/dummy-profile-picture.jpeg" alt="" class="profile-wid-img" />
+		</div>
+	</div>
+	<div class="pt-4 mb-4 mb-lg-3 pb-lg-4 profile-wrapper">
+		<div class="row g-4">
+			<div class="col-auto">
+				<div class="avatar-lg">
+					<img src="/assets/images/dummy-profile-picture.jpeg" alt="تصویر کاربر"
+						 class="img-thumbnail rounded-circle" />
+				</div>
+			</div>
+			<!--end col-->
+			<div class="col">
+				<div class="p-2">
+					<h3 class="text-white mb-1">گرشا ایروانی</h3>
+					<p class="text-white-75">ادمین</p>
+					<div class="hstack text-white-50 gap-1">
+						<div class="me-2"><i
+								class="ri-map-pin-user-line me-1 text-white-75 fs-16 align-middle"></i>تهران، ایران
+						</div>
+						<div><i class="ri-building-line me-1 text-white-75 fs-16 align-middle"></i>اوستا</div>
+					</div>
+				</div>
+			</div>
+			<!--end col-->
+
+			<!--end col-->
+
+		</div>
+		<!--end row-->
+	</div>
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div>
+				<div class="d-flex profile-wrapper">
+					<!-- Nav tabs -->
+					<ul class="nav nav-pills animation-nav profile-nav gap-2 gap-lg-3 flex-grow-1" role="tablist">
+					</ul>
+					<div class="flex-shrink-0">
+						<a href="pages-profile-settings" class="btn btn-success"><i
+								class="ri-edit-box-line align-bottom"></i> ویرایش پروفایل</a>
+					</div>
+				</div>
+				<!-- Tab panes -->
+				<div class="tab-content pt-4 text-muted">
+					<div class="tab-pane active" id="overview-tab" role="tabpanel">
+						<div class="row">
+							<div class="col-xxl-3">
+								<div class="card">
+									<div class="card-body">
+										<h5 class="card-title mb-3 text-primary">اطلاعات کاربری</h5>
+										<div class="table-responsive">
+											<table class="table table-borderless mb-0">
+												<tbody>
+												<tr>
+													<th class="ps-0" scope="row">نام و نام خانوادگی :</th>
+													<td class="text-muted">گرشا ایروانی</td>
+												</tr>
+												<tr>
+													<th class="ps-0" scope="row">شماره تماس :</th>
+													<td class="text-muted">۰۹۱۲۳۴۵۶۷۸۹</td>
+												</tr>
+												<tr>
+													<th class="ps-0" scope="row">ایمیل :</th>
+													<td class="text-muted">example@Avesta.com</td>
+												</tr>
+												<tr>
+													<th class="ps-0" scope="row">موقعیت :</th>
+													<td class="text-muted">تهران، ایران</td>
+												</tr>
+												<tr>
+													<th class="ps-0" scope="row">تاریخ عضویت</th>
+													<td class="text-muted">۱۴۰۳/۰۹/۰۳</td>
+												</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--end col-->
+							<div class="col-xxl-9">
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="card shadow-sm border-0">
+											<div class="card-header align-items-center d-flex bg-light">
+												<h4 class="card-title mb-0 me-2 text-primary">خلاصه فعالیت‌ها</h4>
+											</div>
+											<div class="card-body">
+												<div class="d-flex flex-column gap-4">
+													<!-- آمار مقالات -->
+													<div
+															class="d-flex align-items-center p-3 bg-primary-subtle rounded shadow-sm">
+														<div class="flex-shrink-0">
+															<i class="ri-article-line fs-24 text-primary"></i>
+														</div>
+														<div class="flex-grow-1 ms-3">
+															<h6 class="mb-1 fs-16 text-primary">مقالات</h6>
+															<div class="d-flex gap-3">
+																	<span
+																			class="badge bg-primary text-white fs-14 mt-1">۱۵
+																		مقاله منتشر شده</span>
+																<span class="badge bg-info text-white fs-14 mt-1">۳
+																		پیش‌نویس</span>
+															</div>
+														</div>
+													</div>
+
+													<!-- آمار خبرنامه -->
+													<div class="p-3 bg-success-subtle rounded shadow-sm">
+														<div class="d-flex align-items-center mb-3">
+															<i class="ri-mail-line fs-20 text-success me-2"></i>
+															<h6 class="fs-16 text-success mb-0">عملکرد خبرنامه</h6>
+														</div>
+														<div class="row g-3">
+															<div class="col-md-4">
+																<div class="border-end">
+																	<h4 class="mb-1">۸۵٪</h4>
+																	<p class="text-muted mb-0">نرخ باز شدن</p>
+																</div>
+															</div>
+															<div class="col-md-4">
+																<div class="border-end">
+																	<h4 class="mb-1">۱۲۵</h4>
+																	<p class="text-muted mb-0">خبرنامه ارسال شده</p>
+																</div>
+															</div>
+															<div class="col-md-4">
+																<div>
+																	<h4 class="mb-1">۱۲K</h4>
+																	<p class="text-muted mb-0">مشترکین فعال</p>
+																</div>
+															</div>
+														</div>
+													</div>
+
+													<!-- فعالیت های اخیر -->
+													<div class="p-3 bg-info-subtle rounded shadow-sm">
+														<div class="d-flex align-items-center mb-3">
+															<i class="ri-time-line fs-20 text-info me-2"></i>
+															<h6 class="fs-16 text-info mb-0">فعالیت‌های اخیر</h6>
+														</div>
+														<div class="activity-timeline">
+															<div class="d-flex mb-3">
+																<div class="flex-shrink-0 text-info me-3">•</div>
+																<div>
+																	<h6 class="mb-1">ویرایش مقاله "عنوان مقاله"</h6>
+																	<p class="text-muted mb-0">۲ ساعت پیش</p>
+																</div>
+															</div>
+															<div class="d-flex mb-3">
+																<div class="flex-shrink-0 text-info me-3">•</div>
+																<div>
+																	<h6 class="mb-1">ارسال خبرنامه هفتگی</h6>
+																	<p class="text-muted mb-0">دیروز</p>
+																</div>
+															</div>
+															<div class="d-flex">
+																<div class="flex-shrink-0 text-info me-3">•</div>
+																<div>
+																	<h6 class="mb-1">بررسی و تایید ۵ مقاله</h6>
+																	<p class="text-muted mb-0">۲ روز پیش</p>
+																</div>
+															</div>
+														</div>
+													</div>
+
+													<!-- عملکرد کلی -->
+													<div class="p-3 bg-light rounded shadow-sm">
+														<h6 class="mb-3 fs-16 text-dark">عملکرد کلی</h6>
+														<div class="row g-3">
+															<div class="col-md-6">
+																<div class="d-flex align-items-center mb-3">
+																	<div class="flex-grow-1">
+																		<h6 class="mb-1">میانگین بازدید مقالات</h6>
+																		<div class="progress progress-sm">
+																			<div class="progress-bar bg-success"
+																				 role="progressbar"
+																				 style="width: 85%"
+																				 aria-valuenow="85" aria-valuemin="0"
+																				 aria-valuemax="100"></div>
+																		</div>
+																	</div>
+																	<div class="flex-shrink-0 ms-2">
+																		<span class="fw-semibold fs-14">۸۵٪</span>
+																	</div>
+																</div>
+																<small class="text-muted">۱۲۰۰ بازدید در
+																	هفته</small>
+															</div>
+															<div class="col-md-6">
+																<div class="d-flex align-items-center mb-3">
+																	<div class="flex-grow-1">
+																		<h6 class="mb-1">نرخ تعامل خبرنامه</h6>
+																		<div class="progress progress-sm">
+																			<div class="progress-bar bg-primary"
+																				 role="progressbar"
+																				 style="width: 78%"
+																				 aria-valuenow="78" aria-valuemin="0"
+																				 aria-valuemax="100"></div>
+																		</div>
+																	</div>
+																	<div class="flex-shrink-0 ms-2">
+																		<span class="fw-semibold fs-14">۷۸٪</span>
+																	</div>
+																</div>
+																<small class="text-muted">۳۵۰ کلیک در هر
+																	ارسال</small>
+															</div>
+															<div class="col-md-6">
+																<div class="d-flex align-items-center mb-3">
+																	<div class="flex-grow-1">
+																		<h6 class="mb-1">زمان مطالعه مقالات</h6>
+																		<div class="progress progress-sm">
+																			<div class="progress-bar bg-info"
+																				 role="progressbar"
+																				 style="width: 92%"
+																				 aria-valuenow="92" aria-valuemin="0"
+																				 aria-valuemax="100"></div>
+																		</div>
+																	</div>
+																	<div class="flex-shrink-0 ms-2">
+																		<span class="fw-semibold fs-14">۹۲٪</span>
+																	</div>
+																</div>
+																<small class="text-muted">میانگین ۴.۵ دقیقه</small>
+															</div>
+															<div class="col-md-6">
+																<div class="d-flex align-items-center mb-3">
+																	<div class="flex-grow-1">
+																		<h6 class="mb-1">نرخ اشتراک‌گذاری</h6>
+																		<div class="progress progress-sm">
+																			<div class="progress-bar bg-warning"
+																				 role="progressbar"
+																				 style="width: 65%"
+																				 aria-valuenow="65" aria-valuemin="0"
+																				 aria-valuemax="100"></div>
+																		</div>
+																	</div>
+																	<div class="flex-shrink-0 ms-2">
+																		<span class="fw-semibold fs-14">۶۵٪</span>
+																	</div>
+																</div>
+																<small class="text-muted">۲۵۰ اشتراک‌گذاری در
+																	ماه</small>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="card">
+							<div class="card-body">
+								<h5 class="card-title text-primary"> تاریخچه خبرگزاری شما</h5>
+								<!-- Swiper -->
+								<div class="swiper project-swiper mt-n4">
+									<div class="d-flex justify-content-end gap-2 mb-2">
+										<div class="slider-button-prev">
+											<div class="avatar-title fs-18 rounded px-1">
+												<i class="ri-arrow-left-s-line"></i>
+											</div>
+										</div>
+										<div class="slider-button-next">
+											<div class="avatar-title fs-18 rounded px-1">
+												<i class="ri-arrow-right-s-line"></i>
+											</div>
+										</div>
+									</div>
+									<div class="swiper-wrapper">
+										<div class="swiper-slide">
+											<div
+													class="card profile-project-card shadow-none profile-project-primary mb-0">
+												<div class="card-body p-4">
+													<div class="d-flex">
+														<div class="flex-grow-1 text-muted overflow-hidden">
+															<h5 class="fs-14 text-truncate mb-1">
+																<a href="#" class="text-dark"> خبر ۱</a>
+															</h5>
+															<p class="text-muted text-truncate mb-0">
+																آخرین به‌روزرسانی : <span
+																	class="fw-semibold text-dark">۴ ساعت پیش</span>
+															</p>
+														</div>
+														<div class="flex-shrink-0 ms-2">
+															<div class="badge badge-soft-warning fs-10">
+																در حال انجام</div>
+														</div>
+													</div>
+													<div class="d-flex mt-4">
+														<div class="flex-grow-1">
+															<div class="d-flex align-items-center gap-2">
+
+
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="swiper-slide">
+											<div
+													class="card profile-project-card shadow-none profile-project-success mb-0">
+												<div class="card-body p-4">
+													<div class="d-flex">
+														<div class="flex-grow-1 text-muted overflow-hidden">
+															<h5 class="fs-14 text-truncate mb-1">
+																<a href="#" class="text-dark">خبر ۲</a>
+															</h5>
+															<p class="text-muted text-truncate mb-0">
+																آخرین به‌روزرسانی : <span
+																	class="fw-semibold text-dark">۱ ساعت پیش</span>
+															</p>
+														</div>
+														<div class="flex-shrink-0 ms-2">
+															<div class="badge badge-soft-success fs-10">
+																تکمیل شده</div>
+														</div>
+													</div>
+													<div class="d-flex mt-4">
+														<div class="flex-grow-1">
+															<div class="d-flex align-items-center gap-2">
+
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="swiper-slide">
+											<div
+													class="card profile-project-card shadow-none profile-project-info mb-0">
+												<div class="card-body p-4">
+													<div class="d-flex">
+														<div class="flex-grow-1 text-muted overflow-hidden">
+															<h5 class="fs-14 text-truncate mb-1">
+																<a href="#" class="text-dark">خبر ۳</a>
+															</h5>
+															<p class="text-muted text-truncate mb-0">
+																آخرین به‌روزرسانی : <span
+																	class="fw-semibold text-dark">۲ ساعت پیش</span>
+															</p>
+														</div>
+														<div class="flex-shrink-0 ms-2">
+															<div class="badge badge-soft-warning fs-10">
+																در حال انجام</div>
+														</div>
+													</div>
+													<div class="d-flex mt-4">
+														<div class="flex-grow-1">
+
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="swiper-slide">
+											<div
+													class="card profile-project-card shadow-none profile-project-primary mb-0">
+												<div class="card-body p-4">
+													<div class="d-flex">
+														<div class="flex-grow-1 text-muted overflow-hidden">
+															<h5 class="fs-14 text-truncate mb-1">
+																<a href="#" class="text-dark">خبر ۴</a>
+															</h5>
+															<p class="text-muted text-truncate mb-0">
+																آخرین به‌روزرسانی : <span
+																	class="fw-semibold text-dark">۴ ساعت پیش</span>
+															</p>
+														</div>
+														<div class="flex-shrink-0 ms-2">
+															<div class="badge badge-soft-success fs-10">
+																تکمیل شده</div>
+														</div>
+													</div>
+
+													<div class="d-flex mt-4">
+														<div class="flex-grow-1">
+
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="swiper-slide">
+											<div
+													class="card profile-project-card shadow-none profile-project-success mb-0">
+												<div class="card-body p-4">
+													<div class="d-flex">
+														<div class="flex-grow-1 text-muted overflow-hidden">
+															<h5 class="fs-14 text-truncate mb-1">
+																<a href="#" class="text-dark">خبر ۵</a>
+															</h5>
+															<p class="text-muted text-truncate mb-0">
+																آخرین به‌روزرسانی : <span
+																	class="fw-semibold text-dark">۱ ساعت پیش</span>
+															</p>
+														</div>
+														<div class="flex-shrink-0 ms-2">
+															<div class="badge badge-soft-warning fs-10">
+																در حال انجام</div>
+														</div>
+													</div>
+													<div class="d-flex mt-4">
+														<div class="flex-grow-1">
+
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+
+							</div>
+							<!-- end card body -->
+						</div><!-- end card -->
+
+					</div>
+					<!--end col-->
+				</div>
+				<!--end row-->
+			</div>
+		</div>
+		<!--end tab-content-->
+	</div>
+</div>
+<!--end col-->
+</div>
+<!--end row-->
+</div>
+
+<th:block layout:fragment="pagejs">
+
+	<!-- swiper js -->
+	<script src="/assets/libs/swiper/swiper-bundle.min.js"></script>
+
+
+	<!-- profile init js -->
+	<script src="/assets/js/pages/profile.init.js"></script>
+</th:block>
+</body>
+
+</html>

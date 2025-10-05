@@ -41,7 +41,7 @@ public class TagsRestController {
             @RequestParam("order[0][column]") int orderColumn,
             @RequestParam("order[0][dir]") String orderDir) {
 
-        String[] columnMapping = {"id", "name"};
+        String[] columnMapping = {"id", "name", "user"};
         String orderBy = columnMapping[orderColumn];
 
         Pageable pageable = PageRequest.of(start / length, length,
@@ -53,6 +53,7 @@ public class TagsRestController {
             Map<String, Object> data = new HashMap<>();
             data.put("id", tags.getId());
             data.put("name", tags.getName());
+            data.put("user", tags.getUserId().getEmail());
             data.put("actions", "<button class='btn btn-link p-0 link-danger fs-15' onclick='confirmDelete(" + tags.getId() + ")'><i class='ri-delete-bin-line'></i></button>");
             return data;
         }).collect(Collectors.toList());

@@ -1,0 +1,160 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layout}">
+
+<th:block layout:fragment="pagetitle">
+	<div th:replace="partials/title-meta :: title-meta('تنظیمات پروفایل')"></div>
+</th:block>
+
+<head>
+	<link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" href="/assets/css/profile-setting.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+	<style>
+		.required::after {
+			content: " *";
+			color: #e34343;
+		}
+	</style>
+</head>
+
+<body>
+<div layout:fragment="content">
+	<div class="position-relative mx-n4 mt-n4">
+		<div class="profile-wid-bg profile-setting-img">
+			<img src="/assets/images/dummy-profile-picture.jpeg" class="profile-wid-img" alt="">
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-xxl-3">
+			<div class="card mt-n5">
+				<div class="card-body p-4">
+					<div class="text-center">
+						<div class="profile-user position-relative d-inline-block mx-auto mb-4">
+							<img th:src="${userProfile.profilePhoto != null ? userProfile.profilePhoto : '/assets/images/dummy-profile-picture.jpeg'}"
+								 class="rounded-circle avatar-xl img-thumbnail user-profile-image"
+								 alt="user-profile-image">
+							<div class="avatar-xs p-0 rounded-circle profile-photo-edit">
+								<input id="profile-img-file-input" type="file" class="profile-img-file-input" style="display: none;">
+								<label for="profile-img-file-input" class="profile-photo-edit avatar-xs">
+								<span class="avatar-title rounded-circle bg-light text-body">
+									<i class="ri-camera-fill"></i>
+								</span>
+								</label>
+							</div>
+						</div>
+						<h5 class="fs-16 mb-1" th:text="${userProfile.getEmail()}"></h5>
+						<span th:switch="${#authentication.principal.authorities[0].authority}">
+												<span th:case="Admin">ادمین</span>
+												<span th:case="User">خبرنگار</span>
+												<span th:case="*">کاربر ناشناس</span>
+											</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--end col-->
+		<div class="col-xxl-9">
+			<div class="card mt-xxl-n5">
+				<div class="card-header">
+					<ul class="nav nav-tabs-custom rounded card-header-tabs border-bottom-0" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" data-bs-toggle="tab" href="#changePassword" role="tab">
+								<i class="ri-lock-password-line"></i>
+								تغییر رمز عبور
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="card-body p-4">
+					<div class="tab-content">
+						<div class="tab-pane active" id="changePassword" role="tabpanel">
+							<form th:action="@{/admin/profile/password/change}" method="post"  enctype="multipart/form-data" class="needs-validation" novalidate>
+								<div class="row g-2">
+									<div class="col-lg-4">
+										<div>
+											<label for="oldpasswordInput" class="form-label required">رمز عبور قدیمی</label>
+											<input type="password" name="oldPassword" class="form-control" id="oldpasswordInput"
+												   placeholder="رمز عبور فعلی را وارد کنید">
+										</div>
+									</div>
+									<!--end col-->
+									<div class="col-lg-4">
+										<div>
+											<label for="newpasswordInput" class="form-label required">رمز عبور جدید</label>
+											<input type="password" name="newPassword" class="form-control" id="newpasswordInput"
+												   placeholder="رمز عبور جدید را وارد کنید">
+										</div>
+									</div>
+									<!--end col-->
+									<div class="col-lg-4">
+										<div>
+											<label for="confirmpasswordInput" class="form-label required">تأیید رمز
+												عبور</label>
+											<input type="password" name="confirmPassword" class="form-control" id="confirmpasswordInput"
+												   placeholder="رمز عبور را تأیید کنید">
+										</div>
+									</div>
+									<!--end col-->
+									<div class="col-lg-12">
+										<div class="text-end">
+											<button type="submit" class="btn btn-primary">تغییر رمز عبور</button>
+										</div>
+									</div>
+									<!--end col-->
+								</div>
+								<!--end row-->
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--end col-->
+	</div>
+	<!--end row-->
+</div>
+
+<th:block layout:fragment="pagejs">
+	<script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+	<script src="/assets/js/pages/sweetalerts.init.js"></script>
+	<script src="/assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
+	<script src="/assets/libs/prismjs/prism.js"></script>
+	<script src="/assets/js/pages/form-validation.init.js"></script>
+	<script src="/assets/js/crawler/profile-setting.js"></script>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		var successSave = [[${successSave}]];
+		if (successSave === true) {
+			Swal.fire({
+				text: "پروفایل شما با موفقیت بروزرسانی شد.",
+				icon: "success",
+				confirmButtonText: "تایید",
+				confirmButtonColor: "#556ee6"
+			});
+		}
+
+		const successMessage = [[${successMessage}]];
+		const errorMessage = [[${errorMessage}]];
+		if (successMessage) {
+			Swal.fire({
+				text: successMessage,
+				icon: 'success',
+				confirmButtonText: 'تایید'
+			});
+		}
+		if (errorMessage) {
+			Swal.fire({
+				text: errorMessage,
+				icon: 'error',
+				confirmButtonText: 'دوباره امتحان کنید'
+			});
+		}
+		/*]]>*/
+	</script>
+</th:block>
+</body>
+
+</html>

@@ -5,6 +5,7 @@ import com.avesta.mastercrawler.model.*;
 import com.avesta.mastercrawler.service.*;
 import com.avesta.mastercrawler.service.cms.AasaamCmsUploader;
 import com.avesta.mastercrawler.utility.ImageDownloadUtil;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -36,6 +38,7 @@ public class NewsController {
     private final IUserProfileService iUserProfileService;
     private final ITagsService iTagsService;
     private final ICommentsService iCommentsService;
+    private final IUserMonthlyReportService iUserMonthlyReportService;
     private final AasaamCmsUploader aasaamCmsUploader;
 
     @GetMapping("/add")
@@ -71,8 +74,12 @@ public class NewsController {
                                 @RequestParam(required = false) boolean showMostViewed,
                                 @RequestParam(required = false) boolean slider,
                                 @RequestParam(required = false) boolean translate,
+                                @RequestParam(required = false) boolean sendToTinn,
                                 @RequestParam(required = false) List<String> newsTags,
-                                @RequestParam(required = false) String date) {
+                                @RequestParam(required = false) String date,
+                                @RequestParam(required = false, name = "aasaamTinnCategories") List<String> aasaamTinnCategories,
+                                @RequestParam(required = false, name = "aasaamTinnStatus") String aasaamTinnStatus,
+                                @RequestParam(required = false, name = "yoastPoint") String yoastPoint) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -90,13 +97,23 @@ public class NewsController {
             NewsType newsType = iNewsTypeService.findById(2)
                     .orElseThrow(() -> new IllegalArgumentException("NewsType with id 2 not found"));
 
-            //Add comment based on news
             if (news.getId() != null) {
-                Optional<News> existingNewsOptional = iNewsService.findById(news.getId());
-                if (existingNewsOptional.isPresent()) {
-                    News existingNews = existingNewsOptional.get();
-                    news.setComments(existingNews.getComments());
+                Optional<News> existingNews = iNewsService.findById(news.getId());
+                if (existingNews.isPresent()) {
+                    news.setChapChin(existingNews.get().getChapChin());
+                    news.setComments(existingNews.get().getComments());
+                    news.setUserId(existingNews.get().getUserId());
+
+                    if (yoastPoint == null || yoastPoint.trim().isEmpty()) {
+                        news.setYoastSeoPoint(existingNews.get().getYoastSeoPoint());
+                    }
+
+                    if (news.getCreatedAt() == null) {
+                        news.setCreatedAt(existingNews.get().getCreatedAt());
+                    }
                 }
+            } else {
+                news.setUserId(user);
             }
 
             //Add tags for a new news
@@ -148,7 +165,6 @@ public class NewsController {
             news.setSlider(slider);
             news.setGetTranslated(translate);
             news.setNewsTypeId(newsType);
-            news.setUserId(user);
 
             //Upload images in news body
             String updatedBody = ImageDownloadUtil.processImages(news.getBody(),iImagesService);
@@ -159,8 +175,40 @@ public class NewsController {
                 news.setMainImage(mainImage);
             }
 
-            // Save news after handling images
+            //Check new news before saving
+            boolean isNew = !iNewsService.findByTitle(news.getTitle()).isPresent();
+
+            // For existing news, get the original createdAt
+            if (!isNew) {
+                Optional<News> existingNews = iNewsService.findByTitle(news.getTitle());
+                if (existingNews.isPresent() && news.getCreatedAt() == null) {
+                    news.setCreatedAt(existingNews.get().getCreatedAt());
+                }
+            }
+
+            if(yoastPoint != null && !yoastPoint.trim().isEmpty()) {
+                news.setYoastSeoPoint(Long.parseLong(yoastPoint));
+            }
+
+            // Save the news
             News savedNews = iNewsService.save(news);
+
+            if (isNew) {
+                Long seoPoint = savedNews.getYoastSeoPoint();
+                iUserMonthlyReportService.updateUserReport(savedNews, seoPoint != null ? seoPoint : 0L);
+                System.out.println("=== NEW NEWS SAVED ===");
+                System.out.println("Title: " + savedNews.getTitle());
+                System.out.println("Created: " + savedNews.getCreatedAt());
+                System.out.println("Updated: " + savedNews.getUpdatedAt());
+            } else {
+                System.out.println("=== EXISTING NEWS EDITED ===");
+                System.out.println("Title: " + savedNews.getTitle());
+                System.out.println("Created: " + savedNews.getCreatedAt());
+                System.out.println("Updated: " + savedNews.getUpdatedAt());
+                System.out.println("Is Updated timestamp different: " + (savedNews.getUpdatedAt() != null && !savedNews.getUpdatedAt().equals(savedNews.getCreatedAt())));
+                iUserMonthlyReportService.updateUserReportForEdit(savedNews);
+                System.out.println("Edit tracking updated for user: " + savedNews.getUserId().getEmail());
+            }
 
             // If video is provided, upload video
             if (mainVideo != null) {
@@ -171,9 +219,17 @@ public class NewsController {
             // Edit date if its not null
             if(date != null && !date.trim().isEmpty()) {
                 LocalDateTime parsedDate = LocalDateTime.parse(date,
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
                 iNewsService.updateCreatedAtById(savedNews.getId(), parsedDate);
             }
+
+            //FOR TINN NEWS
+            // if(sendToTinn) {
+            //     String response = aasaamCmsUploader.uploadNews(savedNews, aasaamTinnCategories, "",aasaamTinnStatus);
+            //     savedNews.setAasaamNewsId(Integer.parseInt(response));
+            //     savedNews = iNewsService.save(savedNews);
+            //     System.out.println(response);
+            // }
 
             // After successful video news save, awake SweetAlert
             if (savedNews.getId() != null) {
@@ -221,7 +277,8 @@ public class NewsController {
                                 @RequestParam(required = false) List<String> newsTags,
                                 @RequestParam(required = false) String date,
                                 @RequestParam(required = false, name = "aasaamTinnCategories") List<String> aasaamTinnCategories,
-                                @RequestParam(required = false, name = "aasaamTinnStatus") String aasaamTinnStatus) {
+                                @RequestParam(required = false, name = "aasaamTinnStatus") String aasaamTinnStatus,
+                                @RequestParam(required = false, name = "yoastPoint") String yoastPoint) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -237,15 +294,25 @@ public class NewsController {
             Users user = iUsersService.findByEmail(authentication.getName()).
                     orElseThrow(()->new UsernameNotFoundException("user not found."));
             NewsType newsType = iNewsTypeService.findById(1)
-                    .orElseThrow(() -> new IllegalArgumentException("NewsType with id 3 not found"));
+                    .orElseThrow(() -> new IllegalArgumentException("NewsType with id 1 not found"));
 
-            //Add comment based on news
             if (news.getId() != null) {
-                Optional<News> existingNewsOptional = iNewsService.findById(news.getId());
-                if (existingNewsOptional.isPresent()) {
-                    News existingNews = existingNewsOptional.get();
-                    news.setComments(existingNews.getComments());
+                Optional<News> existingNews = iNewsService.findById(news.getId());
+                if (existingNews.isPresent()) {
+                    news.setChapChin(existingNews.get().getChapChin());
+                    news.setComments(existingNews.get().getComments());
+                    news.setUserId(existingNews.get().getUserId());
+
+                    if (yoastPoint == null || yoastPoint.trim().isEmpty()) {
+                        news.setYoastSeoPoint(existingNews.get().getYoastSeoPoint());
+                    }
+
+                    if (news.getCreatedAt() == null) {
+                        news.setCreatedAt(existingNews.get().getCreatedAt());
+                    }
                 }
+            } else {
+                news.setUserId(user);
             }
 
             //Add tags for a new news
@@ -296,7 +363,7 @@ public class NewsController {
             news.setSlider(slider);
             news.setGetTranslated(translate);
             news.setNewsTypeId(newsType);
-            news.setUserId(user);
+
 
             //Upload images in news body
             String updatedBody = ImageDownloadUtil.processImages(news.getBody(), iImagesService);
@@ -321,8 +388,40 @@ public class NewsController {
                 news.setMainImage(mainImage);
             }
 
-            //Save the news
+            //Check new news before saving
+            boolean isNew = !iNewsService.findByTitle(news.getTitle()).isPresent();
+
+            // For existing news, get the original createdAt
+            if (!isNew) {
+                Optional<News> existingNews = iNewsService.findByTitle(news.getTitle());
+                if (existingNews.isPresent() && news.getCreatedAt() == null) {
+                    news.setCreatedAt(existingNews.get().getCreatedAt());
+                }
+            }
+
+            if(yoastPoint != null && !yoastPoint.trim().isEmpty()) {
+                news.setYoastSeoPoint(Long.parseLong(yoastPoint));
+            }
+
+            // Save the news
             News savedNews = iNewsService.save(news);
+
+            if (isNew) {
+                Long seoPoint = savedNews.getYoastSeoPoint();
+                iUserMonthlyReportService.updateUserReport(savedNews, seoPoint != null ? seoPoint : 0L);
+                System.out.println("=== NEW NEWS SAVED ===");
+                System.out.println("Title: " + savedNews.getTitle());
+                System.out.println("Created: " + savedNews.getCreatedAt());
+                System.out.println("Updated: " + savedNews.getUpdatedAt());
+            } else {
+                System.out.println("=== EXISTING NEWS EDITED ===");
+                System.out.println("Title: " + savedNews.getTitle());
+                System.out.println("Created: " + savedNews.getCreatedAt());
+                System.out.println("Updated: " + savedNews.getUpdatedAt());
+                System.out.println("Is Updated timestamp different: " + (savedNews.getUpdatedAt() != null && !savedNews.getUpdatedAt().equals(savedNews.getCreatedAt())));
+                iUserMonthlyReportService.updateUserReportForEdit(savedNews);
+                System.out.println("Edit tracking updated for user: " + savedNews.getUserId().getEmail());
+            }
 
             // If video is provided, upload video
             if (mainVideo != null) {
@@ -333,9 +432,17 @@ public class NewsController {
             // Edit date if its not null
             if(date != null && !date.trim().isEmpty()) {
                 LocalDateTime parsedDate = LocalDateTime.parse(date,
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
                 iNewsService.updateCreatedAtById(savedNews.getId(), parsedDate);
             }
+
+            //FOR TINN NEWS
+            // if(sendToTinn) {
+            //     String response = aasaamCmsUploader.uploadNews(savedNews, aasaamTinnCategories, "",aasaamTinnStatus);
+            //     savedNews.setAasaamNewsId(Integer.parseInt(response));
+            //     savedNews = iNewsService.save(savedNews);
+            //     System.out.println(response);
+            // }
 
 
             //After successful Gallery news save awake sweetalert
@@ -375,7 +482,8 @@ public class NewsController {
                            @RequestParam(required = false) List<String> newsTags,
                            @RequestParam(required = false) String date,
                            @RequestParam(required = false, name = "aasaamTinnCategories") List<String> aasaamTinnCategories,
-                           @RequestParam(required = false, name = "aasaamTinnStatus") String aasaamTinnStatus) {
+                           @RequestParam(required = false, name = "aasaamTinnStatus") String aasaamTinnStatus,
+                           @RequestParam(required = false, name = "yoastPoint") String yoastPoint) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -392,14 +500,23 @@ public class NewsController {
             NewsType newsType = iNewsTypeService.findById(3)
                     .orElseThrow(() -> new IllegalArgumentException("NewsType with id 3 not found"));
 
-
-            //Add comment based on news
             if (news.getId() != null) {
-                Optional<News> existingNewsOptional = iNewsService.findById(news.getId());
-                if (existingNewsOptional.isPresent()) {
-                    News existingNews = existingNewsOptional.get();
-                    news.setComments(existingNews.getComments());
+                Optional<News> existingNews = iNewsService.findById(news.getId());
+                if (existingNews.isPresent()) {
+                    news.setChapChin(existingNews.get().getChapChin());
+                    news.setComments(existingNews.get().getComments());
+                    news.setUserId(existingNews.get().getUserId());
+
+                    if (yoastPoint == null || yoastPoint.trim().isEmpty()) {
+                        news.setYoastSeoPoint(existingNews.get().getYoastSeoPoint());
+                    }
+
+                    if (news.getCreatedAt() == null) {
+                        news.setCreatedAt(existingNews.get().getCreatedAt());
+                    }
                 }
+            } else {
+                news.setUserId(user);
             }
 
             //Add tags for a new news
@@ -450,7 +567,6 @@ public class NewsController {
             news.setShowMostViewed(showMostViewed);
             news.setGetTranslated(translate);
             news.setNewsTypeId(newsType);
-            news.setUserId(user);
 
             //Upload images in news body
             String updatedBody = ImageDownloadUtil.processImages(news.getBody(), iImagesService);
@@ -461,8 +577,41 @@ public class NewsController {
                 news.setMainImage(mainImage);
             }
 
+
+            //Check new news before saving
+            boolean isNew = !iNewsService.findByTitle(news.getTitle()).isPresent();
+
+            // For existing news, get the original createdAt
+            if (!isNew) {
+                Optional<News> existingNews = iNewsService.findByTitle(news.getTitle());
+                if (existingNews.isPresent() && news.getCreatedAt() == null) {
+                    news.setCreatedAt(existingNews.get().getCreatedAt());
+                }
+            }
+
+            if(yoastPoint != null && !yoastPoint.trim().isEmpty()) {
+                news.setYoastSeoPoint(Long.parseLong(yoastPoint));
+            }
+
             // Save the news
             News savedNews = iNewsService.save(news);
+
+            if (isNew) {
+                Long seoPoint = savedNews.getYoastSeoPoint();
+                iUserMonthlyReportService.updateUserReport(savedNews, seoPoint != null ? seoPoint : 0L);
+                System.out.println("=== NEW NEWS SAVED ===");
+                System.out.println("Title: " + savedNews.getTitle());
+                System.out.println("Created: " + savedNews.getCreatedAt());
+                System.out.println("Updated: " + savedNews.getUpdatedAt());
+            } else {
+                System.out.println("=== EXISTING NEWS EDITED ===");
+                System.out.println("Title: " + savedNews.getTitle());
+                System.out.println("Created: " + savedNews.getCreatedAt());
+                System.out.println("Updated: " + savedNews.getUpdatedAt());
+                System.out.println("Is Updated timestamp different: " + (savedNews.getUpdatedAt() != null && !savedNews.getUpdatedAt().equals(savedNews.getCreatedAt())));
+                iUserMonthlyReportService.updateUserReportForEdit(savedNews);
+                System.out.println("Edit tracking updated for user: " + savedNews.getUserId().getEmail());
+            }
 
             // If video is provided, upload video
             if (mainVideo != null) {
@@ -477,13 +626,14 @@ public class NewsController {
                 iNewsService.updateCreatedAtById(savedNews.getId(), parsedDate);
             }
 
-            System.out.println(savedNews.getCreatedAt());
 
-            if(sendToTinn) {
-                System.out.println("im in here");
-                String response = aasaamCmsUploader.uploadNews(savedNews, aasaamTinnCategories, "",aasaamTinnStatus);
-                System.out.println(response);
-            }
+            //FOR TINN NEWS
+            // if(sendToTinn) {
+            //     String response = aasaamCmsUploader.uploadNews(savedNews, aasaamTinnCategories, "",aasaamTinnStatus);
+            //     savedNews.setAasaamNewsId(Integer.parseInt(response));
+            //     savedNews = iNewsService.save(savedNews);
+            //     System.out.println(response);
+            // }
 
             // After successful save, trigger SweetAlert
             if(savedNews.getId() != null) {
@@ -558,6 +708,24 @@ public class NewsController {
     public String deleteNews(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            News news = iNewsService.findById(id).orElseThrow(() -> new NullPointerException("news not found"));
+            YearMonth reportMonth = YearMonth.from(news.getCreatedAt());
+            iUserMonthlyReportService.findByUserAndReportMonth(news.getUserId(), reportMonth)
+                    .ifPresent(report -> {
+                        if (news.getChapChin() == true) {
+                            report.setChapChinCounter(report.getChapChinCounter() - 1);
+                        } else {
+                            report.setNewsCounter(report.getNewsCounter() - 1);
+                        }
+                        double averageSeoPoints = iNewsService.findByUserId(news.getUserId())
+                                .stream()
+                                .filter(n -> !n.getId().equals(id))
+                                .mapToLong(News::getYoastSeoPoint)
+                                .average()
+                                .orElse(0);
+                        report.setSeoPointAvg((long) averageSeoPoints);
+                        iUserMonthlyReportService.save(report);
+                    });
 
             iNewsService.deleteById(id);
             redirectAttributes.addFlashAttribute("deleted", true);

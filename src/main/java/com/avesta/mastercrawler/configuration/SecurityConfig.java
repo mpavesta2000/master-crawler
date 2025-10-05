@@ -35,7 +35,8 @@ public class SecurityConfig {
     }
 
     private final String[] publicUrl = {
-            "/admin/authentication/**",
+            "/admin/signup/**",
+            "/authentication/**",
             "/css/**",
             "/assets/**",
             "/fonts/**",
@@ -65,12 +66,12 @@ public class SecurityConfig {
                                 .requestMatchers(publicUrl).permitAll()
                                 .anyRequest().authenticated())
                 .formLogin(form->
-                        form.loginPage("/admin/authentication/login").permitAll()
+                        form.loginPage("/admin/login").permitAll()
                                 .successHandler(customAuthenticationSuccessHandler)
                                 .failureHandler(customAuthenticationFailureHandler))
                 .logout(logout -> {
-                    logout.logoutUrl("/admin/authentication/logout");
-                    logout.logoutSuccessUrl("/admin/authentication/login");
+                    logout.logoutUrl("/admin/logout");
+                    logout.logoutSuccessUrl("/admin/login");
                 }).cors(Customizer.withDefaults())
                 .csrf(csrf-> csrf.disable())
                 .exceptionHandling(configurer ->

@@ -1,11 +1,12 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="en"
-	data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none"
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	data-layout="vertical" data-topbar="light" dir="rtl" lang="fa" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none"
 	data-preloader="disable">
 
 <head>
+	<link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
 	<!--page title-->
-	<div th:replace="partials/title-meta :: title-meta('Reset Password')"></div>
+	<div th:replace="partials/title-meta :: title-meta('فراموشی رمزعبور')"></div>
 
 	<!-- Page CSS -->
 	<div th:replace="partials/head-css :: head-css"></div>
@@ -14,12 +15,12 @@
 <body>
 	<div class="auth-page-wrapper pt-5">
 		<!-- auth page bg -->
-		<div class="auth-one-bg-position auth-one-bg" id="auth-particles">
-			<div class="bg-overlay"></div>
+		<div class="auth-one-bg-position auth-one-bg" id="auth-particles" style="height: 450px;!important;">
+
 
 			<div class="shape">
 				<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
-					viewBox="0 0 1440 120">
+					 viewBox="0 0 1440 120">
 					<path d="M 0,36 C 144,53.6 432,123.2 720,124 C 1008,124.8 1296,56.8 1440,40L1440 140L0 140z"></path>
 				</svg>
 			</div>
@@ -32,11 +33,11 @@
 					<div class="col-lg-12">
 						<div class="text-center mt-sm-5 mb-4 text-white-50">
 							<div>
-								<a href="/" class="d-inline-block auth-logo">
-									<img src="/assets/images/logo-light.png" alt="" height="20">
+								<a href="index.html" class="d-inline-block auth-logo">
+									<span class="text-white" style="font-size: 2.5rem; font-weight: 700;">وگ ایران (بی‌همتا)</span>
 								</a>
 							</div>
-							<p class="mt-3 fs-15 fw-medium">Premium Admin & Dashboard Template</p>
+							<p class="mt-3 fs-15 fw-medium">بات تولید محتوا هوشمند</p>
 						</div>
 					</div>
 				</div>
@@ -48,29 +49,54 @@
 
 							<div class="card-body p-4">
 								<div class="text-center mt-2">
-									<h5 class="text-primary">Forgot Password?</h5>
-									<p class="text-muted">Reset password with velzon</p>
-
-									<lord-icon src="https://cdn.lordicon.com/rhvddzym.json" trigger="loop"
-										colors="primary:#0ab39c" class="avatar-xl"></lord-icon>
-
-								</div>
-
-								<div class="alert alert-borderless alert-warning text-center mb-2 mx-2" role="alert">
-									Enter your email and instructions will be sent to you!
+									<h5 class="text-primary">فراموشی رمزعبور</h5>
 								</div>
 								<div class="p-2">
-									<form>
-										<div class="mb-4">
-											<label class="form-label">Email</label>
-											<input type="email" class="form-control" id="email"
-												placeholder="Enter Email">
-										</div>
+									<form th:action="@{/admin/change/password/save}" method="post"  enctype="multipart/form-data" class="needs-validation" novalidate>
+										<div class="row g-2">
 
-										<div class="text-center mt-4">
-											<button class="btn btn-success w-100" type="submit">Send Reset Link</button>
+											<div class="col-lg-12">
+												<label class="form-label">ایمیل</label>
+												<input type="email" class="form-control" id="email" name="email"
+													   placeholder="ایمیل خود را وارد کنید" required>
+												<div class="valid-feedback">
+													تکمیل شده است.
+												</div>
+											</div>
+
+											<!--end col-->
+											<div class="col-lg-12">
+												<div>
+													<label for="newpasswordInput" class="form-label required">رمز عبور جدید</label>
+													<input type="password" name="newPassword" class="form-control" id="newpasswordInput"
+														   placeholder="رمز عبور جدید را وارد کنید" required>
+													<div class="valid-feedback">
+														تکمیل شده است.
+													</div>
+												</div>
+											</div>
+											<!--end col-->
+											<div class="col-lg-12">
+												<div>
+													<label for="confirmpasswordInput" class="form-label required">تأیید رمز
+														عبور</label>
+													<input type="password" name="confirmPassword" class="form-control" id="confirmpasswordInput"
+														   placeholder="رمز عبور را تأیید کنید" required>
+													<div class="valid-feedback">
+														تکمیل شده است.
+													</div>
+												</div>
+											</div>
+											<!--end col-->
+											<div class="col-lg-12">
+												<div class="text-end">
+													<button type="submit" class="btn btn-primary">تغییر رمز عبور</button>
+												</div>
+											</div>
+											<!--end col-->
 										</div>
-									</form><!-- end form -->
+										<!--end row-->
+									</form>
 								</div>
 							</div>
 							<!-- end card body -->
@@ -78,8 +104,8 @@
 						<!-- end card -->
 
 						<div class="mt-4 text-center">
-							<p class="mb-0">Wait, I remember my password... <a href="/auth-signin-basic"
-									class="fw-semibold text-primary text-decoration-underline"> Click here </a> </p>
+							<p class="mb-0">برای بازگشت به صفحه ورود<a href="/admin/login"
+									class="fw-semibold text-primary text-decoration-underline"> اینجا کلیک کنید </a> </p>
 						</div>
 
 					</div>
@@ -90,31 +116,48 @@
 		</div>
 		<!-- end auth page content -->
 
-		<!-- footer -->
-		<footer class="footer">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-12">
-						<div class="text-center">
-							<p class="mb-0 text-muted">&copy;
-								<script>document.write(new Date().getFullYear())</script> Velzon. Crafted with <i
-									class="mdi mdi-heart text-danger"></i> by Themesbrand
-							</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</footer>
-		<!-- end Footer -->
 	</div>
 	<!-- end auth-page-wrapper -->
 
 	<div th:replace="partials/vendor-scripts :: scripts"></div>
 	<!-- particles js -->
 	<script src="/assets/libs/particles.js/particles.js"></script>
+	<script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+	<script src="/assets/js/pages/sweetalerts.init.js"></script>
+	<script src="/assets/js/pages/form-validation.init.js"></script>
 
 	<!-- particles app js -->
 	<script src="/assets/js/pages/particles.app.js"></script>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		var successSave = [[${successSave}]];
+		if (successSave === true) {
+			Swal.fire({
+				text: "پروفایل شما با موفقیت بروزرسانی شد.",
+				icon: "success",
+				confirmButtonText: "تایید",
+				confirmButtonColor: "#556ee6"
+			});
+		}
+
+		const successMessage = [[${successMessage}]];
+		const errorMessage = [[${errorMessage}]];
+		if (successMessage) {
+			Swal.fire({
+				text: successMessage,
+				icon: 'success',
+				confirmButtonText: 'تایید'
+			});
+		}
+		if (errorMessage) {
+			Swal.fire({
+				text: errorMessage,
+				icon: 'error',
+				confirmButtonText: 'دوباره امتحان کنید'
+			});
+		}
+		/*]]>*/
+	</script>
 </body>
 
 </html>

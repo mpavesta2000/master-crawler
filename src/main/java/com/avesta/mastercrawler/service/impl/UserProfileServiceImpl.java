@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -34,10 +36,9 @@ public class UserProfileServiceImpl implements IUserProfileService {
     @Override
     public UserProfile pictureUpload(MultipartFile image, UserProfile userProfile) {
         String imageName = "";
-        String uploadDir = "photos/profile/";
-
+        String uploadDir = "news/profile/";
         if (userProfile.getProfilePhoto() != null && !userProfile.getProfilePhoto().isEmpty()) {
-            String existingPhotoPath = userProfile.getProfilePhoto().replace("/photos/profile/", "");
+            String existingPhotoPath = userProfile.getProfilePhoto().replace("/news/profile/", "");
             File existingFile = new File(uploadDir + existingPhotoPath);
             if (existingFile.exists()) {
                 boolean deleted = existingFile.delete();
@@ -48,7 +49,7 @@ public class UserProfileServiceImpl implements IUserProfileService {
         }
         if (!Objects.equals(image.getOriginalFilename(), "")) {
             imageName = StringUtils.cleanPath(Objects.requireNonNull(image.getOriginalFilename()));
-            userProfile.setProfilePhoto("/photos/profile/" + imageName);
+            userProfile.setProfilePhoto("/news/profile/" + imageName);
         }
         try {
             FileUploadUtil.saveFile(uploadDir, imageName, image);

@@ -36,7 +36,14 @@ public class Users extends BaseEntity {
     @JoinColumn(name = "user_type_id")
     private UsersType userTypeId;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserMonthlyReport> monthlyReports = new ArrayList<>();
+
+
     @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<News> news = new ArrayList<>();
+
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tags> tags = new ArrayList<>();
 
 }

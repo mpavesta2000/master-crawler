@@ -38,6 +38,7 @@ public class ChapChinRestController {
     private final INewsService iNewsService;
     private final INewsTypeService iNewsTypeService;
     private final IImagesService iImagesService;
+    private final IUserMonthlyReportService iUserMonthlyReportService;
 
     @PostMapping("/chapchin/send")
     public ResponseEntity<Map<String, String>> chapchinSend(@RequestBody Map<String, String> requestBody) {
@@ -75,6 +76,7 @@ public class ChapChinRestController {
                 }
                 news.setTitle(response.getObject().getString("title"));
                 news.setLead(response.getObject().getString("lead"));
+                news.setChapChin(true);
                 news.setStatus("Draft");
                 news.setCategories(updatedCategories);
 
@@ -96,7 +98,8 @@ public class ChapChinRestController {
                     throw new IOException("Error downloading or saving image: " + response.getObject().getString("cover"), e);
                 }
 
-                iNewsService.save(news);
+                News savedNews = iNewsService.save(news);
+                iUserMonthlyReportService.updateUserReport(savedNews, 0);
 
                 Map<String, String> responseSuccess = new HashMap<>();
                 responseSuccess.put("message", "اطلاعات با موفقیت ذخیره شد!");

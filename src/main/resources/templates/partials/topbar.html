@@ -829,9 +829,7 @@
 												class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text" sec:authorize="isAuthenticated()">
 											<span th:switch="${#authentication.principal.authorities[0].authority}">
 												<span th:case="Admin">ادمین</span>
-												<span th:case="Editor">سردبیر</span>
-												<span th:case="Ai">کاربر تست</span>
-												<span th:case="VogIran">وگ ایران</span>
+												<span th:case="User">خبرنگار</span>
 												<span th:case="*">کاربر ناشناس</span>
 											</span>
 										</span>
@@ -840,10 +838,10 @@
 						</button>
 						<div class="dropdown-menu dropdown-menu-end">
 							<!-- item-->
-							<a class="dropdown-item" href="/profile/settings"><i
+							<a class="dropdown-item" href="/admin/profile/settings"><i
 									class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span
 									class="align-middle">تنظیمات</span></a>
-							<a class="dropdown-item" href="/admin/authentication/logout"><i
+							<a class="dropdown-item" href="/admin/logout"><i
 									class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span
 									class="align-middle" data-key="t-logout">خروج</span></a>
 						</div>

@@ -15,17 +15,17 @@
 </head>
 
 <body>
-<div class="auth-page-wrapper auth-bg-cover py-5 d-flex justify-content-center align-items-center min-vh-100">
-	<!-- Add the gradient overlay -->
-	<div class="ravii-auth-overlay"></div>
-
-	<!-- Add the logo -->
-	<div class="ravii-auth-logo-wrapper">
-		<a href="/" class="ravii-auth-logo-link">
-			<img src="/assets/images/real-ravii.png" alt="RAVII" class="ravii-auth-logo">
-		</a>
+<div class="auth-page-wrapper auth-bg-cover min-vh-100">
+	<!-- Video Background -->
+	<div class="video-background">
+		<video autoplay muted loop playsinline class="background-video">
+			<source src="/assets/images/tinn-vid.mp4" type="video/mp4">
+			<!-- Fallback for browsers that don't support video -->
+			<img src="/assets/images/tinnnews-logo.png" alt="TinnNews Background" class="fallback-image">
+		</video>
 	</div>
 
+	<!-- Overlay for better text readability -->
 	<div class="bg-overlay"></div>
 	<!-- auth-page content -->
 	<div class="auth-page-content overflow-hidden pt-lg-5">
@@ -42,7 +42,7 @@
 									</div>
 
 									<div class="mt-4">
-										<form th:action="@{/admin/authentication/login}" th:object="${user}" method="post">
+										<form th:action="@{/admin/login}" th:object="${user}" method="post">
 											<div th:if="${session.error}" class="alert alert-danger">
 												<p th:text="${session.error}"></p>
 											</div>
@@ -86,12 +86,12 @@
 	<!-- end auth page content -->
 
 	<!-- footer -->
-	<footer class="footer">
+	<footer class="footer glassy-footer">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="text-center">
-						<p class="mb-0">
+						<p class="mb-0 glassy-footer-text">
 							توسعه شده توسط تیم راوی - ۱۴۰۳
 							&copy;
 						</p>

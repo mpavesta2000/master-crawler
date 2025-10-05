@@ -20,6 +20,6 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         } else {
             request.getSession().setAttribute("error", "نام کاربری یا رمز عبور اشتباه است.");
         }
-        response.sendRedirect("/admin/authentication/login");
+        response.sendRedirect("/admin/login");
     }
 }

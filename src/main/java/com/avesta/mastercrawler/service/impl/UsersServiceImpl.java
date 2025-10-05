@@ -31,6 +31,7 @@ public class UsersServiceImpl implements IUsersService {
         if (user.getUserProfile() == null) {
             UserProfile userProfile = new UserProfile();
             userProfile.setUserId(user);
+            userProfile.setEmail(user.getEmail());
             userProfile.setProfilePhoto("/assets/images/profile-defult.jpg");
             user.setUserProfile(userProfile);
         }
@@ -42,7 +43,8 @@ public class UsersServiceImpl implements IUsersService {
 
     @Override
     public Page<Users> findAllAdmins(Pageable pageable) {
-        return usersRepository.findAllByUserTypeId_UserTypeName("Admin", pageable);
+//        return usersRepository.findAllByUserTypeId_UserTypeName("Admin", pageable);
+        return usersRepository.findAll(pageable);
     }
 
     @Override

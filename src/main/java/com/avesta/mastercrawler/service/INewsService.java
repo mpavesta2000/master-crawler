@@ -1,6 +1,7 @@
 package com.avesta.mastercrawler.service;
 
 import com.avesta.mastercrawler.model.News;
+import com.avesta.mastercrawler.model.Users;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,7 +19,7 @@ public interface INewsService {
     void deleteById(Integer id);
     String ckeditorUpload(MultipartFile image);
     List<News> findByMainImage(String mainImage);
-    Page<News> findAllWithFilters(String searchValue, String statusFilter, String newsTypeFilter, String userFilter, Integer idFilter, Pageable pageable);
+    Page<News> findAllWithFilters(String searchValue, String statusFilter, String newsTypeFilter, String userFilter, Integer idFilter, Pageable pageable,Boolean chapChinFilter);
     List<News> searchNews(String search, String status);
     List<News> findAllByVideoName(String name);
     List<News> findByMainVideo(String oldVideoName);
@@ -31,4 +32,6 @@ public interface INewsService {
     List<News> getTickerNews();
     List<News> getTwoNews();
     void updateCreatedAtById(Integer id, LocalDateTime createdAt);
+    Optional<News> findByTitle(String title);
+    List<News> findByUserId(Users user);
 }

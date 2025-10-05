@@ -34,6 +34,7 @@ public class NewsDataRestController {
             @RequestParam(value = "newsTypeFilter", required = false) String newsTypeFilter,
             @RequestParam(value = "userFilter", required = false) String userFilter,
             @RequestParam(value = "idFilter", required = false) String idFilter,
+            @RequestParam(value = "chapChinFilter", required = false) String chapChinFilter,
             @RequestParam("order[0][column]") int orderColumn,
             @RequestParam("order[0][dir]") String orderDir) {
 
@@ -47,13 +48,18 @@ public class NewsDataRestController {
             }
         }
 
+        Boolean chapChinFilterBool = null;
+        if (chapChinFilter != null && !chapChinFilter.trim().isEmpty()) {
+            chapChinFilterBool = Boolean.parseBoolean(chapChinFilter);
+        }
+
         String[] columnMapping = {"id", "title", "newsTypeId.newsTypeName", "userId.email", "postedDate", "status", "categories"};
         String orderBy = columnMapping[orderColumn];
 
         Pageable pageable = PageRequest.of(start / length, length,
                 orderDir.equals("desc") ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending());
 
-        Page<News> newsPage = iNewsService.findAllWithFilters(searchValue, statusFilter, newsTypeFilter, userFilter, idFilterInt ,pageable);
+        Page<News> newsPage = iNewsService.findAllWithFilters(searchValue, statusFilter, newsTypeFilter, userFilter, idFilterInt ,pageable,chapChinFilterBool);
 
         List<Map<String, Object>> newsData = newsPage.getContent().stream().map(news -> {
             Map<String, Object> data = new HashMap<>();
@@ -63,6 +69,7 @@ public class NewsDataRestController {
             data.put("author", news.getUserId().getEmail());
             data.put("createdAt", news.getCreatedAt());
             data.put("status", news.getStatus().equals("Draft") ? "پیش نویس" : "منتشر شده");
+            data.put("chapChin", news.getChapChin() != null && news.getChapChin() ? "بله" : "خیر");
             data.put("categories", news.getCategories().stream().map(Category::getName).collect(Collectors.joining(", ")));
             data.put("actions", "<a href='/admin/news/edit/" + news.getId() + "' class='link-success fs-15'><i class='ri-edit-2-line'></i></a>" +
                     "<button class='btn btn-link p-0 link-danger fs-15' onclick='confirmDelete(" + news.getId() + ")'><i class='ri-delete-bin-line'></i></button>");
