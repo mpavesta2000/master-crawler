@@ -434,7 +434,7 @@ function renderRecentNewsTable() {
                     formatter: (cell) => gridjs.html(`<span class="badge badge-soft-info">${cell}</span>`)
                 },
                 {
-                    name: 'ارسال به تین نیوز',
+                    name: 'ارسال به سامانه خبری هدف',
                     formatter: (cell) => {
                         const badgeClass = cell ? 'badge-soft-success' : 'badge-soft-warning';
                         const statusText = cell ? 'ارسال شده به تین نیوز' : 'ارسال نشده';
