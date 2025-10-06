@@ -2,6 +2,7 @@ package com.avesta.mastercrawler.service.rss;
 
 import com.avesta.mastercrawler.service.scraper.ChapChinService;
 import kong.unirest.JsonNode;
+import lombok.AllArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
