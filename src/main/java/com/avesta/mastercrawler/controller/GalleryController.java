@@ -114,7 +114,7 @@ public class GalleryController {
                 redirectAttributes.addFlashAttribute("error", "تصویری با این نام یافت نشد.");
             }
         }
-        return "redirect:/gallery/list-images";
+        return "redirect:/admin/gallery/list-images";
     }
 
     @PostMapping("/list-videos-delete")
@@ -156,7 +156,7 @@ public class GalleryController {
                 redirectAttributes.addFlashAttribute("error", "ویدیو با این نام یافت نشد.");
             }
         }
-        return "redirect:/gallery/list-videos";
+        return "redirect:/admin/gallery/list-videos";
     }
 
     @GetMapping("/gallery-browser")
@@ -185,7 +185,7 @@ public class GalleryController {
             iImagesService.imageUpload(image);
             redirectAttributes.addFlashAttribute("success", true);
         }
-        return "redirect:/gallery/list-images";
+        return "redirect:/admin/gallery/list-images";
     }
 
     @PostMapping("/list-images-link-add")
@@ -200,7 +200,7 @@ public class GalleryController {
                 redirectAttributes.addFlashAttribute("error", true);
             }
         }
-        return "redirect:/gallery/list-images";
+        return "redirect:/admin/gallery/list-images";
     }
 
     @PostMapping("/list-images-edit")
@@ -242,7 +242,7 @@ public class GalleryController {
             }
         }
 
-        return "redirect:/gallery/list-images";
+        return "redirect:/admin/gallery/list-images";
     }
 
     @PostMapping("/list-videos-add")
@@ -253,7 +253,7 @@ public class GalleryController {
             iVideosService.videoUpload(video);
             redirectAttributes.addFlashAttribute("success", true);
         }
-        return "redirect:/gallery/list-videos";
+        return "redirect:/admin/gallery/list-videos";
     }
 
     @PostMapping("/list-videos-edit")
@@ -295,7 +295,7 @@ public class GalleryController {
             }
         }
 
-        return "redirect:/gallery/list-videos";
+        return "redirect:/admin/gallery/list-videos";
     }
 
 }

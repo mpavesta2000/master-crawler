@@ -25,14 +25,14 @@ public class ImageDownloadUtil {
             String imgSrc = imgTag.attr("src");
             System.out.println("Processing image: " + imgSrc);
 
-            if (imgSrc.contains("/images/news/photos/")) {
+            if (imgSrc.contains("/news/photos/")) {
                 System.out.println("Skipping image (already downloaded): " + imgSrc);
                 continue;
             }
 
             try {
 
-                String uploadDir = "images/news/photos/";
+                String uploadDir = "news/photos/";
                 Files.createDirectories(Paths.get(uploadDir));
 
 
