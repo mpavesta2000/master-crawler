@@ -88,15 +88,25 @@ public class AnalyticsController {
         List<Long> weeklyEditsData = new ArrayList<>();
         List<Long> weeklyChapChinData = new ArrayList<>();
         
-        // Persian day names
+        // Persian day names (index 0 = Saturday)
         String[] persianDays = {"شنبه", "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنج‌شنبه", "جمعه"};
         
         for (int i = 6; i >= 0; i--) {
             LocalDate targetDate = today.minusDays(i);
             
-            // Add Persian day name
-            int dayOfWeek = targetDate.getDayOfWeek().getValue() % 7; // Convert to 0-6 range
-            weekLabels.add(persianDays[dayOfWeek]);
+            // Add Persian day name with correct mapping from java.time DayOfWeek (1=Mon .. 7=Sun)
+            int dow = targetDate.getDayOfWeek().getValue();
+            int persianIdx;
+            switch (dow) {
+                case 1: persianIdx = 2; break; // Monday -> دوشنبه
+                case 2: persianIdx = 3; break; // Tuesday -> سه‌شنبه
+                case 3: persianIdx = 4; break; // Wednesday -> چهارشنبه
+                case 4: persianIdx = 5; break; // Thursday -> پنج‌شنبه
+                case 5: persianIdx = 6; break; // Friday -> جمعه
+                case 6: persianIdx = 0; break; // Saturday -> شنبه
+                case 7: default: persianIdx = 1; break; // Sunday -> یکشنبه
+            }
+            weekLabels.add(persianDays[persianIdx]);
             
             // Count news added on this day
             long dailyNewsCount = 0;
@@ -104,9 +114,6 @@ public class AnalyticsController {
             long dailyChapChinCount = 0;
             
             for (Users editor : allUsers) {
-                if (editor.getUserTypeId().getUserTypeName().equals("Admin")) {
-                    continue;
-                }
                 
                 List<News> editorNews = iNewsService.findByUserId(editor);
                 
@@ -143,10 +150,6 @@ public class AnalyticsController {
         List<Map<String, Object>> editorContributions = new ArrayList<>();
         
         for (Users editor : allUsers) {
-            // Skip admin users, only include editors
-            if (editor.getUserTypeId().getUserTypeName().equals("Admin")) {
-                continue;
-            }
             
             List<News> editorNews = iNewsService.findByUserId(editor);
             List<UserMonthlyReport> editorReports = editor.getMonthlyReports();
@@ -191,9 +194,6 @@ public class AnalyticsController {
         // Get recent news from all editors for the table (last 10 news)
         List<News> recentNews = new ArrayList<>();
         for (Users editor : allUsers) {
-            if (editor.getUserTypeId().getUserTypeName().equals("Admin")) {
-                continue;
-            }
             List<News> editorNews = iNewsService.findByUserId(editor);
             recentNews.addAll(editorNews);
         }
@@ -210,7 +210,6 @@ public class AnalyticsController {
             newsData.put("createdAt", news.getCreatedAt() != null ? news.getCreatedAt().toString() : "");
             
             newsData.put("yoastSeoPoint", news.getYoastSeoPoint());
-            // newsData.put("sendToTinn", news.getSendToTinn() != null ? news.getSendToTinn() : false);
             
             // Get editor name
             Users newsEditor = news.getUserId();
@@ -357,7 +356,6 @@ public class AnalyticsController {
                 newsData.put("title", news.getTitle());
                 newsData.put("createdAt", news.getCreatedAt().toString());
                 newsData.put("yoastSeoPoint", news.getYoastSeoPoint());
-                // newsData.put("sendToTinn", news.getSendToTinn() != null ? news.getSendToTinn() : false);
                 return newsData;
             })
             .collect(Collectors.toList());

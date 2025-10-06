@@ -1,0 +1,151 @@
+
+
+/* Authentication Page Wrapper */
+.auth-page-wrapper {
+    position: relative;
+    min-height: 100vh;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+/* Authentication Content */
+.auth-page-content {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+/* Card Styling */
+.auth-page-wrapper .card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: none;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+}
+
+
+
+
+
+
+
+
+/* Alert Styling */
+.auth-page-wrapper .alert {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 8px;
+}
+
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .background-video {
+        animation: none;
+    }
+    
+    .auth-page-wrapper .btn-primary:hover {
+        transform: none;
+    }
+}
+
+/* Glassy Footer Styling */
+.glassy-footer {
+    position: relative;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 20px 0;
+    z-index: 10;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+}
+
+.glassy-footer-text {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-size: 14px;
+    font-weight: 400;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.5px;
+    margin: 0;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: inline-block;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.glassy-footer-text:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced glassmorphism effect */
+.glassy-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.15) 0%,
+        rgba(255, 255, 255, 0.05) 50%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
+    border-radius: inherit;
+    z-index: -1;
+}
+
+/* Mobile responsiveness for footer */
+@media (max-width: 768px) {
+    .glassy-footer {
+        padding: 15px 0;
+        margin-top: 20px;
+    }
+    
+    .glassy-footer-text {
+        font-size: 12px;
+        padding: 6px 12px;
+        letter-spacing: 0.3px;
+    }
+    
+    .auth-page-content {
+        padding: 10px 0;
+        min-height: auto;
+    }
+    
+    .auth-page-wrapper {
+        min-height: 100vh;
+        padding: 10px 0;
+    }
+}
+
+/* Dark mode support for footer */
+@media (prefers-color-scheme: dark) {
+    .glassy-footer {
+        background: rgba(0, 0, 0, 0.2);
+        border-top-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .glassy-footer-text {
+        background: rgba(0, 0, 0, 0.1);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+}
