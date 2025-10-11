@@ -67,6 +67,7 @@ public class NewsController {
     @PostMapping("/save-video")
     public String saveNewsVideo(RedirectAttributes redirectAttributes, @Valid News news, BindingResult bindingResult, Model model,
                                 @RequestParam(required = false) String mainImage,
+                                @RequestParam(required = false) String mainImageAltText,
                                 @RequestParam(required = false) String mainVideo,
                                 @RequestParam(required = false) boolean breakingNews,
                                 @RequestParam(required = false) boolean newsHeadline,
@@ -175,6 +176,11 @@ public class NewsController {
                 news.setMainImage(mainImage);
             }
 
+            //Set main image alt text
+            if (mainImageAltText != null && !mainImageAltText.trim().isEmpty()) {
+                news.setMainImageAltText(mainImageAltText);
+            }
+
             //Check new news before saving
             boolean isNew = !iNewsService.findByTitle(news.getTitle()).isPresent();
 
@@ -265,7 +271,7 @@ public class NewsController {
     }
 
     @PostMapping("/save-images-news")
-    public String saveNewsImage(RedirectAttributes redirectAttributes,Model model, @RequestParam("images") List<String> images, @RequestParam(required = false) String mainImage,@Valid News news, BindingResult bindingResult,
+    public String saveNewsImage(RedirectAttributes redirectAttributes,Model model, @RequestParam("images") List<String> images, @RequestParam(required = false) String mainImage, @RequestParam(required = false) String mainImageAltText, @Valid News news, BindingResult bindingResult,
                                 @RequestParam(required = false) String mainVideo,
                                 @RequestParam(required = false) boolean breakingNews,
                                 @RequestParam(required = false) boolean newsHeadline,
@@ -388,6 +394,11 @@ public class NewsController {
                 news.setMainImage(mainImage);
             }
 
+            //Set main image alt text
+            if (mainImageAltText != null && !mainImageAltText.trim().isEmpty()) {
+                news.setMainImageAltText(mainImageAltText);
+            }
+
             //Check new news before saving
             boolean isNew = !iNewsService.findByTitle(news.getTitle()).isPresent();
 
@@ -471,6 +482,7 @@ public class NewsController {
     @PostMapping("/save")
     public String saveNews(RedirectAttributes redirectAttributes, @Valid News news, BindingResult bindingResult, Model model,
                            @RequestParam(required = false) String mainImage,
+                           @RequestParam(required = false) String mainImageAltText,
                            @RequestParam(required = false) String mainVideo,
                            @RequestParam(required = false) boolean breakingNews,
                            @RequestParam(required = false) boolean newsHeadline,
@@ -579,6 +591,10 @@ public class NewsController {
                 news.setMainImage(mainImage);
             }
 
+            //Set main image alt text
+            if (mainImageAltText != null && !mainImageAltText.trim().isEmpty()) {
+                news.setMainImageAltText(mainImageAltText);
+            }
 
             //Check new news before saving
             boolean isNew = !iNewsService.findByTitle(news.getTitle()).isPresent();

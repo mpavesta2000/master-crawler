@@ -442,6 +442,7 @@
                                 <div class="col-sm-6 ml-4 mr-4 mt-2">
                                     <button type="button" id="fileManagerButton" class="btn btn-warning btn-label waves-effect waves-light w-100" data-bs-toggle="modal" data-bs-target="#galleryModal"><i class="ri-gallery-fill label-icon align-middle fs-16 me-2"></i>انتخاب عکس از سرور</button>
                                     <input type="text" id="mainImageInput" name="mainImageInput" th:field="*{mainImage}" class="form-control" hidden />
+                                    <input type="text" id="mainImageAltText" name="mainImageAltText" class="form-control" hidden />
                                 </div>
                             </div>
 
@@ -453,6 +454,30 @@
                                 <h5>پیش‌نمایش تصویر انتخاب شده:</h5>
                                 <div class="p-2 d-flex justify-content-center">
                                     <img class="img-thumbnail" id="previewImage" alt="پیش‌نمایش تصویر" width="200" />
+                                </div>
+                                <div class="p-3">
+                                    <div class="mb-3">
+                                        <label class="form-label d-flex justify-content-between" for="imageAltText">
+                                            متن جایگزین تصویر (Alt Text)
+                                            <button type="button" class="text-info" id="generate-alt-text-btn"
+                                                    style="background: none; border: none; cursor: pointer; font-size: inherit;">
+                                                (تولید خودکار با هوش مصنوعی)
+                                            </button>
+                                        </label>
+                                        <input type="text" class="form-control" id="imageAltText" name="imageAltText"
+                                               placeholder="متن جایگزین تصویر برای سئو و دسترسی‌پذیری">
+                                        <div class="form-text">
+                                            <strong>متن جایگزین تصویر:</strong> توضیح مختصری از محتوای تصویر<br>
+                                            • برای بهبود سئو و دسترسی‌پذیری ضروری است<br>
+                                            • حداکثر 125 کاراکتر توصیه می‌شود<br>
+                                            • از کلمات کلیدی مرتبط با خبر استفاده کنید
+                                        </div>
+                                    </div>
+                                    <div id="alt-text-preloader" style="display: none; margin-right: 10px;">
+                                        <div class="spinner-border text-info" role="status">
+                                            <span class="visually-hidden">در حال تولید...</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 

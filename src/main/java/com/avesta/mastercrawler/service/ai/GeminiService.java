@@ -169,4 +169,56 @@ public class GeminiService {
         
         return "generated-slug";
     }
+
+    public String generateAltText(String imageUrl, String newsTitle, String newsContent) {
+        StringBuilder altTextPrompt = new StringBuilder();
+        altTextPrompt.append("شما یک متخصص سئو (SEO) و تحلیل‌گر تصویر حرفه‌ای هستید که برای یک وب‌سایت خبری و رسانه‌ای به نام «راوی» کار می‌کنید.\n\n");
+        
+        altTextPrompt.append("ورودی شما شامل اطلاعات زیر است:\n");
+        altTextPrompt.append("1. تصویر مورد نظر (image input)\n");
+        altTextPrompt.append("2. عنوان خبر: \"").append(newsTitle).append("\"\n");
+        altTextPrompt.append("3. توضیح کوتاه خبر یا خلاصه: \"").append(newsContent.substring(0, Math.min(300, newsContent.length()))).append("...\"\n\n");
+        
+        altTextPrompt.append("وظیفه شما تولید متن جایگزین (alt text) برای تصویر است، به‌صورتی که:\n");
+        altTextPrompt.append("- بهینه‌سازی کامل برای سئو داشته باشد.\n");
+        altTextPrompt.append("- دقیقاً توضیح دهد که تصویر چه چیزی را نشان می‌دهد، اما در عین حال با موضوع خبر مرتبط باشد.\n");
+        altTextPrompt.append("- طبیعی، کوتاه، و روان باشد (حداکثر ۱۵ تا ۲۰ کلمه).\n");
+        altTextPrompt.append("- از یک یا دو کلمه کلیدی مرتبط با عنوان یا برچسب‌ها استفاده کند.\n");
+        altTextPrompt.append("- از تکرار یا پر کردن بی‌منطق کلمات کلیدی خودداری شود.\n");
+        altTextPrompt.append("- از عبارات مصنوعی مانند \"در این تصویر دیده می‌شود\" یا \"عکس از ...\" پرهیز شود.\n");
+        altTextPrompt.append("- لحن رسمی و خبری داشته باشد (نه تبلیغاتی، نه احساسی).\n");
+        altTextPrompt.append("- اگر تصویر مربوط به اشخاص یا مکان است، آن را ذکر کند.\n");
+        altTextPrompt.append("- اگر تصویر مربوط به داده، نمودار یا محصول است، هدف آن را توضیح دهد.\n");
+        altTextPrompt.append("- فقط متن نهایی alt را خروجی بدهید و هیچ توضیح یا نشانه اضافی ننویسید.\n\n");
+        
+        altTextPrompt.append("نمونه خروجی ایده‌آل:\n");
+        altTextPrompt.append("\"کارگر در حال نصب شیر صنعتی فولادی ضدزنگ در کارخانه ووگیران اصفهان\"\n\n");
+        
+        altTextPrompt.append("خروجی شما باید دقیقاً شامل همین فرمت باشد:\n");
+        altTextPrompt.append("[فقط متن alt، بدون توضیحات اضافه]");
+        
+        String response = chatLanguageModel.chat(altTextPrompt.toString());
+        
+        if (response != null) {
+            // Clean up the response
+            response = response.trim();
+            
+            // Remove any quotes or brackets that might be added
+            response = response.replaceAll("^[\"\\[\\]]+|[\"\\[\\]]+$", "");
+            
+            // Ensure it's not too long (approximately 15-20 words in Persian)
+            if (response.length() > 150) {
+                response = response.substring(0, 150).trim();
+                // Try to end at a word boundary
+                int lastSpace = response.lastIndexOf(' ');
+                if (lastSpace > 100) {
+                    response = response.substring(0, lastSpace);
+                }
+            }
+            
+            return response.isEmpty() ? "تصویر مرتبط با خبر" : response;
+        }
+        
+        return "تصویر مرتبط با خبر";
+    }
 }

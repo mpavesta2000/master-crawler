@@ -780,6 +780,133 @@ function selectImage(imageElement) {
     modalInstance.hide();
 }
 
+// Generate alt text using AI
+async function generateAltText() {
+    const preloader = document.getElementById('alt-text-preloader');
+    const button = document.getElementById('generate-alt-text-btn');
+    const altTextInput = document.getElementById('imageAltText');
+    const mainImageInput = document.getElementById('mainImageInput');
+    
+    try {
+        // Show loading state
+        preloader.style.display = 'block';
+        button.style.opacity = '0.5';
+        button.disabled = true;
+
+        // Get current form data
+        const newsTitle = document.getElementById('news-title-input').value;
+        const newsContent = CKEDITOR.instances.editor.getData();
+        const imageFileName = mainImageInput.value;
+
+        // Validate inputs
+        if (!imageFileName || imageFileName.trim() === '') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'خطا',
+                text: 'ابتدا تصویری انتخاب کنید.',
+                confirmButtonText: 'باشه'
+            });
+            return;
+        }
+
+        if (!newsTitle || newsTitle.trim() === '') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'خطا',
+                text: 'ابتدا عنوان خبر را وارد کنید.',
+                confirmButtonText: 'باشه'
+            });
+            return;
+        }
+
+        if (!newsContent || newsContent.trim() === '') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'خطا',
+                text: 'ابتدا محتوای خبر را وارد کنید.',
+                confirmButtonText: 'باشه'
+            });
+            return;
+        }
+
+        // Prepare image URL
+        const imageUrl = `/news/photos/${imageFileName}`;
+
+        // Call the API
+        const response = await fetch('/api/gemini/generate-alt-text', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                imageUrl: imageUrl,
+                newsTitle: newsTitle,
+                newsContent: newsContent
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('خطا در ارتباط با سرور');
+        }
+
+        const data = await response.json();
+
+        if (data.error) {
+            throw new Error(data.error);
+        }
+
+        if (data.altText) {
+            // Update the alt text input field
+            altTextInput.value = data.altText;
+            
+            // Also update the hidden field for form submission
+            const mainImageAltText = document.getElementById('mainImageAltText');
+            mainImageAltText.value = data.altText;
+
+            // Show success message
+            Swal.fire({
+                icon: 'success',
+                title: 'موفقیت',
+                text: 'متن جایگزین تصویر با موفقیت تولید شد.',
+                confirmButtonText: 'باشه'
+            });
+        } else {
+            throw new Error('پاسخ نامعتبر از سرور');
+        }
+
+    } catch (error) {
+        console.error('Error generating alt text:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'خطا',
+            text: error.message || 'خطایی در تولید متن جایگزین تصویر رخ داد.',
+            confirmButtonText: 'باشه'
+        });
+    } finally {
+        // Hide loading state
+        preloader.style.display = 'none';
+        button.style.opacity = '1';
+        button.disabled = false;
+    }
+}
+
+// Add event listener for the alt text generation button
+document.addEventListener('DOMContentLoaded', function() {
+    const generateAltTextBtn = document.getElementById('generate-alt-text-btn');
+    if (generateAltTextBtn) {
+        generateAltTextBtn.addEventListener('click', generateAltText);
+    }
+
+    // Update hidden alt text field when user types in the visible field
+    const altTextInput = document.getElementById('imageAltText');
+    const mainImageAltText = document.getElementById('mainImageAltText');
+    if (altTextInput && mainImageAltText) {
+        altTextInput.addEventListener('input', function() {
+            mainImageAltText.value = this.value;
+        });
+    }
+});
+
 async function produceTag() {
     const preloader = document.getElementById('preloader-tag');
     const button = document.getElementById('tag-button');

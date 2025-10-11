@@ -72,4 +72,40 @@ public class GeminiRestController {
         }
     }
 
+    @PostMapping("/gemini/generate-alt-text")
+    public ResponseEntity<Map<String, String>> generateAltText(@RequestBody Map<String, String> request) {
+        try {
+            // Get required parameters
+            String imageUrl = request.get("imageUrl");
+            String newsTitle = request.get("newsTitle");
+            String newsContent = request.get("newsContent");
+
+            // Validate input
+            if (imageUrl == null || imageUrl.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "آدرس تصویر الزامی است"));
+            }
+
+            if (newsTitle == null || newsTitle.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "عنوان خبر الزامی است"));
+            }
+
+            if (newsContent == null || newsContent.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "محتوای خبر الزامی است"));
+            }
+
+            // Generate AI alt text
+            String generatedAltText = geminiService.generateAltText(imageUrl.trim(), newsTitle.trim(), newsContent.trim());
+
+            return ResponseEntity.ok(Map.of(
+                "altText", generatedAltText,
+                "message", "متن جایگزین تصویر با موفقیت تولید شد"
+            ));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of(
+                "error", "خطایی در تولید متن جایگزین تصویر رخ داد: " + e.getMessage()
+            ));
+        }
+    }
+
 }

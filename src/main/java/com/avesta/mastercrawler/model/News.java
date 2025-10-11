@@ -69,6 +69,10 @@ public class News extends BaseEntity{
     @Lob
     private String mainImage;
 
+    @Column(name = "main_image_alt_text", nullable = true, columnDefinition = "TEXT")
+    @Lob
+    private String mainImageAltText;
+
     @ElementCollection
     @CollectionTable(name = "news_images", joinColumns = @JoinColumn(name = "news_id"))
     @Column(name = "image_url")
