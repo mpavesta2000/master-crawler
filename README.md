@@ -21,7 +21,7 @@ A web crawling application built with Spring Boot for efficiently scraping and p
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/master-crawler.git
+   git clone https://github.com/mpavesta2000/master-crawler.git
    cd master-crawler
    ```
 
