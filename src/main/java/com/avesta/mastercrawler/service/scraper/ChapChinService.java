@@ -94,6 +94,7 @@ public class ChapChinService {
     }
 
     public String chapChinSaveNews(JsonNode response) throws IOException {
+
         // Check if response is null or empty
         if (response == null || response.getObject() == null) {
             return "خطا: پاسخ از سرویس خبر خالی یا معیوب است.";
@@ -103,9 +104,11 @@ public class ChapChinService {
         NewsType newsType = iNewsTypeService.findById(3)
                 .orElseThrow(() -> new IllegalArgumentException("NewsType with id 3 not found"));
 
+
         Category defaultCategory = iCategoryService.defaultCategory();
         List<Category> updatedCategories = new ArrayList<>();
         updatedCategories.add(defaultCategory);
+
 
         // Validate that we have required content
         String rawTitle = response.getObject().getString("title");
@@ -114,6 +117,7 @@ public class ChapChinService {
         if (rawTitle == null || rawTitle.trim().isEmpty() || rawContent == null || rawContent.trim().isEmpty()) {
             return "خطا: عنوان یا محتوای خبر خالی است. امکان ذخیره سازی وجود ندارد.";
         }
+
 
         News news = new News();
         news.setNewsTypeId(newsType);
@@ -145,6 +149,7 @@ public class ChapChinService {
         news.setMetaTitle(metaTitle);
         news.setMetaDescription(metaDescription);
         news.setMetaKeywords(metaTags);
+        news.setChapChin(true);
         news.setStatus("Draft");
         news.setCategories(updatedCategories);
 

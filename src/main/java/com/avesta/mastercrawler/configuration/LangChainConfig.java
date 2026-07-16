@@ -16,6 +16,9 @@ public class LangChainConfig {
     @Value("${gemini.api.url}")
     private String apiUrl;
 
+    @Value("${spring.ai.openai.chat.options.model}")
+    private String apiModel;
+
     @Bean
     public ChatLanguageModel chatLanguageModel() {
         if (apiKey == null || apiKey.isEmpty()) {
@@ -25,7 +28,7 @@ public class LangChainConfig {
                 .apiKey(apiKey)
                 .baseUrl(apiUrl)
                 .defaultRequestParameters(ChatRequestParameters.builder()
-                        .modelName("gemini-2.0-flash")
+                        .modelName(apiModel)
                         .temperature(0.7)
                         .build())
                 .build();

@@ -28,7 +28,7 @@ public class WhisperService {
 
             HttpResponse<String> response = Unirest.post("https://api.avalai.ir/v1/audio/transcriptions")
                     .header("Authorization", "Bearer " + apiKey)
-                    .field("model", "whisper-1")
+                    .field("model", "groq.whisper-large-v3")
                     .field("response_format", "text")
                     .field("file", audioFile)
                     .connectTimeout(300000)

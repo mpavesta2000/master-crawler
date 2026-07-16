@@ -1,7 +1,5 @@
 package com.avesta.mastercrawler.configuration;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-import jakarta.annotation.PostConstruct;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -21,18 +19,13 @@ public class SeleniumConfig {
     @Value("${selenium.chrome.timeout:30}")
     private int timeout;
 
-    @PostConstruct
-    public void init() {
-        WebDriverManager.chromedriver().setup();
-    }
-
     @Bean
     @Scope("prototype")
     public WebDriver webDriver() {
         ChromeOptions options = new ChromeOptions();
 
         if (headless) {
-            options.addArguments("--headless");
+            options.addArguments("--headless=new");
         }
 
         options.addArguments("--no-sandbox");
