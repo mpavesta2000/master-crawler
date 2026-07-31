@@ -1,0 +1,1141 @@
+<!doctype html>
+<!--
+  Add / edit news — NEW UI.
+  This is a redesigned copy of news/news-add.html. The original file is kept
+  untouched; point a controller at "news/news-add-new-ui" to render this one.
+
+  Every id, name, th:field binding, inline onclick and JS-facing class from the
+  original is preserved so news-add.js, yoastSEO.js and social-publisher.js keep
+  working unchanged. See assets/css/news-add-new-ui.css for the two constraints
+  worth knowing before editing the AI modals.
+-->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<th:block layout:fragment="pagetitle">
+    <!--page title-->
+    <div th:replace="partials/title-meta :: title-meta('افزودن خبر')"></div>
+</th:block>
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/assets/libs/filepond/filepond.min.css" type="text/css" />
+    <link rel="stylesheet" href="/assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.css">
+    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+    <link rel="stylesheet" href="/assets/css/news-add-new-ui.css" type="text/css">
+
+    <!-- YoastSEO Single File Integration -->
+    <script type="module" src="/assets/js/crawler/yoastSEO-new-ui.js"></script>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div th:replace="partials/page-title :: page-title('اخبار','افزودن خبر')"></div>
+
+    <form th:object="${news}" th:action="@{/admin/news/save}" method="post" enctype="multipart/form-data"
+          class="needs-validation" novalidate>
+
+        <div th:if="${errors != null}" class="alert alert-danger">
+            <div th:each="error : ${errors}">
+                <p class="mb-0" th:text="${error.defaultMessage}"></p>
+            </div>
+        </div>
+
+        <div class="row g-4 na-page">
+
+            <!-- ==================== ستون اصلی: محتوا و سئو ==================== -->
+            <div class="col-xl-8">
+
+                <!-- ----------------------- محتوای خبر ----------------------- -->
+                <div class="card na-card">
+                    <div class="card-header">
+                        <span class="na-card-icon"><i class="ri-article-line"></i></span>
+                        <div>
+                            <h5 class="na-card-heading">محتوای خبر</h5>
+                            <p class="na-card-sub">تیتر، سرنخ و متن اصلی خبر</p>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <input type="hidden" th:field="*{id}" />
+                        <input type="hidden" name="yoastPoint"/>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="na-field">
+                                    <div class="na-field-head">
+                                        <label class="na-label" for="news-headline-input">رو تیتر خبر</label>
+                                        <button type="button" class="na-ai-btn" id="ai-headline-btn"
+                                                data-bs-toggle="modal" data-bs-target="#headlineModal">
+                                            <i class="ri-magic-line"></i> تولید با هوش مصنوعی
+                                        </button>
+                                    </div>
+                                    <input type="text" th:field="*{headline}" class="form-control" id="news-headline-input"
+                                           placeholder="">
+                                    <div class="valid-feedback">
+                                        تکمیل شده است.
+                                    </div>
+                                </div>
+
+                                <div class="na-field">
+                                    <div class="na-field-head">
+                                        <label class="na-label required" for="news-title-input">تیتر خبر</label>
+                                        <button type="button" class="na-ai-btn" id="ai-title-btn"
+                                                data-bs-toggle="modal" data-bs-target="#titleModal">
+                                            <i class="ri-magic-line"></i> تولید با هوش مصنوعی
+                                        </button>
+                                    </div>
+                                    <textarea th:field="*{title}" class="form-control" id="news-title-input"
+                                              placeholder="" rows="3" required></textarea>
+                                    <div class="invalid-feedback">
+                                        <p class="mb-0">لطفا تیتر خبر را وارد کنید.</p>
+                                        <p class="mb-0">تیتر خبر باید بین ۵ تا ۱۰۰ کاراکتر باشد.</p>
+                                    </div>
+                                    <div class="valid-feedback">
+                                        تکمیل شده است.
+                                    </div>
+                                </div>
+
+                                <div class="na-field">
+                                    <div class="na-field-head">
+                                        <label class="na-label" for="news-subtitle-input">زیرتیتر خبر</label>
+                                        <button type="button" class="na-ai-btn" id="ai-subtitle-btn"
+                                                data-bs-toggle="modal" data-bs-target="#subtitleModal">
+                                            <i class="ri-magic-line"></i> تولید با هوش مصنوعی
+                                        </button>
+                                    </div>
+                                    <input type="text" th:field="*{subTitle}" class="form-control" id="news-subtitle-input"
+                                           placeholder="">
+                                    <div class="valid-feedback">
+                                        تکمیل شده است.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="na-field">
+                                    <div class="na-field-head">
+                                        <label class="na-label required" for="news-lead-input">سرنخ خبر</label>
+                                        <button type="button" class="na-ai-btn" id="ai-lead-btn"
+                                                data-bs-toggle="modal" data-bs-target="#leadModal">
+                                            <i class="ri-magic-line"></i> تولید با هوش مصنوعی
+                                        </button>
+                                    </div>
+                                    <textarea th:field="*{lead}" class="form-control" id="news-lead-input"
+                                              placeholder="" rows="11" required></textarea>
+                                    <div class="invalid-feedback">
+                                        <p class="mb-0">لطفا سرنخ خبر را وارد کنید.</p>
+                                        <p class="mb-0">سرنخ خبر باید بین ۵ تا ۲۵۵ کاراکتر باشد</p>
+                                    </div>
+                                    <div class="valid-feedback">
+                                        تکمیل شده است.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="na-field">
+                            <div class="na-field-head">
+                                <label class="na-label required">متن خبر</label>
+                            </div>
+                            <div class="na-editor">
+                                <textarea id="editor" th:field="*{body}" required></textarea>
+                            </div>
+                            <div class="invalid-feedback">
+                                لطفا متن خبر را وارد کنید.
+                            </div>
+                            <div class="valid-feedback">
+                                تکمیل شده است.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- -------------------------- سئو -------------------------- -->
+                <div class="card na-card seo-panel">
+                    <div class="card-header" id="seo-panel-header">
+                        <span class="na-card-icon is-success"><i class="ri-search-eye-line"></i></span>
+                        <div>
+                            <h5 class="na-card-heading">بخش سئو</h5>
+                            <p class="na-card-sub">کلیدواژه، اسلاگ و تحلیل خودکار محتوا</p>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="na-field">
+                                    <div class="na-field-head">
+                                        <label class="na-label required" for="news-keyphrase-input">کلیدواژه اصلی (Focus Keyphrase)</label>
+                                    </div>
+                                    <input type="text" th:field="*{focusKeyphrase}" class="form-control" id="news-keyphrase-input"
+                                           placeholder="مثل: اخبار تکنولوژی" required>
+                                    <div class="na-help">
+                                        <strong>کلیدواژه اصلی:</strong> این کلیدواژه در تحلیل سئو بررسی می‌شود.<br>
+                                        • باید در عنوان سئو، توضیحات متا و محتوا ظاهر شود<br>
+                                        • تراکم مناسب در متن داشته باشد<br>
+                                        • در اسلاگ URL استفاده شود
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        لطفا کلیدواژه اصلی را برای تحلیل سئو وارد کنید.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="na-field">
+                                    <div class="na-field-head">
+                                        <label class="na-label" for="news-slug">اسلاگ URL (URL Slug)</label>
+                                        <button type="button" class="na-ai-btn" id="generate-slug-btn">
+                                            <i class="ri-magic-line"></i> تولید با هوش مصنوعی
+                                        </button>
+                                    </div>
+                                    <input type="text" th:field="*{slug}" class="form-control" id="news-slug"
+                                           placeholder="keyphrase-in-url-slug" dir="ltr">
+                                    <div class="na-help">
+                                        <strong>اسلاگ URL:</strong> بخشی از آدرس اینترنتی خبر<br>
+                                        • بهتر است شامل کلیدواژه اصلی باشد<br>
+                                        • فقط از حروف انگلیسی، اعداد و خط تیره استفاده کنید
+                                    </div>
+                                    <div class="valid-feedback">
+                                        تکمیل شده است.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="na-field">
+                            <div class="na-field-head">
+                                <label class="na-label" for="seo-title-input">عنوان سئو (SEO Title)</label>
+                            </div>
+                            <input type="text" th:field="*{seoTitle}" class="form-control" id="seo-title-input"
+                                   placeholder="عنوانی که در گوگل نمایش می‌شود - شامل کلیدواژه اصلی">
+                            <div class="na-help">
+                                <strong>عنوان سئو:</strong> عنوانی که در نتایج جستجوی گوگل نمایش می‌شود<br>
+                                • باید شامل کلیدواژه اصلی باشد &nbsp;•&nbsp; طول بهینه: ۳۰ تا ۶۰ کاراکتر<br>
+                                • اگر خالی باشد، از تیتر خبر استفاده می‌شود
+                            </div>
+                        </div>
+
+                        <!-- YoastSEO.js Output Area -->
+                        <div id="yoast-seo-output" class="yoast-seo-output"></div>
+
+                        <div class="d-grid mt-3">
+                            <button type="button" id="refresh-seo-analysis" class="btn btn-info na-action-sm">
+                                <i class="ri-refresh-line"></i> بروزرسانی تحلیل سئو
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== ستون کناری: تنظیمات ==================== -->
+            <div class="col-xl-4">
+
+                <!-- ------------------------- انتشار ------------------------- -->
+                <div class="card na-card">
+                    <div class="card-header">
+                        <span class="na-card-icon"><i class="ri-send-plane-line"></i></span>
+                        <div>
+                            <h5 class="na-card-heading">انتشار</h5>
+                            <p class="na-card-sub">وضعیت و زمان انتشار خبر</p>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="na-field">
+                            <div class="na-field-head">
+                                <label for="choices-privacy-status-input" class="na-label required">وضیعت</label>
+                            </div>
+                            <select th:field="*{status}" class="form-select" id="choices-privacy-status-input" required>
+                                <option th:value="Draft" th:selected="*{status == 'Draft'}">پیش نویس</option>
+                                <option th:value="Publish" th:selected="*{status == 'Public'}">انتشار</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                لطفا وضیعت خبر را وارد کنید.
+                            </div>
+                            <div class="valid-feedback">
+                                تکمیل شده است.
+                            </div>
+                        </div>
+
+                        <div class="na-field">
+                            <div class="na-field-head">
+                                <label for="persian-date-picker" class="na-label">تاریخ انتشار</label>
+                            </div>
+                            <div class="input-group">
+                                <input type="text"
+                                       id="persian-date-picker"
+                                       class="form-control"
+                                       placeholder="انتخاب تاریخ انتشار"
+                                       readonly>
+                                <input type="hidden"
+                                       id="gregorian-date-input"
+                                       name="date"
+                                       th:value="${#temporals.format(news.createdAt, 'yyyy-MM-dd HH:mm:ss')}"
+                                       value="">
+                                <span class="input-group-text" onclick="openDatePicker()" style="cursor: pointer;">
+                                    <i class="ri-calendar-line"></i>
+                                </span>
+                            </div>
+                            <div class="na-help">
+                                <i class="ri-information-line"></i>
+                                <strong>راهنما:</strong> در صورت خالی گذاشتن این فیلد، سیستم به صورت خودکار زمان فعلی را در نظر خواهد گرفت.
+                                <br>فرمت ارسالی: YYYY-MM-DD HH:mm:ss
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ---------------------- جایگاه اخبار ---------------------- -->
+                <div class="card na-card">
+                    <div class="card-header">
+                        <span class="na-card-icon is-warning"><i class="ri-layout-6-line"></i></span>
+                        <div>
+                            <h5 class="na-card-heading">جایگاه اخبار</h5>
+                            <p class="na-card-sub">محل نمایش خبر در سایت</p>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="na-toggles">
+                            <div>
+                                <input type="checkbox" name="breakingNews" class="btn-check" id="btn-check-outlined1" th:checked="${news.breakingNews == true}">
+                                <label class="btn btn-outline-success" for="btn-check-outlined1">
+                                    <i class="ri-flashlight-line"></i>خبر فوری
+                                </label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="newsHeadline" class="btn-check" id="btn-check-outlined2" th:checked="${news.newsHeadline == true}">
+                                <label class="btn btn-outline-success" for="btn-check-outlined2">
+                                    <i class="ri-flag-line"></i>سرخط خبرها
+                                </label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="showComments" class="btn-check" id="btn-check-outlined3" th:checked="${news.showComments == true}">
+                                <label class="btn btn-outline-success" for="btn-check-outlined3">
+                                    <i class="ri-chat-3-line"></i>نمایش نظرات
+                                </label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="showMostViewed" class="btn-check" id="btn-check-outlined4" th:checked="${news.showMostViewed == true}">
+                                <label class="btn btn-outline-success" for="btn-check-outlined4">
+                                    <i class="ri-fire-line"></i>پربیننده ترین‌ها
+                                </label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="translate" class="btn-check" id="btn-check-outlined6" th:checked="${news.getTranslated == true}">
+                                <label class="btn btn-outline-warning" for="btn-check-outlined6">
+                                    <i class="ri-translate-2"></i>ارسال برای ترجمه
+                                </label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="slider" class="btn-check" id="btn-check-outlined7" th:checked="${news.slider == true}">
+                                <label class="btn btn-outline-success" for="btn-check-outlined7">
+                                    <i class="ri-slideshow-3-line"></i>نمایش در اسلایدر
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+<!--                &lt;!&ndash; ارسال به پنل مدیریتی &ndash;&gt;-->
+<!--                <div class="card na-card">-->
+<!--                    <div class="card-body">-->
+<!--                        <label class="na-label mb-2">ارسال به پنل مدیریتی</label>-->
+<!--                        <input type="checkbox" name="sendToTinn" class="btn-check" id="btn-check-outlined5">-->
+<!--                        <label class="btn btn-outline-danger w-100 text-center" for="btn-check-outlined5">ارسال به تین نیوز</label>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+                <!-- -------------------- شبکه‌های اجتماعی -------------------- -->
+                <div class="card na-card">
+                    <div class="card-header">
+                        <span class="na-card-icon is-info"><i class="ri-share-line"></i></span>
+                        <div>
+                            <h5 class="na-card-heading">شبکه‌های اجتماعی</h5>
+                            <p class="na-card-sub">انتشار خبر در پیام‌رسان‌ها</p>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="na-toggles mb-2">
+                            <button type="button" class="btn btn-outline-secondary" onclick="postToX()"
+                                    data-bs-toggle="tooltip" title="انتشار در ایکس">
+                                <i class="ri-twitter-line"></i> ارسال به ایکس
+                            </button>
+                            <button type="button" class="btn btn-outline-info" onclick="postToBale()"
+                                    data-bs-toggle="tooltip" title="انتشار در بله">
+                                <i class="ri-chat-1-line"></i> ارسال به بله
+                            </button>
+                        </div>
+                        <div class="d-grid">
+                            <button type="button" class="btn btn-outline-primary na-action-sm" onclick="openSocialModal()"
+                                    data-bs-toggle="tooltip" title="انتشار در چندین پلتفرم">
+                                <i class="ri-broadcast-line"></i> انتشار گروهی
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- تنظیمات تین نیوز (آسام) — با جاوااسکریپت نمایش داده می‌شود -->
+                <div class="card na-card" id="aasaam-tinn-card" style="display: none;">
+                    <div class="card-header">
+                        <span class="na-card-icon is-warning"><i class="ri-links-line"></i></span>
+                        <div>
+                            <h5 class="na-card-heading">تنظیمات تین نیوز (آسام)</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="na-field">
+                            <div class="na-field-head">
+                                <label class="na-label required">دسته‌بندی‌ها</label>
+                            </div>
+                            <select id="aasaam-tinn-categories" name="aasaamTinnCategories" class="js-example-disabled-multi form-control" multiple="multiple">
+                                <option th:each="entry : ${aasaamCategories.entrySet()}"
+                                        th:value="${entry.key}"
+                                        th:text="${entry.value}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="na-field">
+                            <div class="na-field-head">
+                                <label for="choices-privacy-aasaam-status-input" class="na-label required">وضیعت ارسال</label>
+                            </div>
+                            <select name="aasaamTinnStatus" class="form-select" id="choices-privacy-aasaam-status-input" required>
+                                <option value="0" selected>پیش نویس</option>
+                                <option value="1">انتشار</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ------------------- دسته بندی و تگ ها ------------------- -->
+                <div class="card na-card">
+                    <div class="card-header">
+                        <span class="na-card-icon"><i class="ri-price-tag-3-line"></i></span>
+                        <div>
+                            <h5 class="na-card-heading">تگ ها</h5>
+                            <p class="na-card-sub">دسته‌بندی و برچسب‌های خبر</p>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="na-field">
+                            <div class="na-field-head">
+                                <label class="na-label required">دسته بندی</label>
+                            </div>
+                            <select th:field="*{categories}" class="js-example-disabled-multi" name="categories[]" multiple="multiple" required>
+                                <optgroup th:each="parent : ${categories}" th:if="${parent.parent == null}" th:attr="label=${parent.name}">
+                                    <option th:each="child : ${parent.children}" th:value="${child.id}" th:text="${child.name}"></option>
+                                </optgroup>
+                            </select>
+                            <div class="invalid-feedback">
+                                لطفا دسته بندی خبر را وارد کنید.
+                            </div>
+                            <div class="valid-feedback">
+                                تکمیل شده است.
+                            </div>
+                        </div>
+
+                        <div class="na-field">
+                            <div class="na-field-head">
+                                <label for="choices-text-input" class="na-label">تگ‌ها</label>
+                            </div>
+                            <select name="newsTags" class="form-control" id="choices-text-input" multiple>
+                                <option th:each="tag : ${news.tags}"
+                                        th:value="${tag.name}"
+                                        th:text="${tag.name}"
+                                        th:selected="${news.tags.contains(tag)}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <button type="button" id="tag-button" onclick="produceTag()" class="btn btn-info na-action-sm w-100">
+                                <i class="ri-price-tag-3-line"></i> تولید برچسب
+                            </button>
+                            <div id="preloader-tag" class="na-inline-loader">
+                                <div class="spinner-border text-info" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ------------------------ متا دیتا ------------------------ -->
+                <div class="card na-card">
+                    <div class="card-header">
+                        <span class="na-card-icon is-info"><i class="ri-code-box-line"></i></span>
+                        <div>
+                            <h5 class="na-card-heading">متا دیتا</h5>
+                            <p class="na-card-sub">اطلاعات متا برای موتورهای جستجو</p>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div id="addproduct-metadata" role="tabpanel">
+                            <div class="na-field">
+                                <div class="na-field-head">
+                                    <label class="na-label" for="meta-title-input">تیتر متا</label>
+                                </div>
+                                <textarea th:field="*{metaTitle}" class="form-control" placeholder=""
+                                          id="meta-title-input" rows="3"></textarea>
+                            </div>
+
+                            <div class="na-field">
+                                <div class="na-field-head">
+                                    <label class="na-label" for="meta-keywords-input">کلمات کلیدی متا</label>
+                                </div>
+                                <input class="form-control" id="meta-keywords-input" type="text" th:field="*{metaKeywords}" />
+                            </div>
+
+                            <div class="na-field">
+                                <div class="na-field-head">
+                                    <label class="na-label" for="meta-description-input">توضیحات متا</label>
+                                </div>
+                                <textarea th:field="*{metaDescription}" class="form-control" id="meta-description-input"
+                                          placeholder="" rows="6"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mt-2">
+                            <button type="button" id="meta-button" onclick="produceMeta()" class="btn btn-info na-action-sm w-100">
+                                <i class="ri-magic-line"></i> تولید اطلاعات متا
+                            </button>
+                            <div id="preloader-meta" class="na-inline-loader">
+                                <div class="spinner-border text-info" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- --------------------- چند رسانه ای‌ها --------------------- -->
+                <div class="card na-card">
+                    <div class="card-header">
+                        <span class="na-card-icon"><i class="ri-image-2-line"></i></span>
+                        <div>
+                            <h5 class="na-card-heading required">چند رسانه ای‌ها</h5>
+                            <p class="na-card-sub">تصویر و ویدیوی اصلی خبر</p>
+                        </div>
+                    </div>
+
+                    <!-- تصویر -->
+                    <div class="card-body">
+                        <h6 class="na-label mb-2">انتخاب عکس</h6>
+                        <div class="na-toggles">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addImage">
+                                <i class="ri-upload-cloud-2-line"></i>آپلود عکس
+                            </button>
+                            <button type="button" id="fileManagerButton" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#galleryModal">
+                                <i class="ri-gallery-fill"></i>انتخاب از سرور
+                            </button>
+                        </div>
+                        <input type="text" id="mainImageInput" name="mainImageInput" th:field="*{mainImage}" class="form-control" hidden />
+                        <input type="text" id="mainImageAltText" name="mainImageAltText" class="form-control" hidden />
+
+                        <div class="mt-2">
+                            <button type="button" id="clearSelection" class="btn btn-danger btn-sm" style="display: none;">
+                                <i class="ri-close-line align-bottom"></i> حذف انتخاب
+                            </button>
+                        </div>
+
+                        <div class="na-media-preview" style="display: none;" id="previewContainer">
+                            <h6>پیش‌نمایش تصویر انتخاب شده</h6>
+                            <div class="na-media-frame">
+                                <img id="previewImage" alt="پیش‌نمایش تصویر" width="220" />
+                            </div>
+
+                            <div class="na-field mt-3">
+                                <div class="na-field-head">
+                                    <label class="na-label" for="imageAltText">متن جایگزین تصویر (Alt Text)</label>
+                                    <button type="button" class="na-ai-btn" id="generate-alt-text-btn">
+                                        <i class="ri-magic-line"></i> تولید خودکار
+                                    </button>
+                                </div>
+                                <input type="text" class="form-control" id="imageAltText" name="imageAltText"
+                                       placeholder="متن جایگزین تصویر برای سئو و دسترسی‌پذیری">
+                                <div class="na-help">
+                                    <strong>متن جایگزین تصویر:</strong> توضیح مختصری از محتوای تصویر<br>
+                                    • برای بهبود سئو و دسترسی‌پذیری ضروری است<br>
+                                    • حداکثر ۱۲۵ کاراکتر توصیه می‌شود
+                                </div>
+                                <div id="alt-text-preloader" class="na-inline-loader">
+                                    <div class="spinner-border text-info" role="status">
+                                        <span class="visually-hidden">در حال تولید...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div th:if="${news.mainImage != null}" class="na-media-preview">
+                            <h6>عکس فعلی خبر</h6>
+                            <div class="na-media-frame">
+                                <img alt="عکس فعلی خبر" width="220" th:src="@{'/news/photos/'+ ${news.mainImage}}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ویدیو -->
+                    <div class="card-body pt-0">
+                        <hr class="mb-3">
+                        <h6 class="na-label mb-2">انتخاب ویدیو</h6>
+                        <div class="na-toggles">
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addVideo">
+                                <i class="ri-video-upload-line"></i>آپلود ویدیو
+                            </button>
+                            <button type="button" id="VideoFileManagerButton" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#videoGalleryModal">
+                                <i class="ri-video-chat-line"></i>انتخاب از سرور
+                            </button>
+                        </div>
+                        <input type="text" id="mainVideoInput" name="mainVideoInput" th:field="*{mainVideo}" class="form-control" hidden/>
+
+                        <div class="mt-2">
+                            <button type="button" id="clearVideoSelection" class="btn btn-danger btn-sm" style="display: none;">
+                                <i class="ri-close-line align-bottom"></i> حذف ویدیو
+                            </button>
+                        </div>
+
+                        <div class="na-media-preview" style="display: none;" id="videoPreviewContainer">
+                            <h6>پیش‌نمایش ویدیو انتخاب شده</h6>
+                            <div class="na-media-frame">
+                                <video class="video-js vjs-default-skin" id="previewVideo" controls preload="auto" width="300" height="200">
+                                    <source id="videoPreviewSource" src="" type="video/mp4">
+                                    مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
+                                </video>
+                            </div>
+                        </div>
+
+                        <div th:if="${news.mainVideo != null and !news.mainVideo.isEmpty()}" class="na-media-preview">
+                            <h6>ویدیوی فعلی خبر</h6>
+                            <div class="na-media-frame">
+                                <video id="news-video-player" class="video-js vjs-default-skin" controls preload="none" width="300" height="200"
+                                       th:poster="@{'/images/news/photos/' + ${news.mainImage}}"
+                                       th:src="@{'/images/news/videos/' + ${news.mainVideo}}">
+                                    <source th:src="@{'/images/news/videos/' + ${news.mainVideo}}" type="video/mp4">
+                                    <source th:src="@{'/images/news/videos/' + ${news.mainVideo}}" type="video/x-matroska">
+                                    مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
+                                </video>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= وضعیت انتشار در شبکه‌ها ================= -->
+            <div class="col-12" id="socialStatusSection" style="display: none;">
+                <div class="card na-card">
+                    <div class="card-header">
+                        <span class="na-card-icon is-info"><i class="ri-share-line"></i></span>
+                        <div>
+                            <h5 class="na-card-heading">وضعیت انتشار در شبکه‌های اجتماعی</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="socialJobStatuses" class="row">
+                            <!-- Social job statuses will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================= نوار ذخیره ========================= -->
+        <div class="na-savebar">
+            <span class="na-savebar-note">
+                <i class="ri-information-line align-bottom"></i>
+                فیلدهای ستاره‌دار الزامی هستند.
+            </span>
+            <button type="submit" class="btn btn-success na-action">
+                <i class="ri-save-3-line"></i> ذخیره خبر
+            </button>
+        </div>
+    </form>
+</div>
+
+
+<th:block layout:fragment="modal">
+    <div class="modal fade na-modal" id="addImage" tabindex="-1" aria-labelledby="addImage" aria-modal="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="na-card-icon"><i class="ri-upload-cloud-2-line"></i></span>
+                    <h5 class="modal-title" id="addImageLabel">افزودن عکس</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="imageUploadForm" enctype="multipart/form-data">
+                        <div class="row g-3">
+                            <div class="col-xxl-12">
+                                <div>
+                                    <label class="na-label mb-2">فایل مورد نظر خود را وارد کنید:</label>
+                                    <input type="file" class="filepond first filepond-input-multiple" name="image" data-allow-reorder="true" data-max-file-size="70MB" data-max-files="1">
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="hstack gap-2 justify-content-end">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">انصراف</button>
+                                    <button type="submit" class="btn btn-primary">تایید</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade na-modal" id="galleryModal" tabindex="-1" aria-labelledby="galleryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="na-card-icon"><i class="ri-gallery-line"></i></span>
+                    <h5 class="modal-title" id="galleryModalLabel">انتخاب تصویر</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="na-gallery-search">
+                        <i class="ri-search-line"></i>
+                        <input type="text" id="searchInput" class="form-control" placeholder="جستجوی تصویر...">
+                    </div>
+
+                    <!-- Images Container -->
+                    <div class="row g-2" id="imagesContainer">
+                        <!-- Images will be dynamically generated here -->
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <nav aria-label="Pagination">
+                        <ul class="pagination pagination-sm" id="paginationContainer">
+                            <!-- Pagination links will be dynamically generated here -->
+                        </ul>
+                    </nav>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">بستن</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade na-modal" id="addVideo" tabindex="-1" aria-labelledby="addVideo" aria-modal="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="na-card-icon"><i class="ri-video-upload-line"></i></span>
+                    <h5 class="modal-title" id="addVideolabel">افزودن ویدیو</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="videoUploadForm" enctype="multipart/form-data">
+                        <div class="row g-3">
+                            <div class="col-xxl-12">
+                                <div>
+                                    <label class="na-label mb-2">فایل مورد نظر خود را وارد کنید:</label>
+                                    <input type="file" class="filepond second filepond-input-multiple" name="video" data-allow-reorder="true" data-max-file-size="70MB" data-max-files="1">
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="hstack gap-2 justify-content-end">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">انصراف</button>
+                                    <button type="submit" class="btn btn-primary">تایید</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade na-modal" id="videoGalleryModal" tabindex="-1" aria-labelledby="videoGalleryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="na-card-icon"><i class="ri-film-line"></i></span>
+                    <h5 class="modal-title" id="videoGalleryModalLabel">انتخاب ویدیو</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-2" id="videoGallery"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">بستن</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--
+      AI generator modals.
+      news-add.js reads `.list-group-item > strong` (after stripping "N. ") to
+      pick the generator, and toggles the `selected` class on the clicked row.
+      Keep the list markup and the <strong> texts exactly as they are.
+    -->
+    <div id="headlineModal" class="modal fade na-modal" tabindex="-1" aria-labelledby="headlineLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="na-card-icon"><i class="ri-magic-line"></i></span>
+                    <h5 class="modal-title" id="headlineLabel">انتخاب نوع روتیتر</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="na-card-sub mb-3">نوع روتیتر مورد نظر خود را برای محتوا انتخاب کنید:</p>
+
+                    <ul class="list-group list-group-headline">
+                        <li class="list-group-item">
+                            <strong>1. روتیتر توضیحی</strong><br>
+                            اطلاعات اضافی در مورد تیتر اصلی را ارائه می‌دهد.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>2. روتیتر تکمیلی</strong><br>
+                            متن را با اطلاعات بیشتر یا توضیحات تکمیلی همراه می‌کند.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>3. روتیتر عددی</strong><br>
+                            معمولاً شامل عدد برای نمایش نقاط یا مراحل است.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>4. روتیتر نقل قولی</strong><br>
+                            شامل یک نقل قول از یک فرد متخصص یا مرتبط با موضوع است.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>5. روتیتر حسی</strong><br>
+                            از زبان قوی برای برانگیختن احساسات و جلب توجه استفاده می‌کند.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>6. روتیتر پرسشی</strong><br>
+                            سوالی را مطرح می‌کند تا کنجکاوی و تعامل را برانگیزد.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>7. روتیتر مقایسه‌ای</strong><br>
+                            دو یا چند موضوع را با هم مقایسه می‌کند و شباهت‌ها یا تفاوت‌ها را نشان می‌دهد.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>8. روتیتر شگفت‌انگیز</strong><br>
+                            اطلاعات غافلگیرکننده یا غیرمنتظره‌ای را برای شوکه کردن خواننده ارائه می‌دهد.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>9. روتیتر معمولی</strong><br>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">بستن</button>
+                    <button type="button" id="saveHeadline" class="btn btn-primary">تولید روتیتر</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="titleModal" class="modal fade na-modal" tabindex="-1" aria-labelledby="titleLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="na-card-icon"><i class="ri-magic-line"></i></span>
+                    <h5 class="modal-title" id="titleLabel">انتخاب نوع عنوان</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="na-card-sub mb-3">نوع عنوان مورد نظر خود را برای محتوا انتخاب کنید:</p>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <strong>1. عنوان خبری</strong><br>
+                            مناسب برای اخبار و اطلاعیه‌ها.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>2. عنوان توصیفی</strong><br>
+                            توضیح مختصری درباره موضوع ارائه می‌دهد.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>3. عنوان جذاب</strong><br>
+                            طراحی شده برای جلب توجه خواننده.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>4. عنوان سوالی</strong><br>
+                            سوالی که باعث تحریک کنجکاوی می‌شود.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>5. عنوان مقایسه‌ای</strong><br>
+                            دو یا چند موضوع را مقایسه می‌کند.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>6. عنوان عددی</strong><br>
+                            شامل اعداد برای لیست کردن یا نمایش مراحل.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>7. عنوان شگفت‌انگیز</strong><br>
+                            اطلاعاتی غیرمنتظره یا شوکه‌کننده ارائه می‌دهد.
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">بستن</button>
+                    <button type="button" id="saveTitle" class="btn btn-primary">تولید عنوان</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="subtitleModal" class="modal fade na-modal" tabindex="-1" aria-labelledby="subtitleLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="na-card-icon"><i class="ri-magic-line"></i></span>
+                    <h5 class="modal-title" id="subtitleLabel">انتخاب نوع زیرتیتر</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="na-card-sub mb-3">نوع زیرتیتر مورد نظر خود را برای محتوا انتخاب کنید:</p>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <strong>1. زیرتیتر توضیحی</strong><br>
+                            اطلاعات اضافی در مورد تیتر اصلی را ارائه می‌دهد.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>2. زیرتیتر تکمیلی</strong><br>
+                            متن را با اطلاعات بیشتر یا توضیحات تکمیلی همراه می‌کند.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>3. زیرتیتر عددی</strong><br>
+                            معمولاً شامل عدد برای نمایش نقاط یا مراحل است.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>4. زیرتیتر نقل قولی</strong><br>
+                            شامل یک نقل قول از یک فرد متخصص یا مرتبط با موضوع است.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>5. زیرتیتر حسی</strong><br>
+                            از زبان قوی برای برانگیختن احساسات و جلب توجه استفاده می‌کند.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>6. زیرتیتر پرسشی</strong><br>
+                            سوالی را مطرح می‌کند تا کنجکاوی و تعامل را برانگیزد.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>7. زیرتیتر مقایسه‌ای</strong><br>
+                            دو یا چند موضوع را با هم مقایسه می‌کند و شباهت‌ها یا تفاوت‌ها را نشان می‌دهد.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>8. زیرتیتر شگفت‌انگیز</strong><br>
+                            اطلاعات غافلگیرکننده یا غیرمنتظره‌ای را برای شوکه کردن خواننده ارائه می‌دهد.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>9. زیرتیتر معمولی</strong><br>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">بستن</button>
+                    <button type="button" id="saveSubtitle" class="btn btn-primary">تولید زیرتیتر</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="leadModal" class="modal fade na-modal" tabindex="-1" aria-labelledby="leadLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="na-card-icon"><i class="ri-magic-line"></i></span>
+                    <h5 class="modal-title" id="leadLabel">انتخاب نوع سرنخ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="na-card-sub mb-3">نوع سرنخ مورد نظر خود را برای محتوا انتخاب کنید:</p>
+
+                    <ul class="list-group list-group-lead">
+                        <li class="list-group-item">
+                            <strong>1. سرنخ توضیحی</strong><br>
+                            اطلاعات اضافی در مورد تیتر اصلی را ارائه می‌دهد.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>2. سرنخ تکمیلی</strong><br>
+                            متن را با اطلاعات بیشتر یا توضیحات تکمیلی همراه می‌کند.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>3. سرنخ عددی</strong><br>
+                            معمولاً شامل عدد برای نمایش نقاط یا مراحل است.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>4. سرنخ نقل قولی</strong><br>
+                            شامل یک نقل قول از یک فرد متخصص یا مرتبط با موضوع است.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>5. سرنخ حسی</strong><br>
+                            از زبان قوی برای برانگیختن احساسات و جلب توجه استفاده می‌کند.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>6. سرنخ پرسشی</strong><br>
+                            سوالی را مطرح می‌کند تا کنجکاوی و تعامل را برانگیزد.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>7. سرنخ مقایسه‌ای</strong><br>
+                            دو یا چند موضوع را با هم مقایسه می‌کند و شباهت‌ها یا تفاوت‌ها را نشان می‌دهد.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>8. سرنخ شگفت‌انگیز</strong><br>
+                            اطلاعات غافلگیرکننده یا غیرمنتظره‌ای را برای شوکه کردن خواننده ارائه می‌دهد.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>9. سرنخ معمولی</strong><br>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">بستن</button>
+                    <button type="button" id="saveLead" class="btn btn-primary">تولید سرنخ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Social Publishing Modal -->
+    <div class="modal fade na-modal" id="socialPublishModal" tabindex="-1" role="dialog" aria-labelledby="socialPublishModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="na-card-icon is-info"><i class="ri-share-line"></i></span>
+                    <h5 class="modal-title" id="socialPublishModalLabel">انتشار در شبکه‌های اجتماعی</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="socialPublishForm">
+                        <!-- Platform Selection -->
+                        <div class="mb-4">
+                            <h6 class="na-label mb-2">انتخاب پلتفرم‌ها:</h6>
+                            <div class="row g-2">
+                                <div class="col-md-3 col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="platform_X" value="X">
+                                        <label class="form-check-label" for="platform_X">
+                                            <i class="ri-twitter-line me-1"></i> ایکس
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="platform_TELEGRAM" value="TELEGRAM">
+                                        <label class="form-check-label" for="platform_TELEGRAM">
+                                            <i class="ri-telegram-line me-1"></i> تلگرام
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="platform_EITAA" value="EITAA">
+                                        <label class="form-check-label" for="platform_EITAA">
+                                            <i class="ri-message-line me-1"></i> ایتا
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="platform_BALE" value="BALE">
+                                        <label class="form-check-label" for="platform_BALE">
+                                            <i class="ri-chat-1-line me-1"></i> بله
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Publishing Settings -->
+                        <div class="mb-3">
+                            <h6 class="na-label mb-2">تنظیمات انتشار:</h6>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="includeImage" checked>
+                                        <label class="form-check-label" for="includeImage">
+                                            شامل تصویر شود
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="includeUrl" checked>
+                                        <label class="form-check-label" for="includeUrl">
+                                            شامل لینک خبر شود
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Custom Message -->
+                        <div class="mb-3">
+                            <label for="customMessage" class="na-label mb-2">پیام سفارشی (اختیاری):</label>
+                            <textarea class="form-control" id="customMessage" rows="3"
+                                    placeholder="پیام اضافی که قبل از عنوان خبر نمایش داده شود..."></textarea>
+                        </div>
+
+                        <!-- Schedule Publishing -->
+                        <div class="mb-0">
+                            <label for="scheduleTime" class="na-label mb-2">زمان‌بندی انتشار (اختیاری):</label>
+                            <input type="datetime-local" class="form-control" id="scheduleTime">
+                            <div class="na-help">اگر خالی بگذارید، فوراً منتشر می‌شود.</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                    <button type="button" class="btn btn-primary" onclick="publishToSocials()">
+                        <i class="ri-send-plane-line me-1"></i>انتشار
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="pagejs">
+
+    <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script src="/assets/js/pages/sweetalerts.init.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="/assets/libs/filepond/filepond.min.js"></script>
+    <script src="/assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
+    <script src="/assets/libs/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
+    <script src="/assets/libs/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
+    <script src="/assets/libs/filepond-plugin-file-encode/filepond-plugin-file-encode.min.js"></script>
+    <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+    <script src="/assets/js/pages/select2.init.js"></script>
+    <script src="/assets/libs/prismjs/prism.js"></script>
+    <script src="/assets/js/pages/form-validation.init.js"></script>
+    <script src="/assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script src="https://unpkg.com/persian-date@1.1.0/dist/persian-date.min.js"></script>
+    <script src="https://unpkg.com/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+    <script src="/assets/libs/ckeditor/ckeditor.js"></script>
+    <script src="/assets/js/crawler/news-add-new-ui.js"></script>
+    <script src="/assets/js/socials/social-publisher.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var success = [[${success}]];
+        if (success === true) {
+            Swal.fire({
+                text: "خبر شما با موفقیت ذخیره شد.",
+                icon: "success",
+                confirmButtonText: "تایید",
+                confirmButtonColor: "#556ee6"
+            });
+        }
+        /*]]>*/
+
+    </script>
+</th:block>
+</body>
+</html>
