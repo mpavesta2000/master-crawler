@@ -20,6 +20,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         System.out.println("The user name that logged in is this: " + username);
         boolean hasAdminRole = authentication.getAuthorities().stream().anyMatch(r->r.getAuthority().equals("Admin"));
         boolean hasUserRole = authentication.getAuthorities().stream().anyMatch(r->r.getAuthority().equals("User"));
+        boolean hasAiRole = authentication.getAuthorities().stream().anyMatch(r->r.getAuthority().equals("Ai"));
 
         if (hasAdminRole) {
             System.out.println("Redirecting to /admin/full-users/report");
@@ -27,7 +28,10 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         } else if (hasUserRole) {
             System.out.println("Redirecting to /admin/user/report");
             httpServletResponse.sendRedirect("/admin/user/report");
-        } else {
+        } else if (hasAiRole) {
+            System.out.println("Redirecting to /admin/user/report");
+            httpServletResponse.sendRedirect("/admin/full-users/report");
+        }else {
             System.out.println("No admin or user role detected.");
         }
     }

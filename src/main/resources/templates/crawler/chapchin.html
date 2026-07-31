@@ -8,59 +8,101 @@
 
 <head>
     <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/css/chapchin.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
 <div layout:fragment="content">
     <div th:replace="partials/page-title :: page-title('ابزار هوش مصنوعی','چپ چین')"></div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="card-header">
-                    بات چپ چین
-                </div>
-                <form id="chapchinForm">
-                    <div class="card-body">
-                        <label>لینک خود را اینجا وارد کنید:</label>
-                        <input type="text" class="form-control" id="url" dir="ltr">
 
-                        <div class="text-end mt-4">
-                            <button type="submit" class="btn btn-success w-100">ارسال لینک</button>
-                        </div>
+    <div class="row g-4 chap-page">
+
+        <!-- ============================ ارسال لینک ============================ -->
+        <div class="col-xl-5">
+            <div class="card chap-card">
+                <div class="card-header">
+                    <span class="chap-card-icon"><i class="ri-robot-line"></i></span>
+                    <div>
+                        <h5 class="chap-card-heading">بات چپ چین</h5>
+                        <p class="chap-card-sub">لینک خبر را بدهید تا متن و تصویر آن استخراج شود</p>
                     </div>
-                </form>
+                </div>
+
+                <div class="card-body">
+                    <form id="chapchinForm">
+                        <label class="chap-field-label" for="url">
+                            <i class="ri-link"></i> لینک خبر
+                        </label>
+
+                        <div class="chap-input-wrap">
+                            <i class="ri-global-line chap-input-icon"></i>
+                            <input type="text" class="form-control" id="url" dir="ltr"
+                                   placeholder="https://example.com/news/12345" autocomplete="off">
+                        </div>
+
+                        <p class="chap-hint">
+                            <i class="ri-information-line"></i>
+                            <span>آدرس باید متعلق به یکی از سایت‌های پشتیبانی شده باشد.</span>
+                        </p>
+
+                        <button type="submit" class="btn btn-primary chap-submit">
+                            <i class="ri-send-plane-line"></i> ارسال لینک
+                        </button>
+                    </form>
+
+                    <ul class="chap-steps">
+                        <li><span class="chap-step-num">۱</span> لینک صفحه خبر را کپی و در کادر بالا وارد کنید</li>
+                        <li><span class="chap-step-num">۲</span> بات محتوای خبر را استخراج و پردازش می‌کند</li>
+                        <li><span class="chap-step-num">۳</span> خبر در لیست اخبار ذخیره می‌شود</li>
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="row g-4 mb-4">
-        <div class="col-md-8 col-lg-12">
-            <div class="card ribbon-box border shadow-lg mb-lg-0">
-                <div class="card-body text-muted">
-                <span class="ribbon-three ribbon-three-primary">
-                    <span>کرالر</span>
-                </span>
-                    <h3 class="text-center mb-4 fw-bold text-dark d-none d-md-block">سایت های پشتیبانی شده</h3>
-                    <h5 class="text-end mb-4 fw-bold text-dark d-md-none">سایت های پشتیبانی شده</h5>
+        <!-- ========================= سایت های پشتیبانی شده ==================== -->
+        <div class="col-xl-7">
+            <div class="card chap-card">
+                <div class="card-header">
+                    <span class="chap-card-icon"><i class="ri-links-line"></i></span>
+                    <div>
+                        <h5 class="chap-card-heading">سایت های پشتیبانی شده</h5>
+                        <p class="chap-card-sub">فهرست منابعی که کرالر می‌تواند از آن‌ها خبر بگیرد</p>
+                    </div>
+                    <span class="chap-card-badge">
+                        <span id="visibleSiteCount">0</span> سایت
+                    </span>
+                </div>
 
-                    <!-- Search Bar -->
-                    <input type="text" id="searchInput" class="form-control mb-3" placeholder="جستجوی سایت..." onkeyup="filterSites()">
+                <div class="card-body">
+                    <div class="chap-search">
+                        <i class="ri-search-line chap-search-icon"></i>
+                        <input type="text" id="searchInput" class="form-control" placeholder="جستجوی سایت..."
+                               autocomplete="off" onkeyup="filterSites()">
+                    </div>
 
-                    <div class="row" id="siteList">
-                        <th:block th:each="entry, iterStat : ${supportedSites}">
-                            <div class="col-md-6">
-                                <li class="list-group-item py-3 px-4 border-0 bg-light rounded-3 mb-2 shadow-sm site-item">
-                                    <a
-                                            th:href="@{http://{url}(url=${entry.value})}"
-                                            target="_blank"
-                                            class="text-decoration-none d-flex align-items-center justify-content-between text-dark fs-5 fw-medium"
-                                    >
-                                        <span th:text="${entry.key}" class="site-name">Site Name</span>
-                                        <i class="bi bi-box-arrow-up-right"></i>
+                    <div class="chap-sites-scroll">
+                        <div class="row g-0" id="siteList">
+                            <th:block th:each="entry, iterStat : ${supportedSites}">
+                                <div class="col-xxl-4 col-md-6 site-item px-1">
+                                    <a th:href="@{http://{url}(url=${entry.value})}"
+                                       target="_blank" rel="noopener"
+                                       class="chap-site" th:title="${entry.value}">
+                                        <span class="chap-site-avatar"
+                                              th:text="${#strings.substring(entry.key, 0, 1)}">س</span>
+                                        <span class="chap-site-text">
+                                            <span th:text="${entry.key}" class="site-name">Site Name</span>
+                                            <span class="chap-site-url" th:text="${entry.value}">example.com</span>
+                                        </span>
+                                        <i class="ri-external-link-line chap-site-go"></i>
                                     </a>
-                                </li>
-                            </div>
-                        </th:block>
+                                </div>
+                            </th:block>
+                        </div>
+
+                        <div class="chap-no-result" id="noSiteResult">
+                            <i class="ri-search-eye-line"></i>
+                            <span>سایتی با این نام پیدا نشد.</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -73,6 +115,7 @@
     <script src="/assets/js/pages/sweetalerts.init.js"></script>
     <script src="/assets/libs/prismjs/prism.js"></script>
     <script src="/assets/js/crawler/chapchin.js"></script>
+    <script src="/assets/js/crawler/chapchin-ui.js"></script>
 </th:block>
 </body>
 

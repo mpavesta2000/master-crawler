@@ -1,0 +1,221 @@
+/* ==========================================================================
+   Profile settings
+   This file is linked by templates/users/profile-settings.html. It did not
+   exist before — the page was 404-ing on it — so it is created here.
+
+   NOTE for future edits: profile-setting.js needs #profile-img-file-input,
+   the .profile-img-file-input class on that same input, and .user-profile-image
+   on the preview <img>. It also grabs `document.querySelector('form')` for the
+   password-match check, so the password form must stay the FIRST form on the
+   page. #newpasswordInput / #confirmpasswordInput are read by that check.
+   ========================================================================== */
+
+.ps-page {
+    --ps-radius: 14px;
+}
+
+/* ---------- cover ---------------------------------------------------------- */
+
+.profile-setting-img {
+    position: relative;
+    height: 190px;
+    overflow: hidden;
+}
+
+.profile-setting-img .profile-wid-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-setting-img::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(var(--vz-primary-rgb), .75), rgba(10, 14, 22, .78));
+}
+
+/* ---------- cards ---------------------------------------------------------- */
+
+.ps-card {
+    border: 1px solid var(--vz-border-color);
+    border-radius: var(--ps-radius);
+    box-shadow: 0 6px 24px -18px rgba(var(--vz-dark-rgb), .55);
+}
+
+.ps-card > .card-header {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: 1rem 1.25rem;
+    background-color: transparent;
+    border-bottom: 1px solid var(--vz-border-color);
+}
+
+.ps-card-icon {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    font-size: 1.125rem;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.ps-card-heading {
+    margin: 0;
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.ps-card-sub {
+    margin: .125rem 0 0;
+    font-size: .75rem;
+    color: #878a99;
+}
+
+/* ---------- identity card -------------------------------------------------- */
+
+.ps-avatar-wrap {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.ps-avatar {
+    width: 104px;
+    height: 104px;
+    border-radius: 50%;
+    object-fit: cover;
+    padding: 4px;
+    background-color: var(--vz-card-bg, #fff);
+    border: 1px solid var(--vz-border-color);
+    box-shadow: 0 10px 26px -18px rgba(var(--vz-dark-rgb), .9);
+}
+
+/* camera button overlapping the avatar */
+.ps-avatar-edit {
+    position: absolute;
+    inset-block-end: 2px;
+    inset-inline-end: 2px;
+}
+
+.ps-avatar-edit label {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    margin: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: .875rem;
+    color: #fff;
+    background-color: var(--vz-primary);
+    border: 2px solid var(--vz-card-bg, #fff);
+    transition: background-color .18s ease, transform .18s ease;
+}
+
+.ps-avatar-edit label:hover {
+    transform: scale(1.06);
+}
+
+.ps-email {
+    margin: 0 0 .375rem;
+    font-size: .9375rem;
+    font-weight: 600;
+    word-break: break-all;
+    color: var(--vz-heading-color);
+}
+
+.ps-role {
+    display: inline-block;
+    padding: .1875rem .625rem;
+    border-radius: 999px;
+    font-size: .75rem;
+    font-weight: 500;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+/* ---------- form ----------------------------------------------------------- */
+
+.required::after {
+    content: " *";
+    color: var(--vz-danger);
+}
+
+.ps-label {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    margin-bottom: .5rem;
+    font-size: .8125rem;
+    font-weight: 500;
+    color: var(--vz-heading-color);
+}
+
+.ps-label i {
+    color: var(--vz-primary);
+}
+
+.ps-page .form-control {
+    height: 44px;
+    border-radius: 10px;
+    font-size: .875rem;
+}
+
+.ps-page .form-control:focus {
+    border-color: rgba(var(--vz-primary-rgb), .55);
+    box-shadow: 0 0 0 3px rgba(var(--vz-primary-rgb), .12);
+}
+
+.ps-submit {
+    height: 42px;
+    min-width: 180px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .375rem;
+    font-weight: 600;
+}
+
+.ps-hint {
+    display: flex;
+    gap: .625rem;
+    margin-top: 1.25rem;
+    padding: .75rem .875rem;
+    border: 1px solid var(--vz-border-color);
+    border-radius: 10px;
+    background-color: rgba(var(--vz-light-rgb), .5);
+    font-size: .75rem;
+    line-height: 1.9;
+    color: #878a99;
+}
+
+.ps-hint i {
+    flex: 0 0 auto;
+    font-size: 1rem;
+    color: var(--vz-info);
+}
+
+/* ---------- tabs ------------------------------------------------------------ */
+
+.ps-page .nav-tabs-custom .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    font-size: .8125rem;
+    font-weight: 500;
+}
+
+/* ---------- responsive ------------------------------------------------------ */
+
+@media (max-width: 767.98px) {
+    .profile-setting-img {
+        height: 140px;
+    }
+}

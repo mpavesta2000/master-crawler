@@ -13,8 +13,7 @@
   <link href="https://vjs.zencdn.net/8.0.0/video-js.css" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/libs/filepond/filepond.min.css" type="text/css" />
   <link rel="stylesheet" href="/assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.css">
-
-
+  <link href="/assets/css/gallery.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -22,95 +21,101 @@
   <!-- Start page title -->
   <div th:replace="partials/page-title :: page-title('گالری','فیلم ها')"></div>
 
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="">
-        <div class="card-body">
-          <div class="row g-4 mb-2">
-            <div class="col-sm-auto">
-              <div>
-                <form method="get" action="/admin/gallery/list-videos" class="search-box ms-2 d-flex align-items-center">
-                  <div class="row g-1">
-                    <div class="col-8 col-md-10">
-                      <input type="text" class="form-control" id="searchProductList" th:value="${searchQuery}" name="search" placeholder="جستجو ویدیو.." />
-                    </div>
-                    <div class="col-4 col-md-2">
-                      <button type="submit" class="btn btn-primary btn-icon waves-effect"><i class="ri-search-line"></i></button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-            <div class="col-sm">
-              <div class="d-flex justify-content-sm-end">
-                <button type="button" class="btn btn-primary" id="addvideo-btn" data-bs-toggle="modal" data-bs-target="#addVideo"><i class="ri-add-line align-bottom me-1"></i>افزودن ویدیو</button>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-12">
-              <div class="row gallery-wrapper">
-                <div th:each="video : ${videos}" class="element-item col-xxl-3 col-xl-4 col-sm-6">
-                  <div>
-                    <div>
-                      <div th:href="@{'/news/photos/' + ${video.videoImage}}" title="">
-                        <video id="news-video-player" class="video-js vjs-default-skin image-popup " controls preload="auto" height="175"
-                               th:poster="@{'/news/photos/' + ${video.videoImage}}"
-                               th:src="${video.videoSrc}">
-                          <source th:src="${video.videoSrc}" type="video/mp4">
-                          <source th:src="${video.videoSrc}" type="video/x-matroska">
-                          مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
-                        </video>
-                        <div class="gallery-overlay">
-                          <h5 th:text="${video.videoName}" class="overlay-caption"></h5>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row justify-content-end">
-                    <div class="col-sm-auto d-flex justify-content-end">
-                      <form th:action="@{/admin/gallery/list-videos-delete}" method="post" class="text-center mt-2 mb-2">
-                        <input type="hidden" name="name" th:value="${video.videoName}" />
-                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="confirmDelete(event)"><i class="ri-delete-bin-5-line"></i></button>
-                      </form>
-                      <div class="mt-2 mb-2">
-                        <button type="button" class="btn btn-primary btn-icon waves-effect waves-light ms-2" th:data-video-id="${video.id}" th:data-video-name=" ${video.videoName}" data-bs-toggle="modal" data-bs-target="#editVideo">
-                          <i class="ri-pencil-line"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <hr>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- End row -->
-        </div>
-        <!-- End card body -->
-      </div>
-      <!-- End card -->
-    </div>
-    <!-- End col -->
-  </div>
-  <div class="row">
-    <div class="col-lg-6">
-      <div class="mt-4 mt-lg-0">
-        <nav aria-label="Page navigation">
-          <ul class="pagination">
-            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-              <a class="page-link" th:href="@{/admin/gallery/list-videos(page=${currentPage - 1}, size=${pageSize})}">→ قبلی</a>
-            </li>
-            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
-              <a class="page-link" th:href="@{/admin/gallery/list-videos(page=${i}, size=${pageSize})}" th:text="${i + 1}">1</a>
-            </li>
-            <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
-              <a class="page-link" th:href="@{/admin/gallery/list-videos(page=${currentPage + 1}, size=${pageSize})}">بعدی ←</a>
-            </li>
-          </ul>
-        </nav>
+  <div class="gallery-page">
 
+    <!-- ============================ نوار ابزار ============================ -->
+    <div class="card media-toolbar-card">
+      <div class="card-body">
+        <div class="media-toolbar">
+
+          <div class="media-toolbar-title">
+            <span class="media-toolbar-icon"><i class="ri-film-line"></i></span>
+            <div>
+              <h5 class="media-toolbar-heading">گالری ویدیو</h5>
+              <p class="media-toolbar-count">
+                <span th:text="${totalItems}">0</span> ویدیو ذخیره شده
+              </p>
+            </div>
+          </div>
+
+          <form method="get" action="/admin/gallery/list-videos" class="media-search">
+            <button type="submit" class="media-search-icon" aria-label="جستجو">
+              <i class="ri-search-line"></i>
+            </button>
+            <input type="text" class="form-control" id="searchProductList" th:value="${searchQuery}"
+                   name="search" placeholder="جستجو ویدیو..." />
+          </form>
+
+          <button type="button" class="btn btn-primary btn-add" id="addvideo-btn"
+                  data-bs-toggle="modal" data-bs-target="#addVideo">
+            <i class="ri-add-line align-bottom"></i>افزودن ویدیو
+          </button>
+        </div>
       </div>
+    </div>
+
+    <!-- ============================ شبکه ویدیوها ========================== -->
+    <div class="row g-3 gallery-wrapper">
+
+      <div th:each="video : ${videos}" class="element-item col-xxl-3 col-xl-4 col-sm-6">
+        <div class="card media-card">
+          <div class="media-card-thumb">
+            <span class="media-card-badge"><i class="ri-play-circle-line"></i> ویدیو</span>
+            <video th:id="'news-video-player-' + ${video.id}" class="video-js vjs-default-skin"
+                   controls preload="none"
+                   th:poster="@{'/news/photos/' + ${video.videoImage}}"
+                   th:src="${video.videoSrc}">
+              <source th:src="${video.videoSrc}" type="video/mp4">
+              <source th:src="${video.videoSrc}" type="video/x-matroska">
+              مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
+            </video>
+          </div>
+
+          <div class="media-card-body">
+            <h6 class="media-card-name" th:title="${video.videoName}" th:text="${video.videoName}"></h6>
+
+            <div class="media-card-actions">
+              <button type="button" class="btn btn-soft-primary" title="ویرایش نام"
+                      th:data-video-id="${video.id}" th:data-video-name="${video.videoName}"
+                      data-bs-toggle="modal" data-bs-target="#editVideo">
+                <i class="ri-pencil-line"></i>
+              </button>
+              <form th:action="@{/admin/gallery/list-videos-delete}" method="post">
+                <input type="hidden" name="name" th:value="${video.videoName}" />
+                <button type="button" class="btn btn-soft-danger" title="حذف"
+                        onclick="confirmDelete(event)">
+                  <i class="ri-delete-bin-5-line"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12" th:if="${#lists.isEmpty(videos)}">
+        <div class="media-empty">
+          <i class="ri-video-add-line"></i>
+          <h6>هیچ ویدیویی یافت نشد</h6>
+          <p>با دکمه «افزودن ویدیو» اولین فایل را بارگذاری کنید.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================= صفحه بندی =========================== -->
+    <div class="media-pagination mb-2" th:if="${totalPages > 1}">
+      <nav aria-label="Page navigation">
+        <ul class="pagination">
+          <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/gallery/list-videos(page=${currentPage - 1}, size=${pageSize}, search=${searchQuery})}">→ قبلی</a>
+          </li>
+          <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+            <a class="page-link" th:href="@{/admin/gallery/list-videos(page=${i}, size=${pageSize}, search=${searchQuery})}" th:text="${i + 1}">1</a>
+          </li>
+          <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/gallery/list-videos(page=${currentPage + 1}, size=${pageSize}, search=${searchQuery})}">بعدی ←</a>
+          </li>
+        </ul>
+      </nav>
     </div>
   </div>
   <!-- End row -->

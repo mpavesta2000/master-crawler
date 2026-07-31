@@ -1,0 +1,277 @@
+/* ==========================================================================
+   Categories
+   Built on the Velzon CSS variables (theme aware) and logical properties (RTL).
+
+   NOTE for future edits: categories-list.js initialises #model-datatables and
+   filters with `table.column(4).search(...)` driven by #status-filter — so the
+   table must keep exactly 6 columns in this order:
+     0 id · 1 name · 2 parent · 3 children · 4 status · 5 actions
+   and the status cell text must stay exactly "فعال" / "غیرفعال".
+   ========================================================================== */
+
+.cat-page {
+    --cat-radius: 14px;
+}
+
+.cat-card {
+    border: 1px solid var(--vz-border-color);
+    border-radius: var(--cat-radius);
+    box-shadow: 0 6px 24px -18px rgba(var(--vz-dark-rgb), .55);
+}
+
+.cat-card > .card-header {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: 1rem 1.25rem;
+    background-color: transparent;
+    border-bottom: 1px solid var(--vz-border-color);
+}
+
+.cat-card-icon {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    font-size: 1.125rem;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.cat-card-icon.is-info {
+    color: var(--vz-info);
+    background-color: rgba(var(--vz-info-rgb), .12);
+}
+
+.cat-card-heading {
+    margin: 0;
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.cat-card-sub {
+    margin: .125rem 0 0;
+    font-size: .75rem;
+    color: #878a99;
+}
+
+/* ---------- hint banner --------------------------------------------------- */
+
+.cat-hint {
+    display: flex;
+    gap: .75rem;
+    margin-bottom: 1rem;
+    padding: .875rem 1rem;
+    border: 1px solid rgba(var(--vz-info-rgb), .25);
+    border-radius: 11px;
+    background-color: rgba(var(--vz-info-rgb), .07);
+}
+
+.cat-hint i {
+    flex: 0 0 auto;
+    font-size: 1.125rem;
+    color: var(--vz-info);
+}
+
+.cat-hint p {
+    margin: 0;
+    font-size: .8125rem;
+    line-height: 2;
+    color: #878a99;
+}
+
+.cat-hint strong {
+    color: var(--vz-heading-color);
+}
+
+/* ---------- form ---------------------------------------------------------- */
+
+.cat-label {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    margin-bottom: .5rem;
+    font-size: .8125rem;
+    font-weight: 500;
+    color: var(--vz-heading-color);
+}
+
+.cat-label i {
+    color: var(--vz-primary);
+}
+
+.cat-page .form-control,
+.cat-page .form-select {
+    height: 42px;
+    border-radius: 10px;
+    font-size: .875rem;
+}
+
+.cat-submit {
+    height: 42px;
+    min-width: 150px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .375rem;
+    font-weight: 600;
+}
+
+/* ---------- filter -------------------------------------------------------- */
+
+.cat-filter {
+    margin-bottom: 1rem;
+}
+
+.cat-filter .form-select {
+    max-width: 240px;
+}
+
+/* ---------- table --------------------------------------------------------- */
+
+#model-datatables thead th {
+    padding: .75rem .625rem;
+    font-size: .75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    color: #878a99;
+    background-color: rgba(var(--vz-light-rgb), .6);
+    border-bottom: 1px solid var(--vz-border-color);
+}
+
+#model-datatables tbody td {
+    padding: .625rem;
+    font-size: .8125rem;
+    vertical-align: middle;
+    border-color: var(--vz-border-color);
+}
+
+#model-datatables tbody tr:hover > td {
+    background-color: rgba(var(--vz-primary-rgb), .04);
+}
+
+#model-datatables tbody td:first-child {
+    font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+    font-size: .75rem;
+    color: #878a99;
+}
+
+.cat-name {
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.cat-parent-none {
+    font-size: .75rem;
+    color: #878a99;
+}
+
+/* children list */
+.cat-children {
+    margin: .375rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem;
+}
+
+.cat-children li {
+    padding: .0625rem .375rem;
+    border-radius: 5px;
+    font-size: .6875rem;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.cat-children-none {
+    font-size: .75rem;
+    color: #878a99;
+}
+
+/* status pill — the TEXT inside must stay exactly فعال / غیرفعال */
+.cat-status {
+    display: inline-flex;
+    align-items: center;
+    gap: .3125rem;
+    padding: .1875rem .5rem;
+    border-radius: 999px;
+    font-size: .6875rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.cat-status::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+}
+
+.cat-status.is-active {
+    color: var(--vz-success);
+    background-color: rgba(var(--vz-success-rgb), .12);
+}
+
+.cat-status.is-inactive {
+    color: var(--vz-danger);
+    background-color: rgba(var(--vz-danger-rgb), .12);
+}
+
+/* ---------- datatables chrome --------------------------------------------- */
+
+.cat-card .dataTables_wrapper .dt-buttons {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: .375rem;
+    margin-bottom: .875rem;
+}
+
+.cat-card .dataTables_wrapper .dt-button {
+    height: 32px;
+    padding: 0 .75rem;
+    border: 1px solid var(--vz-border-color);
+    border-radius: 8px;
+    font-size: .75rem;
+    color: var(--vz-body-color);
+    background: rgba(var(--vz-light-rgb), .6);
+}
+
+.cat-card .dataTables_wrapper .dt-button:hover {
+    color: var(--vz-primary);
+    border-color: rgba(var(--vz-primary-rgb), .5);
+    background: rgba(var(--vz-primary-rgb), .08);
+}
+
+.cat-card .dataTables_wrapper .dataTables_filter input,
+.cat-card .dataTables_wrapper .dataTables_length select {
+    height: 34px;
+    border: 1px solid var(--vz-border-color);
+    border-radius: 8px;
+    padding-inline: .625rem;
+    font-size: .8125rem;
+    background-color: transparent;
+    color: var(--vz-body-color);
+}
+
+.cat-card .dataTables_wrapper .dataTables_filter,
+.cat-card .dataTables_wrapper .dataTables_length,
+.cat-card .dataTables_wrapper .dataTables_info {
+    font-size: .8125rem;
+    color: #878a99;
+}
+
+.cat-card .dataTables_wrapper .dataTables_paginate .paginate_button {
+    min-width: 32px;
+    border-radius: 8px !important;
+    font-size: .8125rem;
+}
+
+.cat-table-scroll {
+    overflow-x: auto;
+}

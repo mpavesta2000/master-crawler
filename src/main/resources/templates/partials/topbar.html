@@ -830,6 +830,7 @@
 											<span th:switch="${#authentication.principal.authorities[0].authority}">
 												<span th:case="Admin">ادمین</span>
 												<span th:case="User">خبرنگار</span>
+												<span th:case="Ai">کارشناس هوش مصنوعی</span>
 												<span th:case="*">کاربر ناشناس</span>
 											</span>
 										</span>

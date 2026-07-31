@@ -1,0 +1,307 @@
+/* ==========================================================================
+   ChapChin crawler page
+   Built on the Velzon CSS variables so it follows the active theme,
+   and on logical properties so it stays correct in RTL.
+   ========================================================================== */
+
+.chap-page {
+    --chap-radius: 14px;
+}
+
+.chap-card {
+    height: 100%;
+    margin: 0;
+    border: 1px solid var(--vz-border-color);
+    border-radius: var(--chap-radius);
+    box-shadow: 0 6px 24px -18px rgba(var(--vz-dark-rgb), .55);
+    overflow: hidden;
+}
+
+.chap-card > .card-header {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: 1rem 1.25rem;
+    background-color: transparent;
+    border-bottom: 1px solid var(--vz-border-color);
+}
+
+.chap-card-icon {
+    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    font-size: 1.25rem;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.chap-card-heading {
+    margin: 0;
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.chap-card-sub {
+    margin: .125rem 0 0;
+    font-size: .75rem;
+    color: #878a99;
+}
+
+.chap-card-badge {
+    margin-inline-start: auto;
+    padding: .25rem .625rem;
+    border-radius: 999px;
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+    white-space: nowrap;
+}
+
+/* ---------- submit form -------------------------------------------------- */
+
+.chap-field-label {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    margin-bottom: .5rem;
+    font-size: .8125rem;
+    font-weight: 500;
+    color: var(--vz-heading-color);
+}
+
+.chap-input-wrap {
+    position: relative;
+}
+
+.chap-input-wrap .form-control {
+    height: 46px;
+    border-radius: 10px;
+    /* the URL field is LTR, so the icon always sits on the left */
+    padding-left: 2.5rem;
+    padding-right: .875rem;
+    font-size: .875rem;
+}
+
+.chap-input-icon {
+    position: absolute;
+    left: .875rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    color: #878a99;
+    pointer-events: none;
+}
+
+.chap-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: .375rem;
+    margin: .5rem 0 0;
+    font-size: .75rem;
+    color: #878a99;
+}
+
+.chap-hint i {
+    margin-top: .0625rem;
+}
+
+.chap-submit {
+    height: 44px;
+    width: 100%;
+    margin-top: 1.25rem;
+    border-radius: 10px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+}
+
+/* the little "how it works" strip under the form */
+.chap-steps {
+    display: grid;
+    gap: .625rem;
+    margin: 1.25rem 0 0;
+    padding: .875rem;
+    list-style: none;
+    border-radius: 10px;
+    background-color: rgba(var(--vz-light-rgb), .5);
+}
+
+.chap-steps li {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .75rem;
+    color: #878a99;
+}
+
+.chap-step-num {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    font-size: .6875rem;
+    font-weight: 600;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .14);
+}
+
+/* ---------- supported sites --------------------------------------------- */
+
+.chap-search {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.chap-search .form-control {
+    height: 40px;
+    border-radius: 10px;
+    padding-inline-start: 2.375rem;
+    font-size: .8125rem;
+}
+
+.chap-search-icon {
+    position: absolute;
+    inset-inline-start: .875rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    color: #878a99;
+    pointer-events: none;
+}
+
+.chap-sites-scroll {
+    max-height: 440px;
+    overflow-y: auto;
+    padding-inline-end: .25rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--vz-dark-rgb), .25) transparent;
+}
+
+.chap-sites-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chap-sites-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chap-sites-scroll::-webkit-scrollbar-thumb {
+    background-color: rgba(var(--vz-dark-rgb), .2);
+    border-radius: 6px;
+}
+
+/* one grid cell per site — filterSites() toggles display on this element */
+.site-item {
+    margin-bottom: .625rem;
+}
+
+.chap-site {
+    display: flex;
+    align-items: center;
+    gap: .625rem;
+    height: 100%;
+    padding: .5rem .625rem;
+    border: 1px solid var(--vz-border-color);
+    border-radius: 10px;
+    text-decoration: none;
+    background-color: rgba(var(--vz-light-rgb), .45);
+    transition: border-color .18s ease, background-color .18s ease, transform .18s ease;
+}
+
+.chap-site:hover {
+    transform: translateY(-2px);
+    border-color: rgba(var(--vz-primary-rgb), .45);
+    background-color: rgba(var(--vz-primary-rgb), .05);
+}
+
+.chap-site-avatar {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    font-size: .8125rem;
+    font-weight: 700;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.chap-site-text {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.site-name {
+    display: block;
+    font-size: .8125rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chap-site-url {
+    display: block;
+    /* latin domain renders LTR but stays aligned under the site name */
+    direction: ltr;
+    text-align: right;
+    font-size: .6875rem;
+    color: #878a99;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chap-site-go {
+    flex: 0 0 auto;
+    font-size: .875rem;
+    color: #878a99;
+    opacity: 0;
+    transition: opacity .18s ease, color .18s ease;
+}
+
+.chap-site:hover .chap-site-go {
+    opacity: 1;
+    color: var(--vz-primary);
+}
+
+/* shown by chapchin-ui.js when the filter matches nothing */
+.chap-no-result {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+    padding: 2.5rem 1rem;
+    text-align: center;
+    color: #878a99;
+    font-size: .8125rem;
+}
+
+.chap-no-result.is-visible {
+    display: flex;
+}
+
+.chap-no-result i {
+    font-size: 1.75rem;
+    opacity: .45;
+}
+
+/* ---------- responsive --------------------------------------------------- */
+
+@media (max-width: 991.98px) {
+    .chap-sites-scroll {
+        max-height: none;
+        overflow-y: visible;
+    }
+}

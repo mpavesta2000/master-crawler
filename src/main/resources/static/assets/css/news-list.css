@@ -1,0 +1,382 @@
+/* ==========================================================================
+   News list
+   Built on the Velzon CSS variables (theme aware) and logical properties (RTL).
+
+   NOTE for future edits: the table rows are rendered by DataTables via
+   news-list.js — the title cell, status badge, category chips and the action
+   buttons are HTML strings in that file, not in the template. The <thead>
+   here must keep exactly 8 columns to match the `columns` array in the JS.
+   ========================================================================== */
+
+.nl-page {
+    --nl-radius: 14px;
+}
+
+.nl-card {
+    border: 1px solid var(--vz-border-color);
+    border-radius: var(--nl-radius);
+    box-shadow: 0 6px 24px -18px rgba(var(--vz-dark-rgb), .55);
+}
+
+.nl-card > .card-header {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: 1rem 1.25rem;
+    background-color: transparent;
+    border-bottom: 1px solid var(--vz-border-color);
+}
+
+.nl-card-icon {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    font-size: 1.125rem;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.nl-card-heading {
+    margin: 0;
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.nl-card-sub {
+    margin: .125rem 0 0;
+    font-size: .75rem;
+    color: #878a99;
+}
+
+/* ---------- filter panel ------------------------------------------------- */
+
+.nl-filters {
+    position: relative;
+    margin: 1.25rem;
+    padding: 1.125rem 1.25rem 1.25rem;
+    border: 1px solid rgba(var(--vz-primary-rgb), .22);
+    border-radius: 12px;
+    overflow: hidden;
+    background-image:
+            linear-gradient(135deg, rgba(var(--vz-primary-rgb), .09), rgba(var(--vz-primary-rgb), .02) 45%),
+            radial-gradient(120% 140% at 100% 0%, rgba(var(--vz-info-rgb), .10), transparent 55%);
+    background-color: var(--vz-card-bg, transparent);
+}
+
+/* accent strip along the top edge */
+.nl-filters::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    height: 3px;
+    background: linear-gradient(to left,
+            rgb(var(--vz-primary-rgb)),
+            rgba(var(--vz-info-rgb), .9),
+            rgba(var(--vz-success-rgb), .8));
+}
+
+.nl-filters-title {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin: 0 0 1rem;
+    font-size: .8125rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.nl-filters-title i {
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    font-size: .9375rem;
+    color: #fff;
+    background-color: rgb(var(--vz-primary-rgb));
+}
+
+.nl-filter-label {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    margin-bottom: .4375rem;
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+/* each filter gets its own accent so the row isn't a wall of grey */
+.nl-filter-label i {
+    width: 20px;
+    height: 20px;
+    display: grid;
+    place-items: center;
+    border-radius: 6px;
+    font-size: .75rem;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .14);
+}
+
+.nl-filter-label.is-info i {
+    color: var(--vz-info);
+    background-color: rgba(var(--vz-info-rgb), .14);
+}
+
+.nl-filter-label.is-success i {
+    color: var(--vz-success);
+    background-color: rgba(var(--vz-success-rgb), .14);
+}
+
+.nl-filter-label.is-warning i {
+    color: var(--vz-warning);
+    background-color: rgba(var(--vz-warning-rgb), .14);
+}
+
+/* inputs sit on the card surface so they lift off the tinted panel */
+.nl-filters .form-control,
+.nl-filters .choices__inner {
+    border-radius: 9px;
+    font-size: .8125rem;
+    min-height: 40px;
+    border-color: rgba(var(--vz-primary-rgb), .18);
+    background-color: var(--vz-card-bg, #fff);
+}
+
+[data-layout-mode="dark"] .nl-filters .form-control,
+[data-layout-mode="dark"] .nl-filters .choices__inner {
+    background-color: #212529;
+}
+
+.nl-filters .form-control:focus,
+.nl-filters .choices.is-focused .choices__inner {
+    border-color: rgba(var(--vz-primary-rgb), .55);
+    box-shadow: 0 0 0 3px rgba(var(--vz-primary-rgb), .12);
+}
+
+/* ---------- datatable ---------------------------------------------------- */
+
+#news-datatables {
+    border-color: var(--vz-border-color);
+}
+
+#news-datatables thead th {
+    padding: .75rem .625rem;
+    font-size: .75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    color: #878a99;
+    text-transform: none;
+    background-color: rgba(var(--vz-light-rgb), .6);
+    border-bottom: 1px solid var(--vz-border-color);
+}
+
+#news-datatables tbody td {
+    padding: .625rem;
+    font-size: .8125rem;
+    vertical-align: middle;
+    border-color: var(--vz-border-color);
+}
+
+#news-datatables tbody tr:hover > td {
+    background-color: rgba(var(--vz-primary-rgb), .04);
+}
+
+/* news id column reads as a code chip */
+#news-datatables tbody td:first-child {
+    font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+    font-size: .75rem;
+    color: #878a99;
+    white-space: nowrap;
+}
+
+/* ---------- cells rendered by news-list.js ------------------------------- */
+
+.nl-title-form {
+    display: block;
+    max-width: 260px;
+    margin: 0;
+}
+
+.nl-title-btn {
+    max-width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    text-align: start;
+    font-size: .8125rem;
+    font-weight: 500;
+    line-height: 1.7;
+    color: var(--vz-heading-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color .16s ease;
+}
+
+.nl-title-btn:hover {
+    color: var(--vz-primary);
+    text-decoration: underline;
+}
+
+.nl-cat {
+    display: inline-block;
+    margin: .125rem .125rem 0 0;
+    padding: .1875rem .4375rem;
+    border-radius: 6px;
+    font-size: .6875rem;
+    font-weight: 500;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.nl-status {
+    display: inline-flex;
+    align-items: center;
+    gap: .3125rem;
+    padding: .1875rem .5rem;
+    border-radius: 999px;
+    font-size: .6875rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.nl-status::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+}
+
+.nl-status.is-draft {
+    color: var(--vz-warning);
+    background-color: rgba(var(--vz-warning-rgb), .12);
+}
+
+.nl-status.is-published {
+    color: var(--vz-success);
+    background-color: rgba(var(--vz-success-rgb), .12);
+}
+
+.nl-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+}
+
+.nl-actions form {
+    margin: 0;
+    display: inline;
+}
+
+.nl-action {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: inline-grid;
+    place-items: center;
+    border: 0;
+    border-radius: 8px;
+    font-size: .875rem;
+    line-height: 1;
+    transition: background-color .16s ease, color .16s ease;
+}
+
+.nl-action-edit {
+    color: var(--vz-success);
+    background-color: rgba(var(--vz-success-rgb), .12);
+}
+
+.nl-action-edit:hover {
+    color: #fff;
+    background-color: var(--vz-success);
+}
+
+.nl-action-delete {
+    color: var(--vz-danger);
+    background-color: rgba(var(--vz-danger-rgb), .12);
+}
+
+.nl-action-delete:hover {
+    color: #fff;
+    background-color: var(--vz-danger);
+}
+
+/* ---------- datatables chrome -------------------------------------------- */
+
+.nl-card .dataTables_wrapper .dt-buttons {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: .375rem;
+    margin-bottom: .875rem;
+}
+
+.nl-card .dataTables_wrapper .dt-button {
+    height: 32px;
+    padding: 0 .75rem;
+    border: 1px solid var(--vz-border-color);
+    border-radius: 8px;
+    font-size: .75rem;
+    color: var(--vz-body-color);
+    background: rgba(var(--vz-light-rgb), .6);
+    transition: border-color .16s ease, color .16s ease;
+}
+
+.nl-card .dataTables_wrapper .dt-button:hover {
+    color: var(--vz-primary);
+    border-color: rgba(var(--vz-primary-rgb), .5);
+    background: rgba(var(--vz-primary-rgb), .08);
+}
+
+.nl-card .dataTables_wrapper .dataTables_filter input,
+.nl-card .dataTables_wrapper .dataTables_length select {
+    height: 34px;
+    border: 1px solid var(--vz-border-color);
+    border-radius: 8px;
+    padding-inline: .625rem;
+    font-size: .8125rem;
+    background-color: var(--vz-input-bg, transparent);
+    color: var(--vz-body-color);
+}
+
+.nl-card .dataTables_wrapper .dataTables_filter,
+.nl-card .dataTables_wrapper .dataTables_length,
+.nl-card .dataTables_wrapper .dataTables_info {
+    font-size: .8125rem;
+    color: #878a99;
+}
+
+.nl-card .dataTables_wrapper .dataTables_paginate .paginate_button {
+    min-width: 32px;
+    border-radius: 8px !important;
+    font-size: .8125rem;
+}
+
+.nl-card .dataTables_wrapper .dataTables_processing {
+    border: 1px solid var(--vz-border-color);
+    border-radius: 10px;
+    box-shadow: 0 10px 26px -18px rgba(var(--vz-dark-rgb), .9);
+}
+
+/* horizontal scroll stays inside the card */
+.nl-table-scroll {
+    overflow-x: auto;
+}
+
+/* ---------- responsive --------------------------------------------------- */
+
+@media (max-width: 767.98px) {
+    .nl-filters {
+        margin-inline: 1rem;
+    }
+
+    .nl-title-form {
+        max-width: 180px;
+    }
+}

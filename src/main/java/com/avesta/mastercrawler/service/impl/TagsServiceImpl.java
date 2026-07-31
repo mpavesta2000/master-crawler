@@ -31,6 +31,8 @@ public class TagsServiceImpl implements ITagsService {
     @Override
     public Tags addTagIfNotExists(String tagName) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("look at this:\n");
+        System.out.println(authentication);
         Users user = usersRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("user not found."));
         return tagsRepository.findByNameIgnoreCase(tagName)
                 .orElseGet(() -> {

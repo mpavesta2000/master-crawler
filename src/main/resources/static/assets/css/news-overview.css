@@ -1,0 +1,431 @@
+/* ==========================================================================
+   News overview (single article view)
+   Built on the Velzon CSS variables (theme aware) and logical properties (RTL).
+
+   NOTE for future edits: news-overview.js formats the dates — it needs
+   #persian-date with a data-date attribute, and any element carrying
+   data-date-comment. Keep both.
+   ========================================================================== */
+
+.no-page {
+    --no-radius: 16px;
+}
+
+.no-card {
+    border: 1px solid var(--vz-border-color);
+    border-radius: var(--no-radius);
+    box-shadow: 0 6px 24px -18px rgba(var(--vz-dark-rgb), .55);
+    overflow: hidden;
+}
+
+/* ---------- article header ----------------------------------------------- */
+
+.no-header {
+    padding: 2rem 2rem 1.5rem;
+    text-align: center;
+}
+
+.no-kicker {
+    display: inline-block;
+    margin: 0 0 .875rem;
+    padding: .25rem .625rem;
+    border-radius: 999px;
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--vz-success);
+    background-color: rgba(var(--vz-success-rgb), .12);
+}
+
+.no-kicker:empty {
+    display: none;
+}
+
+.no-title {
+    max-width: 46rem;
+    margin: 0 auto .75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.8;
+    color: var(--vz-heading-color);
+}
+
+.no-subtitle {
+    max-width: 44rem;
+    margin: 0 auto 1.25rem;
+    font-size: .9375rem;
+    line-height: 2;
+    color: #878a99;
+}
+
+.no-subtitle:empty {
+    display: none;
+}
+
+.no-tags {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: .375rem;
+}
+
+.no-tag {
+    padding: .1875rem .5rem;
+    border-radius: 6px;
+    font-size: .6875rem;
+    font-weight: 500;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+/* ---------- author meta strip -------------------------------------------- */
+
+.no-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: .75rem;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--vz-border-color);
+}
+
+.no-meta-avatar {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(var(--vz-primary-rgb), .2);
+    background-color: rgba(var(--vz-light-rgb), .8);
+}
+
+.no-meta-text {
+    text-align: start;
+}
+
+.no-meta-name {
+    margin: 0;
+    font-size: .8125rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.no-meta-sub {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    margin: .125rem 0 0;
+    font-size: .75rem;
+    color: #878a99;
+}
+
+.no-meta-role {
+    padding: .0625rem .375rem;
+    border-radius: 5px;
+    font-size: .6875rem;
+    background-color: rgba(var(--vz-dark-rgb), .06);
+}
+
+.no-meta-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background-color: currentColor;
+    opacity: .6;
+}
+
+/* ---------- cover image --------------------------------------------------- */
+
+.no-cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 7;
+    overflow: hidden;
+    background-color: rgba(var(--vz-light-rgb), .6);
+}
+
+.no-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ---------- article body -------------------------------------------------- */
+
+.no-body {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 2rem;
+    font-size: .9375rem;
+    line-height: 2.2;
+    color: var(--vz-body-color);
+}
+
+.no-body > *:first-child {
+    margin-top: 0;
+}
+
+.no-body p {
+    margin: 0 0 1.25rem;
+}
+
+.no-body h1,
+.no-body h2,
+.no-body h3,
+.no-body h4,
+.no-body h5,
+.no-body h6 {
+    margin: 2rem 0 .875rem;
+    font-weight: 700;
+    line-height: 1.8;
+    color: var(--vz-heading-color);
+}
+
+.no-body h2 { font-size: 1.25rem; }
+.no-body h3 { font-size: 1.125rem; }
+.no-body h4 { font-size: 1rem; }
+
+.no-body img {
+    max-width: 100%;
+    height: auto;
+    margin: 1.25rem 0;
+    border-radius: 11px;
+}
+
+.no-body a {
+    color: var(--vz-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.no-body blockquote {
+    margin: 1.5rem 0;
+    padding: .875rem 1.125rem;
+    border-inline-start: 3px solid var(--vz-primary);
+    border-radius: 0 10px 10px 0;
+    background-color: rgba(var(--vz-primary-rgb), .06);
+    color: var(--vz-heading-color);
+}
+
+.no-body ul,
+.no-body ol {
+    margin: 0 0 1.25rem;
+    padding-inline-start: 1.25rem;
+}
+
+.no-body li {
+    margin-bottom: .5rem;
+}
+
+.no-body table {
+    width: 100%;
+    margin: 1.25rem 0;
+    border-collapse: collapse;
+    font-size: .875rem;
+}
+
+.no-body table th,
+.no-body table td {
+    padding: .5rem .625rem;
+    border: 1px solid var(--vz-border-color);
+}
+
+.no-body iframe,
+.no-body video {
+    max-width: 100%;
+    border-radius: 11px;
+}
+
+/* ---------- comments ------------------------------------------------------ */
+
+.no-comments-head {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--vz-border-color);
+}
+
+.no-comments-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    font-size: 1.0625rem;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.no-comments-title {
+    margin: 0;
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.no-comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+    max-height: 420px;
+    overflow-y: auto;
+    padding-inline-end: .25rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--vz-dark-rgb), .25) transparent;
+}
+
+.no-comments-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.no-comments-list::-webkit-scrollbar-thumb {
+    background-color: rgba(var(--vz-dark-rgb), .2);
+    border-radius: 6px;
+}
+
+.no-comment {
+    display: flex;
+    gap: .75rem;
+    padding: .875rem 1rem;
+    border: 1px solid var(--vz-border-color);
+    border-radius: 12px;
+    background-color: rgba(var(--vz-light-rgb), .4);
+}
+
+.no-comment-avatar {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    font-size: 1rem;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.no-comment-body {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.no-comment-head {
+    display: flex;
+    align-items: baseline;
+    gap: .5rem;
+    margin-bottom: .25rem;
+}
+
+.no-comment-name {
+    margin: 0;
+    font-size: .8125rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.no-comment-date {
+    font-size: .6875rem;
+    color: #878a99;
+}
+
+.no-comment-text {
+    margin: 0;
+    font-size: .8125rem;
+    line-height: 1.9;
+    color: #878a99;
+}
+
+/* CSS-only empty state — avoids guessing the collection type in Thymeleaf */
+.no-comments-empty {
+    display: none;
+    padding: 2rem 1rem;
+    text-align: center;
+    border: 1px dashed var(--vz-border-color);
+    border-radius: 12px;
+    color: #878a99;
+    font-size: .8125rem;
+}
+
+.no-comments-empty i {
+    display: block;
+    margin-bottom: .375rem;
+    font-size: 1.5rem;
+    opacity: .45;
+}
+
+.no-comments-list:not(:has(.no-comment)) + .no-comments-empty {
+    display: block;
+}
+
+.no-comments-list:not(:has(.no-comment)) {
+    display: none;
+}
+
+/* ---------- comment form -------------------------------------------------- */
+
+.no-form {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed var(--vz-border-color);
+}
+
+.no-form-title {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    margin: 0 0 1rem;
+    font-size: .8125rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.no-label {
+    margin-bottom: .4375rem;
+    font-size: .75rem;
+    font-weight: 500;
+    color: var(--vz-heading-color);
+}
+
+.no-form .form-control {
+    border-radius: 10px;
+    font-size: .875rem;
+}
+
+.no-form input.form-control {
+    height: 42px;
+}
+
+.no-form .btn {
+    height: 42px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .375rem;
+    font-weight: 600;
+}
+
+/* ---------- responsive ---------------------------------------------------- */
+
+@media (max-width: 767.98px) {
+    .no-header {
+        padding: 1.5rem 1.25rem 1.25rem;
+    }
+
+    .no-title {
+        font-size: 1.1875rem;
+    }
+
+    .no-body {
+        padding: 1.5rem 1.25rem;
+    }
+
+    .no-cover {
+        aspect-ratio: 16 / 10;
+    }
+}

@@ -117,7 +117,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-
 //buttons exmples
 document.addEventListener('DOMContentLoaded', function () {
     let table = new DataTable('#buttons-datatables', {

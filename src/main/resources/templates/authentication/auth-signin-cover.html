@@ -1,96 +1,129 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  data-layout="vertical" data-topbar="light" dir="rtl" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none"
-	  data-preloader="disable">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="fa" dir="rtl"
+      data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none"
+      data-preloader="disable">
 
 <head>
-	<!--page title-->
-	<div th:replace="partials/title-meta :: title-meta('ورود')"></div>
+    <!--page title-->
+    <div th:replace="partials/title-meta :: title-meta('ورود')"></div>
 
-	<!-- Page CSS -->
-	<div th:replace="partials/head-css :: head-css"></div>
+    <!-- Page CSS -->
+    <div th:replace="partials/head-css :: head-css"></div>
 
-	<link href="/assets/css/custom-authentication.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/css/custom-authentication.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/css/auth-cover.css" rel="stylesheet" type="text/css"/>
 
 </head>
 
 <body>
-	<div class="auth-page-wrapper auth-bg-cover min-vh-100">
-	<div class="bg-overlay"></div>
-	<!-- auth-page content -->
-	<div class="auth-page-content overflow-hidden pt-lg-5">
-		<div class="container">
-			<div class="row justify-content-center">
-				<div class="col-lg-6">
-					<div class="card overflow-hidden">
-						<div class="row g-0 justify-content-center">
-							<div class="col-lg-12">
-								<div class="p-lg-5 p-4">
-									<div>
-										<h2 class="text-primary">به راوی خوش آمدید.</h2>
-										<p class="text-muted">بیا در راوی وارد شو!</p>
-									</div>
+<div class="auth-page-wrapper auth-bg-cover auth-cover min-vh-100">
+    <div class="bg-overlay"></div>
 
-									<div class="mt-4">
-										<form th:action="@{/admin/login}" th:object="${user}" method="post">
-											<div th:if="${session.error}" class="alert alert-danger">
-												<p th:text="${session.error}"></p>
-											</div>
-											<div class="mb-3">
-												<label for="username" class="form-label">ایمیل</label>
-												<input name="username"
-													   field="{email}"
-													   type="email" class="form-control" id="username"
-													   placeholder=".ایمیل خود را وارد کنید">
-											</div>
+    <!-- auth-page content -->
+    <div class="auth-page-content overflow-hidden pt-lg-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xxl-8 col-lg-10">
+                    <div class="card overflow-hidden">
+                        <div class="row g-0">
 
-											<div class="mb-3">
-												<label class="form-label" for="password-input">رمزعبور</label>
-												<div class="position-relative auth-pass-inputgroup mb-3">
-													<input name="password"
-														   field="{password}"
-														   type="password" class="form-control pe-5 password-input"
-														   placeholder="رمزعبور خود را وارد کنید." id="password-input">
-													<button
-															class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
-															type="button" id="password-addon"><i
-															class="ri-eye-fill align-middle"></i></button>
-												</div>
-											</div>
-											<div class="mt-4">
-												<button class="btn btn-primary w-100" type="submit">ورود</button>
-											</div>
+                            <!-- ===================== معرفی ===================== -->
+                            <div class="col-lg-5 d-none d-lg-block">
+                                <div class="auth-brand h-100">
+                                    <div class="auth-brand-logo">
+                                        <img src="/assets/images/jahad-logo-black-transparent.png" alt="جهاد دانشگاهی"
+                                             class="brand-logo brand-logo-on-dark">
+                                    </div>
 
-										</form>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- end row -->
-		</div>
-		<!-- end container -->
-	</div>
-	<!-- end auth page content -->
+                                    <div class="auth-brand-body">
+                                        <h2 class="auth-brand-title">سامانه هوشمند مدیریت اخبار</h2>
+                                        <p class="auth-brand-text">
+                                            تولید، ویرایش و انتشار خبر با کمک هوش مصنوعی — همه در یک پنل.
+                                        </p>
 
-	<!-- footer -->
-	<footer class="footer glassy-footer">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="text-center">
-						<p class="mb-0 glassy-footer-text">
-							توسعه شده توسط تیم راوی - ۱۴۰۳
-							&copy;
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</footer>
-	<!-- end Footer -->
+                                        <ul class="auth-brand-list">
+                                            <li><i class="ri-robot-line"></i> تولید خودکار تیتر، سرنخ و متن خبر</li>
+                                            <li><i class="ri-rss-line"></i> دریافت خبر از منابع داخلی و خارجی</li>
+                                            <li><i class="ri-translate-2"></i> ترجمه خبر به بیش از ۲۰ زبان</li>
+                                            <li><i class="ri-share-line"></i> انتشار همزمان در شبکه‌های اجتماعی</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ====================== فرم ====================== -->
+                            <div class="col-lg-7">
+                                <div class="auth-form-side h-100">
+                                    <h2 class="auth-form-title">خوش آمدید</h2>
+                                    <p class="auth-form-sub">برای ادامه، وارد حساب کاربری خود شوید.</p>
+
+                                    <form th:action="@{/admin/login}" th:object="${user}" method="post">
+                                        <div th:if="${session.error}" class="alert alert-danger">
+                                            <p th:text="${session.error}"></p>
+                                        </div>
+
+                                        <div class="auth-field">
+                                            <label for="username" class="auth-label">
+                                                <i class="ri-mail-line"></i> ایمیل
+                                            </label>
+                                            <input name="username"
+                                                   type="email" class="form-control" id="username"
+                                                   placeholder="ایمیل خود را وارد کنید" dir="ltr">
+                                        </div>
+
+                                        <div class="auth-field">
+                                            <label class="auth-label" for="password-input">
+                                                <i class="ri-lock-2-line"></i> رمزعبور
+                                            </label>
+                                            <div class="position-relative auth-pass-inputgroup">
+                                                <input name="password"
+                                                       type="password" class="form-control pe-5 password-input"
+                                                       placeholder="رمزعبور خود را وارد کنید" id="password-input">
+                                                <button
+                                                        class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
+                                                        type="button" id="password-addon"><i
+                                                        class="ri-eye-fill align-middle"></i></button>
+                                            </div>
+                                        </div>
+
+                                        <button class="btn btn-primary auth-submit" type="submit">
+                                            <i class="ri-login-circle-line"></i> ورود
+                                        </button>
+                                    </form>
+
+                                    <!-- no sign-up link on purpose: the signup route is intentionally
+                                         obscured (AuthenticationController), so it must not be advertised -->
+                                    <p class="auth-alt">
+                                        برای دریافت دسترسی با مدیر سامانه تماس بگیرید.
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end row -->
+        </div>
+        <!-- end container -->
+    </div>
+    <!-- end auth page content -->
+
+    <!-- footer -->
+    <footer class="footer glassy-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="text-center">
+                        <p class="mb-0 glassy-footer-text">
+                            طراحی شده توسط تیم مرکز راهبری پژوهش و پیشرفت هوش مصنوعی - ۱۴۰۳
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- end Footer -->
 </div>
 
 <div th:replace="partials/vendor-scripts :: scripts"></div>

@@ -5,21 +5,23 @@
 	<!-- ========== App Menu ========== -->
 	<div class="app-menu navbar-menu">
 		<div class="navbar-brand-box">
-			<a href="/" class="logo logo-dark">
-					<span class="logo-sm">
-<!--						<img src="/assets/images/logo-sm.png" alt="" height="22">-->
-					</span>
+			<!-- Dark Logo (shown when the sidebar is light) -->
+			<a href="/admin/full-users/report" class="logo logo-dark">
+				<span class="logo-sm">
+					<img src="/assets/images/jahad-logo-black-transparent.png" alt="جهاد دانشگاهی" class="brand-logo brand-logo-on-light">
+				</span>
 				<span class="logo-lg">
-<!--						<img src="/assets/images/logo-dark.png" alt="" height="17">-->
-					</span>
+					<img src="/assets/images/jahad-logo-black-transparent.png" alt="جهاد دانشگاهی" class="brand-logo brand-logo-on-light">
+				</span>
 			</a>
-			<a href="/" class="logo logo-light">
-					<span class="logo-sm">
-<!--						<img src="/assets/images/logo-sm.png" alt="" height="22">-->
-					</span>
+			<!-- Light Logo (shown when the sidebar is dark) -->
+			<a href="/admin/full-users/report" class="logo logo-light">
+				<span class="logo-sm">
+					<img src="/assets/images/jahad-logo-black-transparent.png" alt="جهاد دانشگاهی" class="brand-logo brand-logo-on-dark">
+				</span>
 				<span class="logo-lg">
-<!--						<img src="/assets/images/logo-light.png" alt="" height="17">-->
-					</span>
+					<img src="/assets/images/jahad-logo-black-transparent.png" alt="جهاد دانشگاهی" class="brand-logo brand-logo-on-dark">
+				</span>
 			</a>
 			<button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
 					id="vertical-hover">
@@ -40,13 +42,11 @@
 						</a>
 						<div class="collapse menu-dropdown" id="sidebarDashboards">
 							<ul class="nav nav-sm flex-column">
-								<li class="nav-item">
-									<a href="/" class="nav-link" data-key="t-analytics">
-										اصلی </a>
-								</li>
-								<li class="nav-item" th:if="${#authorization.expression('hasAuthority(''Admin'')')}">
+								<li class="nav-item"
+									th:if="${#authorization.expression('hasAuthority(''Admin'') or hasAuthority(''Ai'')')}">
 									<a href="/admin/full-users/report" class="nav-link" data-key="t-admin-analytics">
-										آمار مدیریت </a>
+										آمار مدیریت
+									</a>
 								</li>
 								<li class="nav-item" th:if="${#authorization.expression('hasAuthority(''User'')')}">
 									<a href="/admin/user/report" class="nav-link" data-key="t-editor-analytics">
@@ -168,7 +168,7 @@
 						</div>
 					</li>
 					<!--						Socials-->
-					<li class="nav-item">
+					<li th:if="${!#authorization.expression('hasAuthority(''Ai'')')}" class="nav-item">
 						<a class="nav-link menu-link" href="#sidebarSocials" data-bs-toggle="collapse"
 						   role="button" aria-expanded="false" aria-controls="sidebarSocials">
 							<i class="ri-share-line"></i> <span data-key="t-socials">شبکه‌های اجتماعی</span>
@@ -324,7 +324,7 @@
 						</div>
 					</li>
 					<!--						RSS-->
-					<li th:if="${!#authorization.expression('hasAuthority(''Ai'')')}" class="nav-item">
+					<li class="nav-item">
 						<a class="nav-link menu-link" href="#sidebarRSS" data-bs-toggle="collapse"
 						   role="button" aria-expanded="false" aria-controls="sidebarRSS">
 							<i class="ri-rss-line"></i> <span data-key="t-rss">RSS</span>

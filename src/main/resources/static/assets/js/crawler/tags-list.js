@@ -11,20 +11,23 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             error: function (xhr, error, code) {
                 console.error("Error loading data: ", error, code);
-                alert("An error occurred while loading data.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطا',
+                    text: 'خطایی در بارگذاری برچسب‌ها رخ داد.',
+                    confirmButtonText: 'تایید'
+                });
             },
             dataSrc: function (json) {
                 json.data.forEach(function(tags) {
                     tags.actions = `
-                        <td class="due_date">
-                            <div class="hstack gap-3 flex-wrap">
-                                <form id="deleteForm" action="/admin/tags/delete/${tags.id}" method="post" style="display: inline;">
-                                    <button type="submit" class="btn btn-link p-0 link-danger fs-15" style="border: none; background: none;" onclick="confirmDelete(event)">
-                                        <i class="ri-delete-bin-line"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
+                        <div class="tl-actions">
+                            <form action="/admin/tags/delete/${tags.id}" method="post">
+                                <button type="submit" class="tl-action" onclick="confirmDelete(event)" title="حذف">
+                                    <i class="ri-delete-bin-line"></i>
+                                </button>
+                            </form>
+                        </div>
                     `;
                 });
 
@@ -33,7 +36,9 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         columns: [
             { data: 'id' },
-            { data: 'name' },
+            { data: 'name', render: function(data) {
+                    return '<span class="tl-tag"><i class="ri-price-tag-3-line"></i>' + data + '</span>';
+                }},
             { data: 'actions', render: function(data) {
                     return data;
                 }}

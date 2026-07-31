@@ -1,0 +1,526 @@
+/* ==========================================================================
+   Add / edit news — new UI
+   Used only by templates/news/news-add-new-ui.html. The original
+   news-add.html and its inline styles are untouched.
+
+   NOTE for future edits: news-add.js binds a global
+   `document.querySelectorAll('.list-group-item')` handler for the subtitle
+   picker, and reads `item.querySelector('strong').innerText` (stripped of a
+   leading "N. ") to decide which generator to call. So:
+     • never introduce a `.list-group-item` outside the four AI modals
+     • keep each modal row's <strong> text exactly as-is
+   Selection is expressed with the `selected` class the JS toggles.
+   ========================================================================== */
+
+.na-page {
+    --na-radius: 14px;
+}
+
+/* ---------- cards -------------------------------------------------------- */
+
+.na-card {
+    border: 1px solid var(--vz-border-color);
+    border-radius: var(--na-radius);
+    box-shadow: 0 6px 24px -18px rgba(var(--vz-dark-rgb), .55);
+    overflow: hidden;
+}
+
+.na-card > .card-header {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .875rem 1.125rem;
+    background-color: transparent;
+    border-bottom: 1px solid var(--vz-border-color);
+}
+
+.na-card-icon {
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    font-size: 1.0625rem;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.na-card-icon.is-success {
+    color: var(--vz-success);
+    background-color: rgba(var(--vz-success-rgb), .12);
+}
+
+.na-card-icon.is-warning {
+    color: var(--vz-warning);
+    background-color: rgba(var(--vz-warning-rgb), .12);
+}
+
+.na-card-icon.is-info {
+    color: var(--vz-info);
+    background-color: rgba(var(--vz-info-rgb), .12);
+}
+
+.na-card-heading {
+    margin: 0;
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.na-card-sub {
+    margin: .125rem 0 0;
+    font-size: .75rem;
+    color: #878a99;
+}
+
+.na-card > .card-body + .card-body {
+    padding-top: 0;
+}
+
+/* ---------- fields ------------------------------------------------------- */
+
+.required::after {
+    content: " *";
+    color: var(--vz-danger);
+}
+
+.na-field {
+    margin-bottom: 1.125rem;
+}
+
+.na-field:last-child {
+    margin-bottom: 0;
+}
+
+.na-field-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    margin-bottom: .5rem;
+}
+
+.na-label {
+    margin: 0;
+    font-size: .8125rem;
+    font-weight: 500;
+    color: var(--vz-heading-color);
+}
+
+.na-field .form-control,
+.na-field .form-select {
+    border-radius: 10px;
+    font-size: .875rem;
+}
+
+.na-field input.form-control,
+.na-field .form-select {
+    height: 42px;
+}
+
+/* the "generate with AI" chips that sit next to a label */
+.na-ai-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    padding: .1875rem .5rem;
+    border: 1px solid rgba(var(--vz-info-rgb), .35);
+    border-radius: 999px;
+    font-size: .6875rem;
+    line-height: 1.5;
+    white-space: nowrap;
+    cursor: pointer;
+    color: var(--vz-info);
+    background-color: rgba(var(--vz-info-rgb), .08);
+    transition: background-color .18s ease, border-color .18s ease;
+}
+
+.na-ai-btn:hover {
+    background-color: rgba(var(--vz-info-rgb), .18);
+    border-color: rgba(var(--vz-info-rgb), .6);
+}
+
+.na-ai-btn i {
+    font-size: .8125rem;
+}
+
+/* hint block under a field */
+.na-help {
+    margin-top: .5rem;
+    padding: .625rem .75rem;
+    border-radius: 9px;
+    font-size: .75rem;
+    line-height: 1.9;
+    color: #878a99;
+    background-color: rgba(var(--vz-light-rgb), .5);
+}
+
+.na-help strong {
+    color: var(--vz-heading-color);
+}
+
+/* CKEditor replaces the #editor textarea */
+.na-editor .cke_chrome {
+    border: 1px solid var(--vz-border-color);
+    border-radius: 11px;
+    overflow: hidden;
+    box-shadow: none;
+}
+
+.cke_notifications_area {
+    display: none !important;
+}
+
+/* ---------- toggle grid (btn-check) -------------------------------------- */
+
+.na-toggles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .5rem;
+}
+
+.na-toggles .btn {
+    width: 100%;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .375rem;
+    border-radius: 10px;
+    font-size: .75rem;
+    font-weight: 500;
+}
+
+/* ---------- action buttons ---------------------------------------------- */
+
+.na-action {
+    height: 42px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .375rem;
+    font-weight: 600;
+}
+
+.na-action-sm {
+    height: 38px;
+    border-radius: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .375rem;
+    font-size: .8125rem;
+}
+
+.na-inline-loader {
+    display: none;
+    margin-inline-start: .625rem;
+}
+
+.na-inline-loader .spinner-border {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-width: .15em;
+}
+
+/* ---------- media -------------------------------------------------------- */
+
+.na-media-preview {
+    margin-top: .875rem;
+    padding: .875rem;
+    border: 1px dashed var(--vz-border-color);
+    border-radius: 11px;
+    background-color: rgba(var(--vz-light-rgb), .35);
+}
+
+.na-media-preview h6 {
+    margin: 0 0 .625rem;
+    font-size: .75rem;
+    font-weight: 600;
+    color: #878a99;
+}
+
+.na-media-preview img,
+.na-media-preview video {
+    max-width: 100%;
+    border-radius: 9px;
+}
+
+.na-media-frame {
+    display: flex;
+    justify-content: center;
+}
+
+/* ---------- SEO panel ---------------------------------------------------- */
+
+.seo-panel .yoast-seo-output {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.seo-panel .yoast-seo-output:empty {
+    display: none;
+}
+
+/* ---------- sticky save bar ---------------------------------------------- */
+
+.na-savebar {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-top: 1rem;
+    padding: .75rem 1rem;
+    border: 1px solid var(--vz-border-color);
+    border-radius: var(--na-radius);
+    background-color: var(--vz-card-bg, #fff);
+    box-shadow: 0 -6px 22px -18px rgba(var(--vz-dark-rgb), .9);
+}
+
+[data-layout-mode="dark"] .na-savebar {
+    background-color: #212529;
+}
+
+.na-savebar-note {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: .75rem;
+    color: #878a99;
+}
+
+.na-savebar .btn {
+    flex: 0 0 auto;
+    min-width: 160px;
+}
+
+/* ---------- AI modals ---------------------------------------------------- */
+/* the JS toggles `.selected` on these rows and reads their <strong> */
+
+.na-modal .modal-content {
+    border: 0;
+    border-radius: var(--na-radius);
+}
+
+.na-modal .modal-header {
+    align-items: center;
+    gap: .75rem;
+    border-bottom: 1px solid var(--vz-border-color);
+}
+
+.na-modal .list-group {
+    gap: .375rem;
+    border: 0;
+}
+
+.na-modal .list-group-item {
+    border: 1px solid var(--vz-border-color);
+    border-radius: 10px !important;
+    padding: .625rem .75rem;
+    font-size: .8125rem;
+    line-height: 1.8;
+    cursor: pointer;
+    color: #878a99;
+    transition: border-color .16s ease, background-color .16s ease;
+}
+
+.na-modal .list-group-item strong {
+    color: var(--vz-heading-color);
+}
+
+.na-modal .list-group-item:hover {
+    border-color: rgba(var(--vz-primary-rgb), .45);
+}
+
+.list-group-item.selected {
+    color: #fff;
+    background-color: var(--vz-primary);
+    border-color: var(--vz-primary);
+}
+
+.list-group-item.selected strong {
+    color: #fff;
+}
+
+/* ---------- gallery modals ----------------------------------------------- */
+
+.na-gallery-search {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.na-gallery-search .form-control {
+    height: 40px;
+    border-radius: 10px;
+    padding-inline-start: 2.375rem;
+    font-size: .8125rem;
+}
+
+.na-gallery-search i {
+    position: absolute;
+    inset-inline-start: .875rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    color: #878a99;
+    pointer-events: none;
+}
+
+/* ---------- picker tiles (built by news-add-new-ui.js) ------------------- */
+/* these markup strings live in news-add-new-ui.js — renderImages() and
+   fetchAndRenderVideos(). The `image-container` / `video-container` classes
+   are kept on the wrapper for compatibility. */
+
+.na-pick {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border: 1px solid var(--vz-border-color);
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: #12161c;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+
+.na-pick:hover {
+    transform: translateY(-2px);
+    border-color: var(--vz-primary);
+    box-shadow: 0 10px 22px -16px rgba(var(--vz-dark-rgb), .9);
+}
+
+.na-pick-img,
+.na-pick-media {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.na-pick-veil {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    color: #fff;
+    font-size: 1.5rem;
+    background-color: rgba(var(--vz-primary-rgb), .55);
+    transition: opacity .18s ease;
+}
+
+.na-pick:hover .na-pick-veil {
+    opacity: 1;
+}
+
+/* videos keep a visible action button rather than a hover veil */
+.na-pick-video {
+    aspect-ratio: 16 / 11;
+    cursor: default;
+}
+
+.na-pick-video:hover {
+    transform: none;
+}
+
+.na-pick-btn {
+    position: absolute;
+    inset-inline: .5rem;
+    bottom: .5rem;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .3125rem;
+    border-radius: 8px;
+    font-size: .75rem;
+}
+
+.na-pick-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+    padding: 2.5rem 1rem;
+    border: 1px dashed var(--vz-border-color);
+    border-radius: 11px;
+    color: #878a99;
+    font-size: .8125rem;
+}
+
+.na-pick-empty i {
+    font-size: 1.75rem;
+    opacity: .45;
+}
+
+.na-pick-empty.is-error {
+    color: var(--vz-danger);
+    border-color: rgba(var(--vz-danger-rgb), .4);
+}
+
+.na-pick-empty.is-error i {
+    opacity: .7;
+}
+
+/* spinner glyph used by yoastSEO-new-ui.js (remixicon has no spin class) */
+.na-spin {
+    display: inline-block;
+    animation: na-spin 1s linear infinite;
+}
+
+@keyframes na-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ---------- select2 (RTL) ------------------------------------------------ */
+/* carried over from the original page — select2 ships LTR-only defaults */
+
+.select2-container--default[dir="rtl"] .select2-selection--multiple .select2-selection__choice {
+    float: right !important;
+    padding-left: 20px !important;
+    padding-right: 4px !important;
+}
+
+.select2-container--default[dir="rtl"] .select2-selection--multiple .select2-selection__choice__remove {
+    float: left !important;
+    margin-left: 2px !important;
+    margin-right: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+    color: #fbfafa !important;
+    font-weight: bold !important;
+}
+
+.select2-container--default[dir="rtl"] .select2-selection--multiple .select2-selection__choice__remove:hover {
+    background: none !important;
+    color: #f4f3f3 !important;
+    box-shadow: none !important;
+}
+
+.select2-container .select2-selection--multiple {
+    min-height: 42px;
+    border-radius: 10px !important;
+    border-color: var(--vz-border-color) !important;
+}
+
+/* ---------- responsive --------------------------------------------------- */
+
+@media (max-width: 575.98px) {
+    .na-toggles {
+        grid-template-columns: 1fr;
+    }
+
+    .na-savebar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .na-savebar .btn {
+        width: 100%;
+    }
+}

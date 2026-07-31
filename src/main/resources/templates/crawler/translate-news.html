@@ -10,124 +10,164 @@
     <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="/assets/libs/filepond/filepond.min.css" type="text/css" />
     <link rel="stylesheet" href="/assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.css">
-    <style>
-        .required::after {
-            content: " *";
-            color: #e34343;
-        }
-        .cke_notifications_area {
-            display: none !important;
-        }
-        textarea.form-control {
-            height: auto !important;
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/css/translate-news.css" type="text/css">
 </head>
 
 <body>
 <div layout:fragment="content">
     <div th:replace="partials/page-title :: page-title('ابزار هوش مصنوعی','ترجمه خبر')"></div>
-    <div class="row">
-        <div class="col-lg-6">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title mb-0 flex-grow-1">ترجمه خبر به زبان دیگر</h4>
-                </div>
-                <div class="card-body">
-                    <form method="get" action="/admin/quickNews/translate" class="search-box mb-2">
-                        <div class="row g-1">
-                            <div class="col-8 col-md-10">
-                                <input type="text" class="form-control w-100" id="searchNewsList" th:value="${searchQuery}" name="search" placeholder="جستجو خبر.." />
-                            </div>
-                            <div class="col-4 col-md-2">
-                                <button type="submit" class="btn btn-primary btn-icon waves-effect w-100"><i class="ri-search-line"></i></button>
-                            </div>
-                        </div>
-                    </form>
-                    <form id="voiceForm" action="/submit" method="post">
-                        <label for="choices-privacy-status-input" class="form-label required">انتخاب زبان برای ترجمه خبر</label>
-                        <select class="form-select mb-2" id="choices-privacy-status-input" required>
-                            <option value="en">انگلیسی</option>
-                            <option value="ar">عربی</option>
-                            <option value="fr">فرانسوی</option>
-                            <option value="ur">اردو</option>
-                            <option value="es">اسپانیایی</option>
-                            <option value="zh">چینی</option>
-                            <option value="id">اندونزیایی</option>
-                            <option value="bn">بنگالی</option>
-                            <option value="ru">روسی</option>
-                            <option value="ha">هوسا</option>
-                            <option value="sw">سواحیلی</option>
-                            <option value="hi">هندی</option>
-                            <option value="ps">پشتو</option>
-                            <option value="it">ایتالیایی</option>
-                            <option value="az">آذربایجانی</option>
-                            <option value="fil">فیلیپینی</option>
-                            <option value="de">آلمانی</option>
-                            <option value="pt">پرتغالی</option>
-                            <option value="ms">مالایی</option>
-                            <option value="tg">تاجیکی</option>
-                        </select>
-                        <h6 class="required">انتخاب خبر برای ترجمه</h6>
-                        <div class="live-preview">
-                            <div class="list-group">
-                                <label th:each="item : ${news}" class="list-group-item">
-                                    <input class="form-check-input fs-14 mt-0 align-middle me-1"
-                                           name="exampleRadios"
-                                           type="radio"
-                                           th:value="${item.id}"
-                                           th:text="${'کد خبر:'+item.id+' '+item.title}">
-                                </label>
-                            </div>
-                        </div>
-                        <div class="hstack gap-2 justify-content-end mt-2">
-                            <button type="submit" class="btn btn-primary">تایید</button>
-                        </div>
-                    </form>
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="mt-4 mt-lg-0">
-                                <nav aria-label="Page navigation">
-                                    <ul class="pagination">
-                                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                                            <a class="page-link" th:href="@{/admin/quickNews/translate(page=${currentPage - 1}, size=${pageSize})}">→ قبلی</a>
-                                        </li>
-                                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
-                                            <a class="page-link" th:href="@{/admin/quickNews/translate(page=${i}, size=${pageSize})}" th:text="${i + 1}">1</a>
-                                        </li>
-                                        <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
-                                            <a class="page-link" th:href="@{/admin/quickNews/translate(page=${currentPage + 1}, size=${pageSize})}">بعدی ←</a>
-                                        </li>
-                                    </ul>
-                                </nav>
 
-                            </div>
+    <div class="row tr-page">
+
+        <!-- ======================= ستون راست: خبر مبدأ ======================= -->
+        <div class="col-xl-5">
+            <div class="card tr-card">
+                <div class="card-header">
+                    <span class="tr-card-icon"><i class="ri-translate-2"></i></span>
+                    <div>
+                        <h5 class="tr-card-heading">ترجمه خبر به زبان دیگر</h5>
+                        <p class="tr-card-sub">زبان مقصد و خبر مورد نظر را انتخاب کنید</p>
+                    </div>
+                    <span class="tr-card-badge"><span th:text="${totalItems}">0</span> خبر</span>
+                </div>
+
+                <div class="card-body">
+                    <form method="get" action="/admin/quickNews/translate" class="tr-search">
+                        <button type="submit" class="tr-search-icon" aria-label="جستجو">
+                            <i class="ri-search-line"></i>
+                        </button>
+                        <input type="text" class="form-control" id="searchNewsList" th:value="${searchQuery}"
+                               name="search" placeholder="جستجو خبر..." />
+                    </form>
+
+                    <form id="voiceForm" action="/submit" method="post">
+                        <label for="choices-privacy-status-input" class="tr-label required">
+                            <i class="ri-earth-line"></i> زبان مقصد
+                        </label>
+                        <div class="tr-lang">
+                            <i class="ri-global-line tr-lang-icon"></i>
+                            <select class="form-select" id="choices-privacy-status-input" required>
+                                <option value="en">انگلیسی</option>
+                                <option value="ar">عربی</option>
+                                <option value="fr">فرانسوی</option>
+                                <option value="ur">اردو</option>
+                                <option value="es">اسپانیایی</option>
+                                <option value="zh">چینی</option>
+                                <option value="id">اندونزیایی</option>
+                                <option value="bn">بنگالی</option>
+                                <option value="ru">روسی</option>
+                                <option value="ha">هوسا</option>
+                                <option value="sw">سواحیلی</option>
+                                <option value="hi">هندی</option>
+                                <option value="ps">پشتو</option>
+                                <option value="it">ایتالیایی</option>
+                                <option value="az">آذربایجانی</option>
+                                <option value="fil">فیلیپینی</option>
+                                <option value="de">آلمانی</option>
+                                <option value="pt">پرتغالی</option>
+                                <option value="ms">مالایی</option>
+                                <option value="tg">تاجیکی</option>
+                            </select>
                         </div>
+
+                        <h6 class="tr-section-title required"><i class="ri-newspaper-line"></i> انتخاب خبر برای ترجمه</h6>
+
+                        <div class="tr-news-list">
+                            <label th:each="item : ${news}" class="tr-news">
+                                <input class="form-check-input" name="exampleRadios" type="radio"
+                                       th:value="${item.id}">
+                                <span class="tr-news-text">
+                                    <span class="tr-news-id" th:text="'کد خبر: ' + ${item.id}">کد خبر: 0</span>
+                                    <span class="tr-news-title" th:text="${item.title}"></span>
+                                </span>
+                            </label>
+                        </div>
+
+                        <div class="tr-news-empty" th:if="${#lists.isEmpty(news)}">
+                            <i class="ri-file-search-line"></i>
+                            خبری برای ترجمه یافت نشد.
+                        </div>
+
+                        <div class="d-grid mt-3">
+                            <button type="submit" class="btn btn-primary tr-action">
+                                <i class="ri-translate"></i> ترجمه کن
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="tr-pagination" th:if="${totalPages > 1}">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/admin/quickNews/translate(page=${currentPage - 1}, size=${pageSize}, search=${searchQuery})}">→ قبلی</a>
+                                </li>
+                                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                                    <a class="page-link" th:href="@{/admin/quickNews/translate(page=${i}, size=${pageSize}, search=${searchQuery})}" th:text="${i + 1}">1</a>
+                                </li>
+                                <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/admin/quickNews/translate(page=${currentPage + 1}, size=${pageSize}, search=${searchQuery})}">بعدی ←</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
-            <div class="card">
+
+        <!-- ======================= ستون چپ: نتیجه ترجمه ====================== -->
+        <div class="col-xl-7">
+            <div class="card tr-card">
                 <div class="card-header">
-                    <h4 class="card-title mb-0 flex-grow-1">نتیجه ترجمه خبر</h4>
+                    <span class="tr-card-icon"><i class="ri-file-edit-line"></i></span>
+                    <div>
+                        <h5 class="tr-card-heading">نتیجه ترجمه خبر</h5>
+                        <p class="tr-card-sub">پیش از ذخیره می‌توانید متن را ویرایش کنید</p>
+                    </div>
                 </div>
+
                 <form id="sendTranslate">
                     <div class="card-body">
-                        <div class="col-12">
-                            <label class="form-label mt-2" for="translated-headline">روتیتر خبر</label>
+                        <div class="tr-field">
+                            <label class="tr-label" for="translated-headline">
+                                روتیتر خبر
+                            </label>
                             <input type="text" class="form-control" id="translated-headline" placeholder="">
-                            <label class="form-label mt-2" for="translated-title">تیتر خبر</label>
-                            <input type="text" class="form-control" id="translated-title" placeholder="">
-                            <label class="form-label mt-2" for="translated-subheadline">زیرتیتر خبر</label>
-                            <input type="text" class="form-control" id="translated-subheadline" placeholder="">
-                            <label class="form-label mt-2" for="translated-lead">سرنخ خبر</label>
-                            <textarea type="text" class="form-control" rows="5" id="translated-lead" placeholder=""></textarea>
-                            <label class="form-label mt-2" for="editor">متن خبر</label>
-                            <textarea type="text" rows="30" id="editor"></textarea>
                         </div>
-                        <div class="mt-2">
-                            <button type="submit" class="btn btn-success w-100">ذخیره مقاله</button>
+
+                        <div class="tr-field">
+                            <label class="tr-label required" for="translated-title">
+                                تیتر خبر
+                            </label>
+                            <input type="text" class="form-control" id="translated-title" placeholder="">
+                        </div>
+
+                        <div class="tr-field">
+                            <label class="tr-label" for="translated-subheadline">
+                                زیرتیتر خبر
+                            </label>
+                            <input type="text" class="form-control" id="translated-subheadline" placeholder="">
+                        </div>
+
+                        <div class="tr-field">
+                            <label class="tr-label required" for="translated-lead">
+                                سرنخ خبر
+                            </label>
+                            <textarea class="form-control" rows="5" id="translated-lead" placeholder=""></textarea>
+                        </div>
+
+                        <div class="tr-field">
+                            <label class="tr-label required" for="editor">
+                                متن خبر
+                            </label>
+                            <div class="tr-editor">
+                                <textarea rows="30" id="editor"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mt-3">
+                            <button type="submit" class="btn btn-success tr-action">
+                                <i class="ri-save-3-line"></i> ذخیره مقاله
+                            </button>
                         </div>
                     </div>
                 </form>

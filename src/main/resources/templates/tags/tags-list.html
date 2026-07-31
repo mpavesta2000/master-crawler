@@ -13,34 +13,37 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="/assets/css/tags-list.css" type="text/css">
 </head>
 
 <body>
 <div layout:fragment="content">
     <div th:replace="partials/page-title :: page-title('تگ ها','مدیریت برچسب ها')"></div>
 
-    <div class="row">
+    <div class="row tl-page">
         <div class="col-lg-12">
-            <div class="card">
-                <div class="card-header border-0">
-                    <div class="d-flex align-items-center">
-                        <h5 class="card-title mb-0 flex-grow-1">کل برچسب ها</h5>
+            <div class="card tl-card">
+
+                <div class="card-header">
+                    <span class="tl-card-icon"><i class="ri-price-tag-3-line"></i></span>
+                    <div>
+                        <h5 class="tl-card-heading">کل برچسب ها</h5>
+                        <p class="tl-card-sub">برچسب‌های تولید شده برای اخبار</p>
                     </div>
                 </div>
+
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table id="news-datatables" class="table table-bordered nowrap table-striped align-middle table-responsive" style="width:100%">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>نام برچسب</th>
-                                    <th>عملیات</th>
-                                </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
+                    <div class="tl-table-scroll">
+                        <table id="news-datatables" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>نام برچسب</th>
+                                <th>عملیات</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
                 </div>
             </div>

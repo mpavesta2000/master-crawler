@@ -1,0 +1,265 @@
+/* ==========================================================================
+   Admin list
+   Built on the Velzon CSS variables (theme aware) and logical properties (RTL).
+
+   NOTE for future edits: admins-list.js initialises #customers-datatables with
+   6 columns in this order — userId · email · status · createdAt · updatedAt ·
+   actions — so the <thead> must keep 6 matching cells. It also reads
+   #search-input for the server-side search term, and the edit modal needs
+   #editUserModal / #editUserForm / #edit-user-id / #edit-email /
+   #edit-password / #edit-status. The status pill and the row action buttons
+   are rendered server-side, so they are not styled from here.
+   ========================================================================== */
+
+.al-page {
+    --al-radius: 14px;
+}
+
+.al-card {
+    border: 1px solid var(--vz-border-color);
+    border-radius: var(--al-radius);
+    box-shadow: 0 6px 24px -18px rgba(var(--vz-dark-rgb), .55);
+}
+
+.al-card > .card-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .75rem;
+    padding: 1rem 1.25rem;
+    background-color: transparent;
+    border-bottom: 1px solid var(--vz-border-color);
+}
+
+.al-card-icon {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    font-size: 1.125rem;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.al-card-heading {
+    margin: 0;
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.al-card-sub {
+    margin: .125rem 0 0;
+    font-size: .75rem;
+    color: #878a99;
+}
+
+.al-card-tools {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-inline-start: auto;
+}
+
+.al-add {
+    height: 38px;
+    border-radius: 9px;
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    white-space: nowrap;
+    font-size: .8125rem;
+    font-weight: 500;
+}
+
+/* ---------- search (wired to admins-list.js via #search-input) ------------- */
+
+.al-search {
+    position: relative;
+    width: 240px;
+    max-width: 100%;
+}
+
+.al-search .form-control {
+    height: 38px;
+    border-radius: 9px;
+    padding-inline-start: 2.25rem;
+    font-size: .8125rem;
+}
+
+.al-search i {
+    position: absolute;
+    inset-inline-start: .75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    color: #878a99;
+    pointer-events: none;
+}
+
+/* ---------- table ---------------------------------------------------------- */
+
+#customers-datatables thead th {
+    padding: .75rem .625rem;
+    font-size: .75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    color: #878a99;
+    background-color: rgba(var(--vz-light-rgb), .6);
+    border-bottom: 1px solid var(--vz-border-color);
+}
+
+#customers-datatables tbody td {
+    padding: .625rem;
+    font-size: .8125rem;
+    vertical-align: middle;
+    border-color: var(--vz-border-color);
+}
+
+#customers-datatables tbody tr:hover > td {
+    background-color: rgba(var(--vz-primary-rgb), .04);
+}
+
+#customers-datatables tbody td:first-child {
+    font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+    font-size: .75rem;
+    color: #878a99;
+    white-space: nowrap;
+}
+
+/* email column reads LTR */
+#customers-datatables tbody td:nth-child(2) {
+    direction: ltr;
+    text-align: right;
+}
+
+/* the status pill markup comes from admins-list.js as .badge badge-soft-* */
+#customers-datatables .badge {
+    padding: .25rem .5rem;
+    border-radius: 999px;
+    font-size: .6875rem;
+    font-weight: 500;
+}
+
+/* ---------- datatables chrome ---------------------------------------------- */
+
+.al-card .dataTables_wrapper .dt-buttons {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: .375rem;
+    margin-bottom: .875rem;
+}
+
+.al-card .dataTables_wrapper .dt-button {
+    height: 32px;
+    padding: 0 .75rem;
+    border: 1px solid var(--vz-border-color);
+    border-radius: 8px;
+    font-size: .75rem;
+    color: var(--vz-body-color);
+    background: rgba(var(--vz-light-rgb), .6);
+}
+
+.al-card .dataTables_wrapper .dt-button:hover {
+    color: var(--vz-primary);
+    border-color: rgba(var(--vz-primary-rgb), .5);
+    background: rgba(var(--vz-primary-rgb), .08);
+}
+
+.al-card .dataTables_wrapper .dataTables_filter input,
+.al-card .dataTables_wrapper .dataTables_length select {
+    height: 34px;
+    border: 1px solid var(--vz-border-color);
+    border-radius: 8px;
+    padding-inline: .625rem;
+    font-size: .8125rem;
+    background-color: transparent;
+    color: var(--vz-body-color);
+}
+
+.al-card .dataTables_wrapper .dataTables_filter,
+.al-card .dataTables_wrapper .dataTables_length,
+.al-card .dataTables_wrapper .dataTables_info {
+    font-size: .8125rem;
+    color: #878a99;
+}
+
+.al-card .dataTables_wrapper .dataTables_paginate .paginate_button {
+    min-width: 32px;
+    border-radius: 8px !important;
+    font-size: .8125rem;
+}
+
+.al-card .dataTables_wrapper .dataTables_processing {
+    border: 1px solid var(--vz-border-color);
+    border-radius: 10px;
+    box-shadow: 0 10px 26px -18px rgba(var(--vz-dark-rgb), .9);
+}
+
+/* ---------- edit modal ------------------------------------------------------ */
+
+#editUserModal .modal-content {
+    border: 0;
+    border-radius: var(--al-radius);
+    overflow: hidden;
+}
+
+#editUserModal .modal-header {
+    align-items: center;
+    gap: .75rem;
+    border-bottom: 1px solid var(--vz-border-color);
+}
+
+#editUserModal .modal-footer {
+    border-top: 1px solid var(--vz-border-color);
+    background-color: rgba(var(--vz-light-rgb), .45);
+}
+
+#editUserModal .form-label {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    font-size: .8125rem;
+    font-weight: 500;
+    color: var(--vz-heading-color);
+}
+
+#editUserModal .form-label i {
+    color: var(--vz-primary);
+}
+
+#editUserModal .form-control,
+#editUserModal .form-select {
+    height: 42px;
+    border-radius: 10px;
+    font-size: .875rem;
+}
+
+#editUserModal .modal-footer .btn {
+    height: 40px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+}
+
+/* ---------- responsive ------------------------------------------------------ */
+
+@media (max-width: 575.98px) {
+    .al-card-tools {
+        width: 100%;
+        margin-inline-start: 0;
+        flex-wrap: wrap;
+    }
+
+    .al-search {
+        width: 100%;
+    }
+
+    .al-add {
+        width: 100%;
+        justify-content: center;
+    }
+}

@@ -29,7 +29,12 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             error: function (xhr, error, code) {
                 console.error("Error loading data: ", error, code);
-                alert("An error occurred while loading data.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطا',
+                    text: 'خطایی در بارگذاری اخبار رخ داد.',
+                    confirmButtonText: 'تایید'
+                });
             },
             dataSrc: function (json) {
                 json.data.forEach(function(news) {
@@ -51,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     if (typeof news.categories === 'string') {
                         news.categories = news.categories.split(',').map(function(category) {
-                            return '<span class="badge bg-primary text-uppercase">' + category.trim() + '</span>';
+                            return '<span class="nl-cat">' + category.trim() + '</span>';
                         }).join(' ');
                     } else {
                         news.categories = '';
@@ -60,18 +65,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     news.createdAt = str_dt(news.createdAt);
 
                     news.actions = `
-                        <td class="due_date">
-                            <div class="hstack gap-3 flex-wrap">
-                                <a href="/admin/news/${getNewsTypePath(news.newsType.toLowerCase())}/${news.newsId}" class="link-success fs-15" id="editLink-${news.newsId}">
-                                    <i class="ri-edit-2-line"></i>
-                                </a>
-                                <form id="deleteForm" action="/admin/news/delete/${news.newsId}" method="post" style="display: inline;">
-                                    <button type="submit" class="btn btn-link p-0 link-danger fs-15" style="border: none; background: none;" onclick="confirmDelete(event)">
-                                        <i class="ri-delete-bin-line"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
+                        <div class="nl-actions">
+                            <a href="/admin/news/${getNewsTypePath(news.newsType.toLowerCase())}/${news.newsId}" class="nl-action nl-action-edit" id="editLink-${news.newsId}" title="ویرایش">
+                                <i class="ri-edit-2-line"></i>
+                            </a>
+                            <form action="/admin/news/delete/${news.newsId}" method="post">
+                                <button type="submit" class="nl-action nl-action-delete" onclick="confirmDelete(event)" title="حذف">
+                                    <i class="ri-delete-bin-line"></i>
+                                </button>
+                            </form>
+                        </div>
                     `;
                 });
 
@@ -83,10 +86,8 @@ document.addEventListener('DOMContentLoaded', function () {
             { data: 'title',
                 render: function(data, type, row) {
                     return `
-                <form action="/admin/news/show/${row.newsId}" method="get" class="news-title-form" style="max-width: 200px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: inline-block;">
-                    <button type="submit" class="btn btn-link text-primary p-0 text-truncate" style="border: none; background: none; color: blue; text-decoration: underline; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
-                        ${data}
-                    </button>
+                <form action="/admin/news/show/${row.newsId}" method="get" class="news-title-form nl-title-form">
+                    <button type="submit" class="nl-title-btn" title="${data}">${data}</button>
                 </form>
             `;}
             },
@@ -96,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
             {
                 data: 'status',
                 render: function(data) {
-                    return '<span class="badge ' + (data === 'پیش نویس' ? 'badge-soft-warning' : 'badge-soft-success') + ' text-uppercase">' + data + '</span>';
+                    return '<span class="nl-status ' + (data === 'پیش نویس' ? 'is-draft' : 'is-published') + '">' + data + '</span>';
                 }
             },
             { data: 'categories', render: function(data) {

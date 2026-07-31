@@ -1,0 +1,367 @@
+/* ==========================================================================
+   Gallery (images + videos)
+   One stylesheet shared by both pages so they are visually identical —
+   only the media inside the tile differs.
+   Built on the Velzon CSS variables, so it follows light / dark theme.
+   ========================================================================== */
+
+.gallery-page {
+    --gal-radius: 14px;
+}
+
+/* ---------- toolbar ------------------------------------------------------ */
+
+.media-toolbar-card {
+    border: 1px solid var(--vz-border-color);
+    border-radius: var(--gal-radius);
+    box-shadow: 0 6px 24px -18px rgba(var(--vz-dark-rgb), .55);
+}
+
+.media-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .875rem;
+}
+
+.media-toolbar-title {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-inline-end: auto;
+}
+
+.media-toolbar-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    font-size: 1.25rem;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.media-toolbar-heading {
+    margin: 0;
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.media-toolbar-count {
+    margin: .125rem 0 0;
+    font-size: .75rem;
+    color: #878a99;
+}
+
+.media-search {
+    position: relative;
+    flex: 1 1 220px;
+    max-width: 340px;
+}
+
+.media-search .form-control {
+    height: 38px;
+    border-radius: 9px;
+    padding-inline-start: 2.25rem;
+}
+
+.media-search-icon {
+    position: absolute;
+    inset-inline-start: .375rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 7px;
+    font-size: 1rem;
+    color: #878a99;
+    background-color: transparent;
+    transition: color .2s ease, background-color .2s ease;
+}
+
+.media-search-icon:hover,
+.media-search-icon:focus-visible {
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .1);
+}
+
+.media-toolbar .btn-add {
+    height: 38px;
+    border-radius: 9px;
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    white-space: nowrap;
+}
+
+/* ---------- media card --------------------------------------------------- */
+
+.media-card {
+    height: 100%;
+    margin: 0;
+    border: 1px solid var(--vz-border-color);
+    border-radius: var(--gal-radius);
+    overflow: hidden;
+    transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+
+.media-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(var(--vz-primary-rgb), .4);
+    box-shadow: 0 14px 30px -20px rgba(var(--vz-dark-rgb), .85);
+}
+
+/* the 16:9 media tile — identical for images and videos */
+.media-card-thumb {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background-color: #12161c;
+    background-image:
+            linear-gradient(135deg, rgba(255, 255, 255, .04) 25%, transparent 25%),
+            linear-gradient(225deg, rgba(255, 255, 255, .04) 25%, transparent 25%);
+    background-size: 18px 18px;
+}
+
+.media-card-thumb > a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.media-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform .35s ease;
+}
+
+.media-card:hover .media-card-img {
+    transform: scale(1.06);
+}
+
+/* hover veil with the zoom affordance (images only — videos need the clicks) */
+.media-card-veil {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    background: linear-gradient(to top, rgba(10, 14, 20, .72), rgba(10, 14, 20, .12) 55%, transparent);
+    transition: opacity .22s ease;
+    pointer-events: none;
+}
+
+.media-card:hover .media-card-veil {
+    opacity: 1;
+}
+
+.media-card-zoom {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    font-size: 1.125rem;
+    color: #fff;
+    background-color: rgba(255, 255, 255, .18);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, .3);
+    transform: scale(.85);
+    transition: transform .22s ease;
+}
+
+.media-card:hover .media-card-zoom {
+    transform: scale(1);
+}
+
+/* type badge (عکس / ویدیو) */
+.media-card-badge {
+    position: absolute;
+    top: .5rem;
+    inset-inline-start: .5rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    padding: .1875rem .5rem;
+    border-radius: 999px;
+    font-size: .6875rem;
+    font-weight: 500;
+    color: #fff;
+    background-color: rgba(10, 14, 20, .6);
+    backdrop-filter: blur(6px);
+}
+
+/* ---------- video tile --------------------------------------------------- */
+
+/* video.js builds a wrapper div that inherits the classes of the <video>,
+   so target both and force it to fill the 16:9 tile */
+.media-card-thumb .video-js,
+.media-card-thumb video {
+    position: absolute !important;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0;
+}
+
+.media-card-thumb .video-js .vjs-tech {
+    object-fit: cover;
+}
+
+/* physical left/right here on purpose: the button is centred, and video.js
+   ships its own `left` rule that a logical property would fight with in RTL */
+.media-card-thumb .video-js .vjs-big-play-button {
+    top: 50%;
+    left: 50%;
+    right: auto;
+    transform: translate(-50%, -50%);
+    width: 54px;
+    height: 54px;
+    line-height: 54px;
+    margin: 0;
+    border: 0;
+    border-radius: 50%;
+    background-color: rgba(var(--vz-primary-rgb), .9);
+    box-shadow: 0 8px 24px -8px rgba(0, 0, 0, .6);
+    transition: transform .2s ease, background-color .2s ease;
+}
+
+.media-card-thumb .video-js .vjs-big-play-button .vjs-icon-placeholder::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    line-height: 54px;
+    font-size: 1.75rem;
+}
+
+.media-card-thumb .video-js:hover .vjs-big-play-button {
+    background-color: rgb(var(--vz-primary-rgb));
+    transform: translate(-50%, -50%) scale(1.08);
+}
+
+/* ---------- card body ---------------------------------------------------- */
+
+.media-card-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: .75rem .875rem;
+}
+
+.media-card-name {
+    min-width: 0;
+    margin: 0;
+    font-size: .8125rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.media-card-actions {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    flex: 0 0 auto;
+}
+
+.media-card-actions form {
+    margin: 0;
+}
+
+.media-card-actions .btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 8px;
+    font-size: .875rem;
+}
+
+/* ---------- empty state -------------------------------------------------- */
+
+.media-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .625rem;
+    padding: 3.5rem 1rem;
+    border: 1px dashed var(--vz-border-color);
+    border-radius: var(--gal-radius);
+    text-align: center;
+    color: #878a99;
+}
+
+.media-empty i {
+    font-size: 2.25rem;
+    opacity: .45;
+}
+
+.media-empty h6 {
+    margin: 0;
+    font-size: .9375rem;
+    color: var(--vz-heading-color);
+}
+
+.media-empty p {
+    margin: 0;
+    font-size: .8125rem;
+}
+
+/* ---------- pagination --------------------------------------------------- */
+
+.media-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.media-pagination .pagination {
+    flex-wrap: wrap;
+    gap: .25rem;
+    margin: 0;
+}
+
+.media-pagination .page-link {
+    min-width: 34px;
+    text-align: center;
+    border-radius: 8px;
+    border-color: var(--vz-border-color);
+    font-size: .8125rem;
+}
+
+/* ---------- responsive --------------------------------------------------- */
+
+@media (max-width: 575.98px) {
+    .media-toolbar-title {
+        width: 100%;
+        margin-inline-end: 0;
+    }
+
+    .media-search {
+        max-width: none;
+    }
+
+    .media-toolbar .btn-add {
+        width: 100%;
+        justify-content: center;
+    }
+}

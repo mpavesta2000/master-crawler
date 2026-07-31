@@ -49,7 +49,7 @@ public class NewsController {
         model.addAttribute("categories", categoryList);
         model.addAttribute("news", new News());
 
-        return "news/news-add";
+        return "news/news-add-new-ui";
     }
 
     @GetMapping("/add-video-news")
@@ -719,7 +719,7 @@ public class NewsController {
             model.addAttribute("categories", categoryList);
             model.addAttribute("news", foundNews.get());
         }
-        return "news/news-add";
+        return "news/news-add-new-ui";
     }
 
     @PostMapping("/delete/{id}")

@@ -1,0 +1,237 @@
+/* ==========================================================================
+   Admin analytics dashboard
+   Built on the Velzon CSS variables (theme aware) and logical properties (RTL).
+
+   NOTE for future edits: admin-analytics.init.js draws into
+   #total_news_sparkline, #total_edits_sparkline, #ai_articles_sparkline,
+   #ai_percentage_sparkline, #news_per_day_chart, #editor_contribution_chart
+   and #recent-edits-table. The `data-colors` attribute on each chart div and
+   the `.counter-value` + `data-target` pair are also read by the theme scripts
+   — keep all of them.
+   ========================================================================== */
+
+.aa-page {
+    --aa-radius: 14px;
+}
+
+/* ---------- stat cards --------------------------------------------------- */
+
+.aa-stat {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid var(--vz-border-color);
+    border-radius: var(--aa-radius);
+    box-shadow: 0 6px 24px -18px rgba(var(--vz-dark-rgb), .55);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.aa-stat:hover {
+    transform: translateY(-3px);
+    border-color: rgba(var(--aa-accent-rgb), .4);
+    box-shadow: 0 14px 30px -22px rgba(var(--aa-accent-rgb), .95);
+}
+
+/* accent strip along the top edge, one colour per metric */
+.aa-stat::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    height: 3px;
+    background-color: rgb(var(--aa-accent-rgb));
+}
+
+.aa-stat .card-body {
+    padding: 1.25rem;
+}
+
+.aa-stat-head {
+    display: flex;
+    align-items: flex-start;
+    gap: .75rem;
+    margin-bottom: .875rem;
+}
+
+.aa-stat-icon {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    font-size: 1.125rem;
+    color: rgb(var(--aa-accent-rgb));
+    background-color: rgba(var(--aa-accent-rgb), .12);
+}
+
+.aa-stat-label {
+    margin: 0;
+    font-size: .75rem;
+    font-weight: 500;
+    line-height: 1.7;
+    color: #878a99;
+}
+
+.aa-stat-foot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: .75rem;
+}
+
+.aa-stat-value {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--vz-heading-color);
+}
+
+.aa-stat-value .aa-unit {
+    font-size: .875rem;
+    font-weight: 500;
+    color: #878a99;
+}
+
+/* the sparkline div keeps its id + data-colors — this only sizes it */
+.aa-stat-spark {
+    flex: 0 0 auto;
+    min-width: 90px;
+}
+
+/* accent palette */
+.aa-accent-primary { --aa-accent-rgb: var(--vz-primary-rgb); }
+.aa-accent-success { --aa-accent-rgb: var(--vz-success-rgb); }
+.aa-accent-info    { --aa-accent-rgb: var(--vz-info-rgb); }
+.aa-accent-warning { --aa-accent-rgb: var(--vz-warning-rgb); }
+
+/* ---------- chart / table cards ------------------------------------------ */
+
+.aa-card {
+    height: 100%;
+    border: 1px solid var(--vz-border-color);
+    border-radius: var(--aa-radius);
+    box-shadow: 0 6px 24px -18px rgba(var(--vz-dark-rgb), .55);
+}
+
+.aa-card > .card-header {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: 1rem 1.25rem;
+    background-color: transparent;
+    border-bottom: 1px solid var(--vz-border-color);
+}
+
+.aa-card-icon {
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    font-size: 1.0625rem;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.aa-card-icon.is-warning {
+    color: var(--vz-warning);
+    background-color: rgba(var(--vz-warning-rgb), .12);
+}
+
+.aa-card-icon.is-info {
+    color: var(--vz-info);
+    background-color: rgba(var(--vz-info-rgb), .12);
+}
+
+.aa-card-heading {
+    margin: 0;
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.aa-card-sub {
+    margin: .125rem 0 0;
+    font-size: .75rem;
+    color: #878a99;
+}
+
+/* ---------- gridjs table ------------------------------------------------- */
+
+#recent-edits-table .gridjs-wrapper {
+    border-radius: 11px;
+    border: 1px solid var(--vz-border-color);
+    box-shadow: none;
+}
+
+#recent-edits-table .gridjs-table {
+    width: 100%;
+}
+
+#recent-edits-table th.gridjs-th {
+    padding: .75rem .625rem;
+    font-size: .75rem;
+    font-weight: 600;
+    color: #878a99;
+    background-color: rgba(var(--vz-light-rgb), .6);
+    border-color: var(--vz-border-color);
+}
+
+#recent-edits-table td.gridjs-td {
+    padding: .625rem;
+    font-size: .8125rem;
+    color: var(--vz-body-color);
+    background-color: transparent;
+    border-color: var(--vz-border-color);
+}
+
+#recent-edits-table .gridjs-tr:hover td.gridjs-td {
+    background-color: rgba(var(--vz-primary-rgb), .04);
+}
+
+#recent-edits-table .gridjs-footer,
+#recent-edits-table .gridjs-head {
+    border: 0;
+    box-shadow: none;
+    background-color: transparent;
+}
+
+#recent-edits-table .gridjs-pagination .gridjs-pages button {
+    border-radius: 8px !important;
+    border-color: var(--vz-border-color);
+    font-size: .8125rem;
+    background-color: transparent;
+    color: var(--vz-body-color);
+}
+
+#recent-edits-table .gridjs-pagination .gridjs-pages button.gridjs-currentPage {
+    color: #fff;
+    background-color: var(--vz-primary);
+    border-color: var(--vz-primary);
+}
+
+#recent-edits-table input.gridjs-input {
+    height: 34px;
+    border-radius: 8px;
+    border-color: var(--vz-border-color);
+    background-color: transparent;
+    color: var(--vz-body-color);
+    font-size: .8125rem;
+}
+
+/* ---------- responsive --------------------------------------------------- */
+
+@media (max-width: 575.98px) {
+    .aa-stat-foot {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: .5rem;
+    }
+
+    .aa-stat-spark {
+        width: 100%;
+    }
+}

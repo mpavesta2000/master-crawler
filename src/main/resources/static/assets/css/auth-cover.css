@@ -1,0 +1,347 @@
+/* ==========================================================================
+   Auth cover pages (sign in / sign up)
+   Loaded AFTER custom-authentication.css, which is shared with the other
+   auth templates — nothing here changes those.
+
+   NOTE for future edits: password-addon.init.js needs the
+   `.auth-pass-inputgroup` wrapper with a `.password-input` and a
+   `.password-addon` button inside it. passowrd-create.init.js needs
+   #password-input plus #password-contain / #pass-length / #pass-lower /
+   #pass-upper / #pass-number. Keep those exactly.
+   ========================================================================== */
+
+.auth-cover {
+    --auth-radius: 20px;
+}
+
+/* ---------- background --------------------------------------------------- */
+
+/* .video-background / .background-video had no styles anywhere, so the video
+   rendered inline at its natural size instead of behind the page */
+.video-background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.background-video,
+.fallback-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+}
+
+/* blue -> teal, no dark end */
+.auth-cover .bg-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    opacity: 1;
+    background:
+            linear-gradient(135deg,
+                    rgba(var(--vz-primary-rgb), .92) 0%,
+                    rgba(var(--vz-info-rgb), .88) 55%,
+                    rgba(var(--vz-success-rgb), .82) 100%),
+            radial-gradient(80% 70% at 100% 0%, rgba(255, 255, 255, .22), transparent 60%);
+}
+
+.auth-cover .auth-page-content {
+    position: relative;
+    z-index: 2;
+}
+
+/* ---------- the split card ---------------------------------------------- */
+
+.auth-cover .card,
+.auth-card {
+    border: 1px solid rgba(255, 255, 255, .16);
+    border-radius: var(--auth-radius);
+    box-shadow: 0 30px 70px -30px rgba(0, 0, 0, .65);
+    overflow: hidden;
+}
+
+/* brand / marketing half */
+.auth-brand {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2.5rem 2rem;
+    color: #fff;
+    /* blue -> teal, no dark end */
+    background: linear-gradient(150deg,
+            rgb(var(--vz-primary-rgb)) 0%,
+            rgb(var(--vz-info-rgb)) 58%,
+            rgb(var(--vz-success-rgb)) 100%);
+    overflow: hidden;
+}
+
+.auth-brand::after {
+    content: "";
+    position: absolute;
+    inset-block-start: -90px;
+    inset-inline-end: -70px;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, .18), transparent 65%);
+    pointer-events: none;
+}
+
+/* text wordmark — the project ships no own logo, and assets/images/logo-*.png
+   is the stock template logo, which must not appear on the sign-in screen */
+.auth-brand-logo {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: 2rem;
+}
+
+.auth-brand-mark {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    font-size: 1.125rem;
+    color: #fff;
+    background-color: rgba(255, 255, 255, .18);
+    border: 1px solid rgba(255, 255, 255, .28);
+}
+
+.auth-brand-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: .02em;
+    color: #fff;
+}
+
+.auth-brand-body {
+    position: relative;
+    z-index: 1;
+}
+
+.auth-brand-title {
+    margin: 0 0 .625rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.6;
+    color: #fff;
+}
+
+.auth-brand-text {
+    margin: 0;
+    font-size: .875rem;
+    line-height: 2;
+    color: rgba(255, 255, 255, .78);
+}
+
+.auth-brand-list {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: .625rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.auth-brand-list li {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .8125rem;
+    color: rgba(255, 255, 255, .85);
+}
+
+.auth-brand-list i {
+    width: 22px;
+    height: 22px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    border-radius: 6px;
+    font-size: .8125rem;
+    background-color: rgba(255, 255, 255, .16);
+}
+
+/* form half */
+.auth-form-side {
+    padding: 2.5rem 2rem;
+    background-color: var(--vz-card-bg, #fff);
+}
+
+.auth-form-title {
+    margin: 0 0 .375rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--vz-heading-color);
+}
+
+.auth-form-sub {
+    margin: 0 0 1.75rem;
+    font-size: .8125rem;
+    color: #878a99;
+}
+
+.auth-field {
+    margin-bottom: 1.125rem;
+}
+
+.auth-label {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    margin-bottom: .5rem;
+    font-size: .8125rem;
+    font-weight: 500;
+    color: var(--vz-heading-color);
+}
+
+.auth-label i {
+    color: var(--vz-primary);
+}
+
+.auth-cover .form-control,
+.auth-cover .form-select {
+    height: 46px;
+    border-radius: 11px;
+    font-size: .875rem;
+}
+
+.auth-cover .form-control:focus,
+.auth-cover .form-select:focus {
+    border-color: rgba(var(--vz-primary-rgb), .55);
+    box-shadow: 0 0 0 3px rgba(var(--vz-primary-rgb), .12);
+}
+
+/* the eye toggle sits inside the field */
+.auth-cover .auth-pass-inputgroup .password-addon {
+    height: 46px;
+    width: 44px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    color: #878a99;
+    z-index: 3;
+}
+
+.auth-cover .auth-pass-inputgroup .password-addon:hover {
+    color: var(--vz-primary);
+}
+
+.auth-submit {
+    height: 46px;
+    width: 100%;
+    margin-top: .5rem;
+    border-radius: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+}
+
+.auth-alt {
+    margin: 1.5rem 0 0;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--vz-border-color);
+    text-align: center;
+    font-size: .8125rem;
+    color: #878a99;
+}
+
+.auth-alt a {
+    font-weight: 600;
+    color: var(--vz-primary);
+    text-decoration: none;
+}
+
+.auth-alt a:hover {
+    text-decoration: underline;
+}
+
+/* ---------- password rules panel (ids are read by the init script) ------- */
+
+#password-contain {
+    border-radius: 11px;
+    background-color: rgba(var(--vz-light-rgb), .6) !important;
+    border: 1px solid var(--vz-border-color);
+}
+
+#password-contain h5 {
+    margin-bottom: .625rem;
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+#password-contain p {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    font-size: .75rem;
+    color: #878a99;
+}
+
+#password-contain p::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+    opacity: .5;
+}
+
+#password-contain p.valid {
+    color: var(--vz-success);
+}
+
+#password-contain p.valid::before {
+    opacity: 1;
+}
+
+/* ---------- alert -------------------------------------------------------- */
+
+.auth-cover .alert {
+    border-radius: 11px;
+    font-size: .8125rem;
+}
+
+.auth-cover .alert p {
+    margin: 0;
+}
+
+/* ---------- footer ------------------------------------------------------- */
+
+.auth-cover .glassy-footer {
+    position: relative;
+    z-index: 2;
+}
+
+/* ---------- responsive --------------------------------------------------- */
+
+@media (max-width: 991.98px) {
+    .auth-brand {
+        padding: 2rem 1.5rem;
+    }
+
+    .auth-brand-list {
+        display: none;
+    }
+
+    .auth-form-side {
+        padding: 2rem 1.5rem;
+    }
+}

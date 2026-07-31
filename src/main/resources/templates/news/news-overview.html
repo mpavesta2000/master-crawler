@@ -12,79 +12,103 @@
     <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="/assets/libs/filepond/filepond.min.css" type="text/css" />
     <link rel="stylesheet" href="/assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.css">
+    <link rel="stylesheet" href="/assets/css/news-overview.css" type="text/css">
 </head>
 
 <body>
 <div layout:fragment="content">
     <div th:replace="partials/page-title :: page-title('خبرها','مشاهده خبر')"></div>
 
-    <div class="row justify-content-center">
+    <div class="row justify-content-center no-page">
         <div class="col-xxl-10">
-            <div class="card">
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        <p th:text="${news.headline}" class="text-success text-uppercase mb-2"></p>
-                        <h4 th:text="${news.title}" class="mb-2"></h4>
-                        <p th:text="${news.subTitle}" class="text-muted mb-4"></p>
-                        <div class="d-flex align-items-center justify-content-center flex-wrap gap-2">
-                            <span th:each="item : ${news.tags}" th:text="${item.name}" class="badge bg-soft-primary text-primary"></span>
-                        </div>
-                    </div>
-                    <img th:src="@{'/news/photos/'+ ${news.mainImage}}" alt="" class="img-thumbnail">
 
-                    <div class="row mt-4">
-                        <div class="col-lg-3">
-                            <h6 class="pb-1">نوشته شده توسط:</h6>
-                            <div class="d-flex gap-2 mb-3">
-                                <div class="flex-shrink-0">
-                                    <img th:src=" ${userProfile.profilePhoto}" alt="" class="avatar-sm rounded">
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h5 th:text="${news.userId.email}" class="mb-1"></h5>
-                                    <p th:text="${news.userId.userTypeId.userTypeName == 'Admin' ? 'ادمین' : 'کاربر'}" class="mb-2"></p>
-                                    <p id="persian-date" th:data-date="${news.createdAt}" class="text-muted mb-0"></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-9">
-                            <div th:utext="${news.body}"></div>
-                            <div th:if="${!#authorization.expression('hasAuthority(''Ai'')')}">
-                                <h5 class="fw-semibold mb-3">نظرات:</h5>
-                                <div data-simplebar style="height: 150px;" class="px-3 mb-2 bg-light rounded-2">
-                                    <div th:each="comment : ${news.comments}" th:if="${comment.status}" class="d-flex mb-4 mt-1">
-                                        <div class="flex-grow-1 ms-3">
-                                            <h5 class="fs-13 d-inline">
-                                                <span th:text="${comment.name}"></span>
-                                            </h5>
-                                            <small class="persian-date-comment text-muted ms-2" th:data-date-comment="${comment.createdAt}"></small>
-                                            <p th:text="${comment.content}" class="text-muted"></p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <form th:object="${comment}" th:action="@{/admin/comments/save/{id}(id=${news.id})}" method="post" class="mt-4">
-                                    <div class="row g-3">
-                                        <div class="col-6">
-                                            <label for="inputName" class="form-label text-body">نام و نام خانوادگی:</label>
-                                            <input class="form-control bg-light border-light" th:field="*{name}" id="inputName" rows="3" required>
-                                        </div>
-                                        <div class="col-6">
-                                            <label for="inputName" class="form-label text-body">ایمیل:</label>
-                                            <input class="form-control bg-light border-light" th:field="*{email}" id="inputEmail" rows="3" required>
-                                        </div>
-                                        <div class="col-12">
-                                            <label for="exampleFormControlTextarea1" class="form-label text-body">نظر خود را بنویسید:</label>
-                                            <textarea class="form-control bg-light border-light" th:field="*{content}" id="exampleFormControlTextarea1" rows="3" required></textarea>
-                                        </div>
-                                        <div class="col-12 text-end">
-                                            <button type="submit" class="btn btn-success">ارسال نظر</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
+            <!-- ============================== خبر ============================== -->
+            <div class="card no-card">
+
+                <div class="no-header">
+                    <p th:text="${news.headline}" class="no-kicker"></p>
+                    <h1 th:text="${news.title}" class="no-title"></h1>
+                    <p th:text="${news.subTitle}" class="no-subtitle"></p>
+
+                    <div class="no-tags">
+                        <span th:each="item : ${news.tags}" th:text="${item.name}" class="no-tag"></span>
+                    </div>
+
+                    <div class="no-meta">
+                        <img th:src="${userProfile.profilePhoto}" alt="" class="no-meta-avatar">
+                        <div class="no-meta-text">
+                            <h6 th:text="${news.userId.email}" class="no-meta-name"></h6>
+                            <p class="no-meta-sub">
+                                <span th:text="${news.userId.userTypeId.userTypeName == 'Admin' ? 'ادمین' : 'کاربر'}" class="no-meta-role"></span>
+                                <span class="no-meta-dot"></span>
+                                <span id="persian-date" th:data-date="${news.createdAt}"></span>
+                            </p>
                         </div>
                     </div>
                 </div>
+
+                <div class="no-cover">
+                    <img th:src="@{'/news/photos/'+ ${news.mainImage}}" alt="">
+                </div>
+
+                <div class="no-body" th:utext="${news.body}"></div>
             </div>
+
+            <!-- ============================= نظرات ============================= -->
+            <div th:if="${!#authorization.expression('hasAuthority(''Ai'')')}">
+                <div class="card no-card">
+                    <div class="no-comments-head">
+                        <span class="no-comments-icon"><i class="ri-chat-3-line"></i></span>
+                        <h5 class="no-comments-title">نظرات</h5>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="no-comments-list">
+                            <div th:each="comment : ${news.comments}" th:if="${comment.status}" class="no-comment">
+                                <span class="no-comment-avatar"><i class="ri-user-3-line"></i></span>
+                                <div class="no-comment-body">
+                                    <div class="no-comment-head">
+                                        <h6 th:text="${comment.name}" class="no-comment-name"></h6>
+                                        <small class="persian-date-comment no-comment-date" th:data-date-comment="${comment.createdAt}"></small>
+                                    </div>
+                                    <p th:text="${comment.content}" class="no-comment-text"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- shown by CSS when the list above renders no .no-comment rows -->
+                        <div class="no-comments-empty">
+                            <i class="ri-chat-off-line"></i>
+                            هنوز نظری ثبت نشده است.
+                        </div>
+
+                        <form th:object="${comment}" th:action="@{/admin/comments/save/{id}(id=${news.id})}" method="post" class="no-form">
+                            <h6 class="no-form-title"><i class="ri-chat-new-line"></i> ثبت نظر جدید</h6>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="inputName" class="form-label no-label">نام و نام خانوادگی</label>
+                                    <input class="form-control" th:field="*{name}" id="inputName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="inputEmail" class="form-label no-label">ایمیل</label>
+                                    <input class="form-control" th:field="*{email}" id="inputEmail" dir="ltr" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="exampleFormControlTextarea1" class="form-label no-label">نظر خود را بنویسید</label>
+                                    <textarea class="form-control" th:field="*{content}" id="exampleFormControlTextarea1" rows="4" required></textarea>
+                                </div>
+                                <div class="col-12 text-end">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="ri-send-plane-line"></i> ارسال نظر
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

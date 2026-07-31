@@ -15,20 +15,35 @@
 <body>
 <div layout:fragment="content">
     <div th:replace="partials/page-title :: page-title('ابزار هوش مصنوعی','تولید خبر')"></div>
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow-sm">
-                    <div class="card-body p-4">
-                        <h2 class="card-title mb-4 text-center">سیستم تولید خبر هوشمند</h2>
-                        <p class="card-text text-center mb-4">
-                            با استفاده از این سیستم می‌توانید به سادگی انواع خبر را با کیفیت بالا تولید کنید.
-                            کافیست نوع خبر را انتخاب کرده و به سوالات پاسخ دهید.
-                        </p>
-                        <div class="d-grid">
-                            <button class="btn btn-primary btn-lg" id="openNewsGeneratorBtn">
-                                <i class="fas fa-newspaper me-2"></i>شروع تولید خبر
-                            </button>
+
+    <div class="row justify-content-center gen-page">
+        <div class="col-xl-7 col-lg-9">
+            <div class="card gen-hero">
+                <div class="card-body">
+                    <div class="gen-hero-icon"><i class="ri-magic-line"></i></div>
+
+                    <h4 class="gen-hero-title">سیستم تولید خبر هوشمند</h4>
+                    <p class="gen-hero-text">
+                        با استفاده از این سیستم می‌توانید به سادگی انواع خبر را با کیفیت بالا تولید کنید.
+                        کافیست نوع خبر را انتخاب کرده و به سوالات پاسخ دهید.
+                    </p>
+
+                    <button class="btn btn-primary gen-hero-cta" id="openNewsGeneratorBtn">
+                        <i class="ri-newspaper-line"></i>شروع تولید خبر
+                    </button>
+
+                    <div class="gen-features">
+                        <div class="gen-feature">
+                            <span class="gen-feature-icon"><i class="ri-layout-grid-line"></i></span>
+                            <span class="gen-feature-text">انتخاب مدل خبری</span>
+                        </div>
+                        <div class="gen-feature">
+                            <span class="gen-feature-icon"><i class="ri-list-check-2"></i></span>
+                            <span class="gen-feature-text">پاسخ به چند سوال کوتاه</span>
+                        </div>
+                        <div class="gen-feature">
+                            <span class="gen-feature-icon"><i class="ri-quill-pen-line"></i></span>
+                            <span class="gen-feature-text">تولید خودکار متن خبر</span>
                         </div>
                     </div>
                 </div>
@@ -38,8 +53,9 @@
 
     <div class="overlay" id="loadingOverlay">
         <div class="spinner-border text-primary" role="status">
-            <span class="sr-only">در حال بارگذاری...</span>
+            <span class="visually-hidden">در حال بارگذاری...</span>
         </div>
+        <div class="gen-overlay-text">لطفاً کمی صبر کنید…</div>
     </div>
 
 </div>
@@ -49,7 +65,9 @@
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
+                    <span class="gen-modal-icon"><i class="ri-robot-line"></i></span>
                     <h5 class="modal-title" id="newsGeneratorModalLabel">تولید خبر هوشمند</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                 </div>
                 <div class="modal-body">
                     <div class="step-indicator">
@@ -72,32 +90,32 @@
                     </div>
 
                     <div id="step1" class="step-content">
-                        <h4 class="mb-3">مدل خبری که می‌خواهید تولید کنید را انتخاب کنید</h4>
+                        <h4 class="gen-step-title">مدل خبری که می‌خواهید تولید کنید را انتخاب کنید</h4>
                         <div class="row g-3" id="newsModelsContainer">
                             <div class="col-md-4">
                                 <div class="card news-card h-100" data-model-id="news-quote">
                                     <div class="card-body text-center">
-                                        <i class="fas fa-quote-right fa-2x mb-3 text-primary"></i>
+                                        <span class="news-card-icon"><i class="ri-double-quotes-r"></i></span>
                                         <h5 class="card-title">خبر نقلی</h5>
-                                        <p class="card-text small">خبر از زبان یک شخص یا منبع نقل می‌شود</p>
+                                        <p class="card-text">خبر از زبان یک شخص یا منبع نقل می‌شود</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="card news-card h-100" data-model-id="news-event">
                                     <div class="card-body text-center">
-                                        <i class="fas fa-calendar-day fa-2x mb-3 text-success"></i>
+                                        <span class="news-card-icon is-success"><i class="ri-calendar-event-line"></i></span>
                                         <h5 class="card-title">خبر رویدادی</h5>
-                                        <p class="card-text small">گزارش یک رویداد یا اتفاق خاص</p>
+                                        <p class="card-text">گزارش یک رویداد یا اتفاق خاص</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="card news-card h-100" data-model-id="news-analysis">
                                     <div class="card-body text-center">
-                                        <i class="fas fa-chart-line fa-2x mb-3 text-danger"></i>
+                                        <span class="news-card-icon is-danger"><i class="ri-line-chart-line"></i></span>
                                         <h5 class="card-title">خبر تحلیلی</h5>
-                                        <p class="card-text small">تحلیل و بررسی عمیق یک موضوع</p>
+                                        <p class="card-text">تحلیل و بررسی عمیق یک موضوع</p>
                                     </div>
                                 </div>
                             </div>
@@ -105,7 +123,7 @@
                     </div>
 
                     <div id="step2" class="step-content" style="display: none;">
-                        <h4 class="mb-3">
+                        <h4 class="gen-step-title">
                             <span id="selectedModelName"></span>
                             <span class="ms-2">-</span>
                             <span class="ms-2">لطفاً به سوالات زیر پاسخ دهید</span>
@@ -120,11 +138,10 @@
                     </div>
 
                     <div id="step3" class="step-content" style="display: none;">
-                        <h4 class="mb-3">تأیید اطلاعات وارد شده</h4>
-                        <div class="card mb-4">
-                            <div class="card-header bg-light">
-                                <strong>مدل خبری: </strong>
-                                <span id="confirmModelName"></span>
+                        <h4 class="gen-step-title">تأیید اطلاعات وارد شده</h4>
+                        <div class="card gen-panel mb-3">
+                            <div class="card-header">
+                                <span><strong>مدل خبری: </strong><span id="confirmModelName"></span></span>
                             </div>
                             <div class="card-body">
                                 <div id="answersReviewContainer">
@@ -132,19 +149,19 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
+                        <div class="alert alert-info mb-0">
+                            <i class="ri-information-line me-1 align-bottom"></i>
                             آیا می‌خواهید با اطلاعات فوق، خبر تولید شود؟
                         </div>
                     </div>
 
                     <div id="step4" class="step-content" style="display: none;">
-                        <h4 class="mb-3">خبر تولید شده</h4>
-                        <div class="card">
-                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                                <span>نتیجه</span>
-                                <button class="btn btn-sm btn-outline-primary" id="copyNewsBtn">
-                                    <i class="fas fa-copy me-1"></i>کپی
+                        <h4 class="gen-step-title">خبر تولید شده</h4>
+                        <div class="card gen-panel mb-0">
+                            <div class="card-header">
+                                <span><i class="ri-file-text-line me-1 align-bottom"></i>نتیجه</span>
+                                <button class="btn btn-sm btn-soft-primary gen-copy-btn" id="copyNewsBtn">
+                                    <i class="ri-file-copy-line"></i>کپی
                                 </button>
                             </div>
                             <div class="card-body">
@@ -156,10 +173,10 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" id="backBtn" style="display: none;">
-                        <i class="fas fa-arrow-right me-1"></i>بازگشت
+                        <i class="ri-arrow-right-line"></i>بازگشت
                     </button>
                     <button type="button" class="btn btn-primary" id="nextBtn">
-                        ادامه<i class="fas fa-arrow-left ms-1"></i>
+                        ادامه<i class="ri-arrow-left-line"></i>
                     </button>
                 </div>
             </div>

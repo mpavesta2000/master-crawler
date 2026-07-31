@@ -11,107 +11,108 @@
     <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
-    <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
-    <style>
-        .required::after {
-            content: " *";
-            color: #e34343;
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/css/categories.css" type="text/css">
 </head>
 
 <body>
 <div layout:fragment="content">
     <div th:replace="partials/page-title :: page-title('دسته بندی ها','دسته بندی')"></div>
 
-    <form th:object="${category}" th:action="@{/admin/category/save}" method="post" enctype="multipart/form-data" class="needs-validation mb-2" novalidate>
-        <div class="row mb-2">
-            <div class="card ribbon-box border shadow-none mb-lg-0">
-                <div class="card-body text-muted">
-                    <div class="ribbon-two ribbon-two-primary"><span>راهنما</span></div>
-                    <h5 class="fs-14 text-end mb-3">ساختن دسته بندی</h5>
-                    <p class="mb-0"><strong>توجه:</strong> اگر در حال ایجاد یک <strong>دسته‌بندی اصلی</strong> هستید، باید <strong>دسته‌بندی اصلی</strong> را خالی بگذارید. اگر در حال ایجاد یک <strong>دسته‌بندی فرعی</strong> هستید، فقط باید <strong>دسته‌بندی اصلی</strong> را انتخاب کنید.</p>
+    <div class="cat-page">
+
+        <!-- ========================= ساخت دسته بندی ========================= -->
+        <div class="card cat-card mb-4">
+            <div class="card-header">
+                <span class="cat-card-icon"><i class="ri-add-circle-line"></i></span>
+                <div>
+                    <h5 class="cat-card-heading">ساختن دسته بندی</h5>
+                    <p class="cat-card-sub">دسته‌بندی اصلی یا زیرمجموعه جدید بسازید</p>
                 </div>
             </div>
-        </div>
-        <div class="row g-3">
-            <div class="col-lg-6">
-                <div class="form-floating">
+
+            <div class="card-body">
+                <div class="cat-hint">
+                    <i class="ri-information-line"></i>
+                    <p><strong>توجه:</strong> اگر در حال ایجاد یک <strong>دسته‌بندی اصلی</strong> هستید، باید <strong>دسته‌بندی اصلی</strong> را خالی بگذارید. اگر در حال ایجاد یک <strong>دسته‌بندی فرعی</strong> هستید، فقط باید <strong>دسته‌بندی اصلی</strong> را انتخاب کنید.</p>
+                </div>
+
+                <form th:object="${category}" th:action="@{/admin/category/save}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
                     <input type="hidden" th:field="*{id}" />
-                    <input th:field="*{name}" type="text" class="form-control" id="firstnamefloatingInput" required>
-                    <label for="firstnamefloatingInput">نام</label>
-                    <div class="invalid-feedback">
-                        <p> لطفا نام دسته بندی را وارد کنید.</p>
-                    </div>
-                </div>
 
-            </div>
+                    <div class="row g-3">
+                        <div class="col-lg-4">
+                            <label class="cat-label" for="firstnamefloatingInput">
+                                <i class="ri-price-tag-3-line"></i> نام دسته بندی
+                            </label>
+                            <input th:field="*{name}" type="text" class="form-control" id="firstnamefloatingInput"
+                                   placeholder="نام دسته بندی را وارد کنید" required>
+                            <div class="invalid-feedback">
+                                <p class="mb-0">لطفا نام دسته بندی را وارد کنید.</p>
+                            </div>
+                        </div>
 
-            <div class="col-lg-6">
-                <div class="form-floating">
-                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example" th:field="*{parent}">
-                        <option value="" selected>انتخاب دسته بندی اصلی</option>
-                        <option th:each="category : ${parentCategories}"
-                                th:value="${category.id}"
-                                th:text="${category.name}"></option>
-                    </select>
-                    <label for="floatingSelect">دسته بندی اصلی</label>
-                </div>
-            </div>
-
-<!--            <div class="col-lg-6">-->
-<!--                <div class="form-floating">-->
-<!--                    <select class="form-select" id="floatingSelect2" aria-label="Floating label select example" th:field="*{children}">-->
-<!--                        <option value="" selected>انتخاب زیر مجموعه</option>-->
-<!--                        <option th:each="category : ${childCategories}"-->
-<!--                                th:value="${category.id}"-->
-<!--                                th:text="${category.name}"></option>-->
-<!--                    </select>-->
-<!--                    <label for="floatingSelect">دسته بندی زیرمجموعه</label>-->
-<!--                </div>-->
-<!--            </div>-->
-
-            <div class="col-lg-6">
-                <div class="form-floating">
-                    <select th:field="*{status}" class="form-select" id="floatingSelect3" aria-label="Floating label select example" required>
-                        <option value="" selected>انتخاب وضیعت</option>
-                        <option value="Active">فعال</option>
-                        <option value="UnActive">غیرفعال</option>
-                    </select>
-                    <label for="floatingSelect">وضیعت</label>
-                    <div class="invalid-feedback">
-                        <p> لطفا وضیعت دسته بندی را وارد کنید.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-12">
-                <div class="text-end">
-                    <button type="submit" class="btn btn-primary">ذخیره</button>
-                </div>
-            </div>
-        </div>
-    </form>
-    <hr>
-
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">دسته بندی ها</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-3">
-                            <label for="status-filter" class="form-label">فیلتر بر اساس وضعیت:</label>
-                            <select id="status-filter" class="form-select">
-                                <option value="">همه</option>
-                                <option value="فعال">فعال</option>
-                                <option value="غیرفعال">غیرفعال</option>
+                        <div class="col-lg-4">
+                            <label class="cat-label" for="floatingSelect">
+                                <i class="ri-node-tree"></i> دسته بندی اصلی
+                            </label>
+                            <select class="form-select" id="floatingSelect" aria-label="دسته بندی اصلی" th:field="*{parent}">
+                                <option value="" selected>انتخاب دسته بندی اصلی</option>
+                                <option th:each="category : ${parentCategories}"
+                                        th:value="${category.id}"
+                                        th:text="${category.name}"></option>
                             </select>
                         </div>
+
+                        <div class="col-lg-4">
+                            <label class="cat-label" for="floatingSelect3">
+                                <i class="ri-toggle-line"></i> وضیعت
+                            </label>
+                            <select th:field="*{status}" class="form-select" id="floatingSelect3" aria-label="وضیعت" required>
+                                <option value="" selected>انتخاب وضیعت</option>
+                                <option value="Active">فعال</option>
+                                <option value="UnActive">غیرفعال</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                <p class="mb-0">لطفا وضیعت دسته بندی را وارد کنید.</p>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary cat-submit">
+                                    <i class="ri-save-3-line"></i> ذخیره
+                                </button>
+                            </div>
+                        </div>
                     </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ========================= لیست دسته بندی ها ========================= -->
+        <div class="card cat-card">
+            <div class="card-header">
+                <span class="cat-card-icon is-info"><i class="ri-list-check-2"></i></span>
+                <div>
+                    <h5 class="cat-card-heading">دسته بندی ها</h5>
+                    <p class="cat-card-sub">همه دسته‌بندی‌های ثبت شده در سیستم</p>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="cat-filter">
+                    <label for="status-filter" class="cat-label">
+                        <i class="ri-filter-3-line"></i> فیلتر بر اساس وضعیت
+                    </label>
+                    <select id="status-filter" class="form-select">
+                        <option value="">همه</option>
+                        <option value="فعال">فعال</option>
+                        <option value="غیرفعال">غیرفعال</option>
+                    </select>
+                </div>
+
+                <div class="cat-table-scroll">
                     <table id="model-datatables" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
                         <thead>
                         <tr>
@@ -126,17 +127,24 @@
                         <tbody>
                         <tr th:each="category : ${categories}">
                             <td th:text="${category.id}"></td>
-                            <td th:text="${category.name}"></td>
-                            <td th:text="${category.parent != null ? category.parent.name : 'این دسته بندی اصلی است.'}"></td>
                             <td>
-                                <span th:text="${#lists.isEmpty(category.children) ? 'زیر مجموعه ندارد' : 'زیر مجموعه وجود دارد'}"></span>
-                                <ul th:if="${!#lists.isEmpty(category.children)}">
+                                <span class="cat-name" th:text="${category.name}"></span>
+                            </td>
+                            <td>
+                                <span th:if="${category.parent != null}" th:text="${category.parent.name}"></span>
+                                <span th:if="${category.parent == null}" class="cat-parent-none">این دسته بندی اصلی است.</span>
+                            </td>
+                            <td>
+                                <span th:if="${#lists.isEmpty(category.children)}" class="cat-children-none">زیر مجموعه ندارد</span>
+                                <ul th:if="${!#lists.isEmpty(category.children)}" class="cat-children">
                                     <li th:each="child : ${category.children}" th:text="${child.name}"></li>
                                 </ul>
                             </td>
                             <td>
-                    <span th:text="${category.status == 'Active' ? 'فعال' : 'غیرفعال'}"
-                          th:classappend="${category.status == 'Active' ? 'badge-soft-success' : 'badge-soft-danger'}"></span>
+                                <!-- the text must stay exactly فعال / غیرفعال — categories-list.js
+                                     filters this column by that literal string -->
+                                <span th:text="${category.status == 'Active' ? 'فعال' : 'غیرفعال'}"
+                                      th:class="${category.status == 'Active' ? 'cat-status is-active' : 'cat-status is-inactive'}"></span>
                             </td>
                             <td>
                                 <div class="dropdown d-inline-block">
@@ -144,11 +152,11 @@
                                         <i class="ri-more-fill align-middle"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a th:href="${'/category/edit/'+category.getId()}" type="submit" class="dropdown-item edit-item-btn"><i
+                                        <li><a th:href="${'/category/edit/'+category.getId()}" class="dropdown-item edit-item-btn"><i
                                                 class="ri-pencil-fill align-bottom me-2 text-muted"></i>
                                             ویرایش</a></li>
                                         <li>
-                                            <form id="deleteForm" th:action="@{/category/delete/{id}(id=${category.getId()})}" method="post" style="display: inline;">
+                                            <form th:action="@{/category/delete/{id}(id=${category.getId()})}" method="post" style="display: inline;">
                                                 <button type="submit" class="dropdown-item remove-item-btn" onclick="confirmDelete(event)">
                                                     <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
                                                     حذف

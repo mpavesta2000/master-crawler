@@ -10,6 +10,7 @@
 <head>
 	<!-- gridjs css -->
 	<link rel="stylesheet" href="/assets/libs/gridjs/theme/mermaid.min.css">
+	<link rel="stylesheet" href="/assets/css/admin-analytics.css" type="text/css">
 </head>
 
 <body>
@@ -18,122 +19,141 @@
 		<div th:replace="partials/page-title :: page-title('داشبورد','آمار و تحلیل مدیریت')"></div>
 		<!-- end page title -->
 
-		<!-- System-wide Stats Cards -->
-		<div class="row">
-			<div class="col-xl-3 col-md-6">
-				<div class="card card-animate">
-					<div class="card-body">
-						<div class="d-flex align-items-center">
-							<div class="flex-grow-1 overflow-hidden">
-								<p class="text-uppercase fw-medium text-muted text-truncate mb-0">کل اخبار اضافه شده</p>
-								<h4 class="fs-22 fw-semibold ff-secondary mb-4">
+		<div class="aa-page">
+
+			<!-- ===================== کارت های آماری ===================== -->
+			<div class="row g-3">
+				<div class="col-xl-3 col-md-6">
+					<div class="card card-animate aa-stat aa-accent-primary">
+						<div class="card-body">
+							<div class="aa-stat-head">
+								<span class="aa-stat-icon"><i class="ri-newspaper-line"></i></span>
+								<p class="aa-stat-label">کل اخبار اضافه شده</p>
+							</div>
+							<div class="aa-stat-foot">
+								<h4 class="aa-stat-value ff-secondary">
 									<span class="counter-value" th:data-target="${totalNewsAdded}">0</span>
 								</h4>
-							</div>
-							<div class="flex-shrink-0">
-								<div id="total_news_sparkline" data-colors='["--vz-primary"]' class="apex-charts" dir="ltr"></div>
+								<div class="aa-stat-spark">
+									<div id="total_news_sparkline" data-colors='["--vz-primary"]' class="apex-charts" dir="ltr"></div>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<div class="col-xl-3 col-md-6">
-				<div class="card card-animate">
-					<div class="card-body">
-						<div class="d-flex align-items-center">
-							<div class="flex-grow-1 overflow-hidden">
-								<p class="text-uppercase fw-medium text-muted text-truncate mb-0">کل اخبار ویرایش شده</p>
-								<h4 class="fs-22 fw-semibold ff-secondary mb-4">
+				<div class="col-xl-3 col-md-6">
+					<div class="card card-animate aa-stat aa-accent-success">
+						<div class="card-body">
+							<div class="aa-stat-head">
+								<span class="aa-stat-icon"><i class="ri-edit-2-line"></i></span>
+								<p class="aa-stat-label">کل اخبار ویرایش شده</p>
+							</div>
+							<div class="aa-stat-foot">
+								<h4 class="aa-stat-value ff-secondary">
 									<span class="counter-value" th:data-target="${totalEdits}">0</span>
 								</h4>
-							</div>
-							<div class="flex-shrink-0">
-								<div id="total_edits_sparkline" data-colors='["--vz-success"]' class="apex-charts" dir="ltr"></div>
+								<div class="aa-stat-spark">
+									<div id="total_edits_sparkline" data-colors='["--vz-success"]' class="apex-charts" dir="ltr"></div>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<div class="col-xl-3 col-md-6">
-				<div class="card card-animate">
-					<div class="card-body">
-						<div class="d-flex align-items-center">
-							<div class="flex-grow-1 overflow-hidden">
-								<p class="text-uppercase fw-medium text-muted text-truncate mb-0">اخبار تولید شده با چپ چین</p>
-								<h4 class="fs-22 fw-semibold ff-secondary mb-4">
+				<div class="col-xl-3 col-md-6">
+					<div class="card card-animate aa-stat aa-accent-info">
+						<div class="card-body">
+							<div class="aa-stat-head">
+								<span class="aa-stat-icon"><i class="ri-robot-line"></i></span>
+								<p class="aa-stat-label">اخبار تولید شده با چپ چین</p>
+							</div>
+							<div class="aa-stat-foot">
+								<h4 class="aa-stat-value ff-secondary">
 									<span class="counter-value" th:data-target="${totalChapChinUsage}">0</span>
 								</h4>
-							</div>
-							<div class="flex-shrink-0">
-								<div id="ai_articles_sparkline" data-colors='["--vz-info"]' class="apex-charts" dir="ltr"></div>
+								<div class="aa-stat-spark">
+									<div id="ai_articles_sparkline" data-colors='["--vz-info"]' class="apex-charts" dir="ltr"></div>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<div class="col-xl-3 col-md-6">
-				<div class="card card-animate">
-					<div class="card-body">
-						<div class="d-flex align-items-center">
-							<div class="flex-grow-1 overflow-hidden">
-								<p class="text-uppercase fw-medium text-muted text-truncate mb-0">درصد کل استفاده از چپ چین</p>
-								<h4 class="fs-22 fw-semibold ff-secondary mb-4">
-									<span class="counter-value" th:data-target="${aiPercentage}">0</span>%
+				<div class="col-xl-3 col-md-6">
+					<div class="card card-animate aa-stat aa-accent-warning">
+						<div class="card-body">
+							<div class="aa-stat-head">
+								<span class="aa-stat-icon"><i class="ri-pie-chart-2-line"></i></span>
+								<p class="aa-stat-label">درصد کل استفاده از چپ چین</p>
+							</div>
+							<div class="aa-stat-foot">
+								<h4 class="aa-stat-value ff-secondary">
+									<span class="counter-value" th:data-target="${aiPercentage}">0</span><span class="aa-unit">%</span>
 								</h4>
-							</div>
-							<div class="flex-shrink-0">
-								<div id="ai_percentage_sparkline" data-colors='["--vz-warning"]' class="apex-charts" dir="ltr"></div>
+								<div class="aa-stat-spark">
+									<div id="ai_percentage_sparkline" data-colors='["--vz-warning"]' class="apex-charts" dir="ltr"></div>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
 
-		<!-- Charts Row -->
-		<div class="row">
-			<!-- News Added Per Day Chart -->
-			<div class="col-xl-6">
-				<div class="card">
-					<div class="card-header">
-						<h4 class="card-title mb-0">اخبار اضافه شده در 7 روز گذشته</h4>
+			<!-- ========================== نمودارها ========================== -->
+			<div class="row g-3 mt-0">
+				<!-- News Added Per Day Chart -->
+				<div class="col-xl-6">
+					<div class="card aa-card">
+						<div class="card-header">
+							<span class="aa-card-icon"><i class="ri-line-chart-line"></i></span>
+							<div>
+								<h5 class="aa-card-heading">اخبار اضافه شده در ۷ روز گذشته</h5>
+								<p class="aa-card-sub">روند ثبت و ویرایش خبر در هفته اخیر</p>
+							</div>
+						</div>
+						<div class="card-body">
+							<div id="news_per_day_chart" data-colors='["--vz-primary", "--vz-success"]' class="apex-charts" dir="ltr"></div>
+						</div>
 					</div>
-					<div class="card-body">
-						<div id="news_per_day_chart" data-colors='["--vz-primary", "--vz-success"]' class="apex-charts" dir="ltr"></div>
+				</div>
+
+				<!-- Editor Contribution Comparison -->
+				<div class="col-xl-6">
+					<div class="card aa-card">
+						<div class="card-header">
+							<span class="aa-card-icon is-warning"><i class="ri-team-line"></i></span>
+							<div>
+								<h5 class="aa-card-heading">مقایسه فعالیت خبرنگاران</h5>
+								<p class="aa-card-sub">سهم هر خبرنگار از تولید و ویرایش محتوا</p>
+							</div>
+						</div>
+						<div class="card-body">
+							<div id="editor_contribution_chart" data-colors='["--vz-primary", "--vz-warning"]' class="apex-charts" dir="ltr"></div>
+						</div>
 					</div>
 				</div>
 			</div>
 
-			<!-- Editor Contribution Comparison -->
-			<div class="col-xl-6">
-				<div class="card">
-					<div class="card-header">
-						<h4 class="card-title mb-0">مقایسه فعالیت خبرنگاران</h4>
-					</div>
-					<div class="card-body">
-						<div id="editor_contribution_chart" data-colors='["--vz-primary", "--vz-warning"]' class="apex-charts" dir="ltr"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Recent Top Edits Table -->
-		<div class="row">
-			<div class="col-lg-12">
-				<div class="card">
-					<div class="card-header">
-						<h4 class="card-title mb-0">آخرین ویرایش ها </h4>
-					</div>
-					<div class="card-body">
-						<div id="recent-edits-table"></div>
+			<!-- ====================== آخرین ویرایش ها ====================== -->
+			<div class="row g-3 mt-0">
+				<div class="col-lg-12">
+					<div class="card aa-card">
+						<div class="card-header">
+							<span class="aa-card-icon is-info"><i class="ri-history-line"></i></span>
+							<div>
+								<h5 class="aa-card-heading">آخرین ویرایش ها</h5>
+								<p class="aa-card-sub">تازه‌ترین تغییرات ثبت شده روی اخبار</p>
+							</div>
+						</div>
+						<div class="card-body">
+							<div id="recent-edits-table"></div>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
 
+		</div>
 	</div>
 
 	<th:block layout:fragment="pagejs">

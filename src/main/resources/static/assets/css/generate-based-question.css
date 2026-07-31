@@ -1,84 +1,469 @@
+/* ==========================================================================
+   AI news generator ("تولید خبر")
+   Landing card + 4-step wizard modal.
 
-body {
-    font-family: 'Vazirmatn', Tahoma, Arial, sans-serif;
-    background-color: #f8f9fa;
+   NOTE for future edits: generate-based-question.js rewrites the step
+   indicators with `className = 'step' | 'step active' | 'step completed'`,
+   so those elements may only ever be styled through .step / .active /
+   .completed — any extra class put on them in the HTML is wiped on the first
+   navigation. Model-card selection is likewise driven by the Bootstrap
+   classes the JS toggles (.border-primary / .bg-light).
+   ========================================================================== */
+
+.gen-page {
+    --gen-radius: 16px;
 }
 
-.news-card {
-    transition: transform 0.3s;
-    cursor: pointer;
-}
+/* ---------- landing card ------------------------------------------------- */
 
-.news-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-
-.loading-spinner {
-    display: none;
-}
-
-.step-indicator {
-    display: flex;
-    margin-bottom: 20px;
-}
-
-.step {
-    flex: 1;
-    text-align: center;
-    padding: 10px;
+.gen-hero {
     position: relative;
+    overflow: hidden;
+    border: 1px solid var(--vz-border-color);
+    border-radius: var(--gen-radius);
+    box-shadow: 0 10px 34px -24px rgba(var(--vz-dark-rgb), .8);
 }
 
-.step:not(:last-child):after {
+.gen-hero::before {
     content: "";
     position: absolute;
-    top: 50%;
-    right: 0;
-    width: 100%;
-    height: 2px;
-    background-color: #dee2e6;
-    transform: translateY(-50%);
-    z-index: -1;
+    inset-block-start: -120px;
+    inset-inline-end: -80px;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(var(--vz-primary-rgb), .16), transparent 65%);
+    pointer-events: none;
 }
 
-.step-number {
+.gen-hero .card-body {
+    position: relative;
+    padding: 2.5rem 2rem;
+    text-align: center;
+}
+
+.gen-hero-icon {
+    width: 62px;
+    height: 62px;
+    margin: 0 auto 1.25rem;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    font-size: 1.75rem;
+    color: #fff;
+    background: linear-gradient(135deg, rgb(var(--vz-primary-rgb)), rgba(var(--vz-primary-rgb), .65));
+    box-shadow: 0 12px 26px -12px rgba(var(--vz-primary-rgb), .9);
+}
+
+.gen-hero-title {
+    margin: 0 0 .5rem;
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: var(--vz-heading-color);
+}
+
+.gen-hero-text {
+    max-width: 520px;
+    margin: 0 auto;
+    font-size: .875rem;
+    line-height: 1.9;
+    color: #878a99;
+}
+
+.gen-hero-cta {
+    height: 46px;
+    min-width: 240px;
+    margin-top: 1.75rem;
+    border-radius: 11px;
+    font-weight: 600;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background-color: #dee2e6;
-    margin-bottom: 5px;
+    gap: .5rem;
+}
+
+/* three-up feature strip under the CTA */
+.gen-features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: .75rem;
+    margin-top: 2rem;
+    padding-top: 1.75rem;
+    border-top: 1px dashed var(--vz-border-color);
+}
+
+.gen-feature {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+    padding: .25rem;
+}
+
+.gen-feature-icon {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    font-size: 1.0625rem;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.gen-feature-text {
+    font-size: .75rem;
+    line-height: 1.7;
+    color: #878a99;
+}
+
+@media (max-width: 575.98px) {
+    .gen-features {
+        grid-template-columns: 1fr;
+    }
+
+    .gen-hero .card-body {
+        padding: 2rem 1.25rem;
+    }
+}
+
+/* ---------- wizard modal ------------------------------------------------- */
+
+#newsGeneratorModal .modal-dialog {
+    max-width: 760px;
+}
+
+#newsGeneratorModal .modal-content {
+    border: 0;
+    border-radius: var(--gen-radius);
+    overflow: hidden;
+}
+
+#newsGeneratorModal .modal-header {
+    align-items: center;
+    gap: .75rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--vz-border-color);
+}
+
+.gen-modal-icon {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    font-size: 1.125rem;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+#newsGeneratorModal .modal-body {
+    padding: 1.5rem 1.5rem 1.25rem;
+}
+
+#newsGeneratorModal .modal-footer {
+    gap: .5rem;
+    padding: .875rem 1.25rem;
+    border-top: 1px solid var(--vz-border-color);
+    background-color: rgba(var(--vz-light-rgb), .45);
+}
+
+#newsGeneratorModal .modal-footer .btn {
+    height: 40px;
+    min-width: 118px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .375rem;
+}
+
+/* ---------- step indicator ---------------------------------------------- */
+/* only .step / .step.active / .step.completed may be relied on here — see the
+   note at the top of this file */
+
+.step-indicator {
+    display: flex;
+    margin-bottom: 1.75rem;
+}
+
+.step {
+    position: relative;
+    flex: 1;
+    text-align: center;
+    padding: 0 .25rem;
+}
+
+/* Connector: runs from THIS step's circle centre to the NEXT step's circle
+   centre. The circles are centred inside each .step (which is flex:1), so the
+   line must start at 50% and span one full step width — anchoring it to the
+   step's edge leaves a gap before the next circle.
+   `inset-inline-start: 50%` resolves to right:50% in RTL, so width:100% runs
+   leftwards towards the next step, which is the correct direction here. */
+.step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 16px;
+    inset-inline-start: 50%;
+    width: 100%;
+    height: 2px;
+    z-index: 0;
+    background-color: var(--vz-border-color);
+    transition: background-color .25s ease;
+}
+
+.step.completed:not(:last-child)::after {
+    background-color: var(--vz-success);
+}
+
+.step-number {
     position: relative;
     z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    margin-bottom: .5rem;
+    border-radius: 50%;
+    font-size: .8125rem;
+    font-weight: 600;
+    color: #878a99;
+    background-color: var(--vz-border-color);
+    transition: background-color .25s ease, color .25s ease, box-shadow .25s ease;
 }
 
 .step.active .step-number {
-    background-color: #3f5189;
-    color: white;
+    color: #fff;
+    background-color: var(--vz-primary);
+    box-shadow: 0 0 0 4px rgba(var(--vz-primary-rgb), .18);
 }
 
 .step.completed .step-number {
-    background-color: #198754;
-    color: white;
+    color: #fff;
+    background-color: var(--vz-success);
 }
 
-.modal-dialog {
-    max-width: 700px;
+.step-label {
+    font-size: .75rem;
+    color: #878a99;
+    transition: color .25s ease;
 }
+
+.step.active .step-label {
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.step.completed .step-label {
+    color: var(--vz-success);
+}
+
+/* ---------- step content ------------------------------------------------- */
+
+.gen-step-title {
+    margin: 0 0 1.25rem;
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+/* model picker — selection is expressed with .border-primary / .bg-light,
+   the two classes the JS toggles */
+.news-card {
+    position: relative;
+    height: 100%;
+    cursor: pointer;
+    border: 1px solid var(--vz-border-color);
+    border-radius: 12px;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.news-card .card-body {
+    padding: 1.25rem .75rem;
+}
+
+.news-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 26px -20px rgba(var(--vz-dark-rgb), .9);
+}
+
+.news-card-icon {
+    width: 46px;
+    height: 46px;
+    margin: 0 auto .75rem;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    font-size: 1.375rem;
+    background-color: rgba(var(--vz-primary-rgb), .12);
+    color: var(--vz-primary);
+}
+
+.news-card-icon.is-success {
+    background-color: rgba(var(--vz-success-rgb), .12);
+    color: var(--vz-success);
+}
+
+.news-card-icon.is-danger {
+    background-color: rgba(var(--vz-danger-rgb), .12);
+    color: var(--vz-danger);
+}
+
+.news-card .card-title {
+    margin-bottom: .375rem;
+    font-size: .875rem;
+    font-weight: 600;
+}
+
+.news-card .card-text {
+    margin: 0;
+    font-size: .75rem;
+    line-height: 1.7;
+    color: #878a99;
+}
+
+/* selected state */
+.news-card.border-primary {
+    border-color: var(--vz-primary) !important;
+    box-shadow: 0 0 0 3px rgba(var(--vz-primary-rgb), .14);
+}
+
+.news-card.border-primary::after {
+    content: "\eb7b"; /* remixicon ri-check-line */
+    font-family: remixicon, sans-serif;
+    position: absolute;
+    top: .5rem;
+    inset-inline-end: .5rem;
+    width: 20px;
+    height: 20px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    font-size: .75rem;
+    color: #fff;
+    background-color: var(--vz-primary);
+}
+
+/* questions (rendered by the JS into #questionsContainer) */
+#questionsContainer .form-label {
+    font-size: .8125rem;
+    font-weight: 500;
+    color: var(--vz-heading-color);
+}
+
+#questionsContainer .form-control,
+#questionsContainer .form-select {
+    border-radius: 10px;
+    font-size: .875rem;
+}
+
+#questionValidationError {
+    border-radius: 10px;
+    font-size: .8125rem;
+}
+
+/* review + result panels */
+/* no `overflow: hidden` here — it was only for the rounded corners, but it
+   clips the generated article instead of letting it flow into the modal's
+   own scroll. The header gets its own top radii instead. */
+.gen-panel {
+    border: 1px solid var(--vz-border-color);
+    border-radius: 12px;
+}
+
+.gen-panel > .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: .75rem 1rem;
+    font-size: .8125rem;
+    background-color: rgba(var(--vz-light-rgb), .5);
+    border-bottom: 1px solid var(--vz-border-color);
+    border-start-start-radius: 11px;
+    border-start-end-radius: 11px;
+}
+
+/* the JS builds each review row as .mb-3 > .fw-bold.mb-1 + .bg-light.p-2.rounded */
+#answersReviewContainer > div {
+    padding-bottom: .875rem;
+    border-bottom: 1px dashed var(--vz-border-color);
+}
+
+#answersReviewContainer > div:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+#answersReviewContainer .fw-bold {
+    font-size: .8125rem;
+    color: var(--vz-heading-color);
+}
+
+#answersReviewContainer .bg-light {
+    font-size: .8125rem;
+    line-height: 1.9;
+    border-radius: 8px !important;
+    color: var(--vz-body-color);
+}
+
+/* no inner max-height/scroll: the modal body already scrolls
+   (.modal-dialog-scrollable), and a nested scroller made long results look
+   cut off instead of simply extending the modal's own scroll */
+#generatedNewsContainer {
+    font-size: .875rem;
+    line-height: 2.1;
+    color: var(--vz-body-color);
+    word-break: break-word;
+}
+
+#generatedNewsContainer p {
+    margin: 0 0 .875rem;
+}
+
+#generatedNewsContainer p:last-child {
+    margin-bottom: 0;
+}
+
+#generatedNewsContainer strong {
+    color: var(--vz-heading-color);
+}
+
+.gen-copy-btn {
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    gap: .3125rem;
+    border-radius: 8px;
+    font-size: .75rem;
+}
+
+/* ---------- loading overlay ---------------------------------------------- */
+/* the JS toggles inline display:flex / none on #loadingOverlay */
 
 .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1060;
     display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1060;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background-color: rgba(10, 14, 20, .55);
+    backdrop-filter: blur(3px);
+}
+
+.overlay .spinner-border {
+    width: 3rem;
+    height: 3rem;
+    border-width: .25em;
+    color: #fff !important;
+}
+
+.gen-overlay-text {
+    font-size: .875rem;
+    font-weight: 500;
+    color: #fff;
 }

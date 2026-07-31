@@ -1,9 +1,56 @@
-@import url('https://v1.fontapi.ir/css/Shabnam');
-
-body, h1, h2, h3, h4, h5, h6, li, a, span , button{
-    font-family: 'Shabnam' !important;
+@font-face {
+    font-family: 'Shabnam';
+    src: url('/assets/fonts/shabnam/Shabnam.eot');
+    src: url('/assets/fonts/shabnam/Shabnam.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/shabnam/Shabnam.woff2') format('woff2'),
+    url('/assets/fonts/shabnam/Shabnam.woff') format('woff'),
+    url('/assets/fonts/shabnam/Shabnam.ttf') format('truetype');
+    font-weight: normal;
 }
 
+@font-face {
+    font-family: 'Shabnam';
+    src: url('/assets/fonts/shabnam/Shabnam-Bold.eot');
+    src: url('/assets/fonts/shabnam/Shabnam-Bold.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/shabnam/Shabnam-Bold.woff2') format('woff2'),
+    url('/assets/fonts/shabnam/Shabnam-Bold.woff') format('woff'),
+    url('/assets/fonts/shabnam/Shabnam-Bold.ttf') format('truetype');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'Shabnam';
+    src: url('/assets/fonts/shabnam/Shabnam-Thin.eot');
+    src: url('/assets/fonts/shabnam/Shabnam-Thin.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/shabnam/Shabnam-Thin.woff2') format('woff2'),
+    url('/assets/fonts/shabnam/Shabnam-Thin.woff') format('woff'),
+    url('/assets/fonts/shabnam/Shabnam-Thin.ttf') format('truetype');
+    font-weight: 100;
+}
+
+@font-face {
+    font-family: 'Shabnam';
+    src: url('/assets/fonts/shabnam/Shabnam-Light.eot');
+    src: url('/assets/fonts/shabnam/Shabnam-Light.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/shabnam/Shabnam-Light.woff2') format('woff2'),
+    url('/assets/fonts/shabnam/Shabnam-Light.woff') format('woff'),
+    url('/assets/fonts/shabnam/Shabnam-Light.ttf') format('truetype');
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'Shabnam';
+    src: url('/assets/fonts/shabnam/Shabnam-Medium.eot');
+    src: url('/assets/fonts/shabnam/Shabnam-Medium.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/shabnam/Shabnam-Medium.woff2') format('woff2'),
+    url('/assets/fonts/shabnam/Shabnam-Medium.woff') format('woff'),
+    url('/assets/fonts/shabnam/Shabnam-Medium.ttf') format('truetype');
+    font-weight: 500;
+}
+
+body, h1, h2, h3, h4, h5, h6, li, a, span {
+    font-family: 'Shabnam' !important;
+}
 /* Apply Shabnam font to your Persian date picker */
 .datepicker-plot-area,
 .datepicker-plot-area * {

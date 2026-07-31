@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 step1Indicator.className = 'step active';
                 backBtn.style.display = 'none';
                 nextBtn.textContent = 'ادامه';
-                nextBtn.innerHTML = 'ادامه<i class="fas fa-arrow-left ms-1"></i>';
+                nextBtn.innerHTML = 'ادامه<i class="ri-arrow-left-line ms-1"></i>';
                 break;
             case 2:
                 step2.style.display = 'block';
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 step2Indicator.className = 'step active';
                 backBtn.style.display = 'block';
                 nextBtn.textContent = 'ادامه';
-                nextBtn.innerHTML = 'ادامه<i class="fas fa-arrow-left ms-1"></i>';
+                nextBtn.innerHTML = 'ادامه<i class="ri-arrow-left-line ms-1"></i>';
                 break;
             case 3:
                 step3.style.display = 'block';
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 step3Indicator.className = 'step active';
                 backBtn.style.display = 'block';
                 nextBtn.textContent = 'تولید خبر';
-                nextBtn.innerHTML = 'تولید خبر<i class="fas fa-robot ms-1"></i>';
+                nextBtn.innerHTML = 'تولید خبر<i class="ri-robot-line ms-1"></i>';
                 break;
             case 4:
                 step4.style.display = 'block';
@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const newsText = generatedNewsContainer.innerText;
         navigator.clipboard.writeText(newsText).then(function () {
             const originalText = copyNewsBtn.innerHTML;
-            copyNewsBtn.innerHTML = '<i class="fas fa-check me-1"></i>کپی شد';
+            copyNewsBtn.innerHTML = '<i class="ri-check-line me-1"></i>کپی شد';
             setTimeout(() => {
                 copyNewsBtn.innerHTML = originalText;
             }, 2000);
@@ -275,6 +275,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // the model answers in markdown, so **bold** was showing up literally.
+    // Converts **bold** / *italic* and turns blank lines into paragraphs.
+    function renderGeneratedNews(text) {
+        if (!text) return '';
+        return text
+            .split(/\n\s*\n/)
+            .map(function (block) {
+                return '<p>' + block
+                    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>')
+                    .replace(/\n/g, '<br>') + '</p>';
+            })
+            .join('');
+    }
+
     async function generateNews() {
         showLoading();
 
@@ -282,11 +297,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const newsContent = await generateNewsFromBackend();
 
             if (newsContent) {
-                generatedNewsContainer.innerHTML = newsContent.replace(/\n/g, '<br>');
+                generatedNewsContainer.innerHTML = renderGeneratedNews(newsContent);
 
                 goToStep(4);
 
-                nextBtn.innerHTML = 'تولید خبر جدید<i class="fas fa-plus ms-1"></i>';
+                nextBtn.innerHTML = 'تولید خبر جدید<i class="ri-add-line ms-1"></i>';
             }
         } catch (error) {
             console.error('Error in news generation:', error);

@@ -2,13 +2,15 @@ package com.avesta.mastercrawler.service.rss;
 
 import com.avesta.mastercrawler.service.scraper.ChapChinService;
 import kong.unirest.JsonNode;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,6 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 public class BornaRSSChecker {
 
@@ -33,6 +36,7 @@ public class BornaRSSChecker {
     private List<String> logs = new ArrayList<>();
 
     private ScheduledExecutorService scheduler;
+    private SecurityContext capturedContext;
     private boolean enabled = false;
     private int newsCounter = 0;
     private int maxNews = DEFAULT_MAX_NEWS;
@@ -43,9 +47,11 @@ public class BornaRSSChecker {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @Async
     public void startChecking() {
         if (!enabled) {
+            capturedContext = SecurityContextHolder.getContext();
+            System.out.println("CAPTURED AUTH: " + capturedContext.getAuthentication());
+
             addLog("RSS خبرگزاری برنا شروع به کار کرد.\n");
             enabled = true;
             newsCounter = 0;
@@ -81,6 +87,11 @@ public class BornaRSSChecker {
     }
 
     private void checkForNewNews() {
+        if (capturedContext != null) {
+            SecurityContextHolder.setContext(capturedContext);
+        }
+        System.out.println("WORKER AUTH: " + SecurityContextHolder.getContext().getAuthentication());
+
         try {
             if (newsCounter >= maxNews) {
                 stopChecking();
@@ -116,7 +127,10 @@ public class BornaRSSChecker {
                 }
             }
         } catch (Exception e) {
+            log.error("RSS check failed", e);
             addLog(e.getMessage() + "\n");
+        } finally {
+            SecurityContextHolder.clearContext();
         }
     }
 

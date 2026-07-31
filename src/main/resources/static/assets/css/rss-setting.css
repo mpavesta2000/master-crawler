@@ -1,14 +1,507 @@
-.terminal {
-    background-color: #1c1c1c;
-    color: #fff;
-    font-family: monospace;
-    padding: 20px;
-    height: 400px;
-    overflow-y: scroll;
+/* ==========================================================================
+   RSS Settings page
+   Modern refresh — built on the Velzon CSS variables so it follows the
+   active theme (light / dark) automatically.
+   ========================================================================== */
+
+.rss-page {
+    --rss-radius: 14px;
+    --rss-accent: var(--vz-primary);
+    --rss-accent-rgb: var(--vz-primary-rgb);
 }
-.terminal p {
+
+/* ---------- shared card shell ------------------------------------------- */
+
+.rss-card {
+    border: 1px solid var(--vz-border-color);
+    border-radius: var(--rss-radius);
+    box-shadow: 0 6px 24px -18px rgba(var(--vz-dark-rgb), .55);
+    overflow: hidden;
+}
+
+.rss-card > .card-header {
+    background-color: transparent;
+    border-bottom: 1px solid var(--vz-border-color);
+    padding: 1rem 1.25rem;
+}
+
+.rss-card-title {
+    display: flex;
+    align-items: center;
+    gap: .625rem;
+    margin: 0;
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.rss-card-title i {
+    font-size: 1.125rem;
+    color: var(--rss-accent);
+}
+
+.rss-card-subtitle {
+    margin: .25rem 0 0;
+    font-size: .75rem;
+    color: var(--vz-secondary-color, #878a99);
+}
+
+/* ---------- sources list ------------------------------------------------ */
+
+.rss-sources {
+    display: flex;
+    flex-direction: column;
+    gap: .875rem;
+}
+
+.rss-source {
+    position: relative;
+    padding: 1rem;
+    border: 1px solid var(--vz-border-color);
+    border-radius: 12px;
+    background-color: rgba(var(--vz-light-rgb), .35);
+    transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
+}
+
+.rss-source::before {
+    content: "";
+    position: absolute;
+    inset-block: 12px;
+    inset-inline-start: 0;
+    width: 3px;
+    border-radius: 3px;
+    background-color: rgb(var(--rss-accent-rgb));
+    opacity: 0;
+    transition: opacity .2s ease;
+}
+
+.rss-source:hover {
+    border-color: rgba(var(--rss-accent-rgb), .45);
+    box-shadow: 0 8px 20px -16px rgba(var(--rss-accent-rgb), .9);
+}
+
+.rss-source.is-active {
+    background-color: rgba(var(--rss-accent-rgb), .06);
+    border-color: rgba(var(--rss-accent-rgb), .35);
+}
+
+.rss-source.is-active::before {
+    opacity: 1;
+}
+
+.rss-source-head {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+}
+
+.rss-source-avatar {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    font-size: 1.125rem;
+    color: rgb(var(--rss-accent-rgb));
+    background-color: rgba(var(--rss-accent-rgb), .12);
+    transition: transform .2s ease;
+}
+
+.rss-source:hover .rss-source-avatar {
+    transform: translateY(-1px);
+}
+
+.rss-source-info {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.rss-source-name {
+    margin: 0;
+    font-size: .875rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rss-source-meta {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    margin: .1875rem 0 0;
+    font-size: .75rem;
+    color: var(--vz-secondary-color, #878a99);
+}
+
+.rss-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    padding: .0625rem .375rem;
+    border-radius: 5px;
+    font-size: .6875rem;
+    line-height: 1.35;
+    background-color: rgba(var(--vz-dark-rgb), .06);
+    color: var(--vz-secondary-color, #878a99);
+}
+
+/* state pill next to the switch */
+.rss-state {
+    display: inline-flex;
+    align-items: center;
+    gap: .3125rem;
+    padding: .1875rem .5rem;
+    border-radius: 999px;
+    font-size: .6875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    background-color: rgba(var(--vz-dark-rgb), .07);
+    color: var(--vz-secondary-color, #878a99);
+    transition: background-color .2s ease, color .2s ease;
+}
+
+.rss-state-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+}
+
+.rss-source.is-active .rss-state {
+    background-color: rgba(var(--vz-success-rgb), .12);
+    color: var(--vz-success);
+}
+
+.rss-source.is-active .rss-state-dot {
+    box-shadow: 0 0 0 0 rgba(var(--vz-success-rgb), .6);
+    animation: rss-pulse 2s infinite;
+}
+
+@keyframes rss-pulse {
+    70%  { box-shadow: 0 0 0 6px rgba(var(--vz-success-rgb), 0); }
+    100% { box-shadow: 0 0 0 0 rgba(var(--vz-success-rgb), 0); }
+}
+
+/* the toggle itself */
+.rss-source .form-switch {
+    padding: 0;
+    margin: 0;
+    min-height: auto;
+}
+
+.rss-source .form-switch .form-check-input {
+    float: none;
+    margin: 0;
+    width: 2.4em;
+    height: 1.2em;
+    cursor: pointer;
+}
+
+/* max-news row */
+.rss-source-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    margin-top: .875rem;
+    padding-top: .75rem;
+    border-top: 1px dashed var(--vz-border-color);
+}
+
+.rss-control-label {
+    display: flex;
+    align-items: center;
+    gap: .3125rem;
+    margin: 0;
+    font-size: .75rem;
+    color: var(--vz-secondary-color, #878a99);
+}
+
+.rss-source-controls .input-group {
+    width: auto;
+    flex: 0 0 auto;
+}
+
+.rss-source-controls .form-control {
+    width: 72px;
+    flex: 0 0 72px;
+    text-align: center;
+    font-weight: 600;
+    padding-inline: .375rem;
+}
+
+/* hide the native number spinners — the value is small and typed rarely */
+.rss-source-controls .form-control::-webkit-outer-spin-button,
+.rss-source-controls .form-control::-webkit-inner-spin-button {
+    -webkit-appearance: none;
     margin: 0;
 }
+
+.rss-source-controls .form-control[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.rss-source-controls .btn {
+    padding-inline: .75rem;
+    font-size: .8125rem;
+    white-space: nowrap;
+}
+
+/* summary footer of the sources card */
+.rss-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: .75rem 1.25rem;
+    border-top: 1px solid var(--vz-border-color);
+    background-color: rgba(var(--vz-light-rgb), .4);
+    font-size: .75rem;
+    color: var(--vz-secondary-color, #878a99);
+}
+
+.rss-summary strong {
+    color: var(--vz-heading-color);
+    font-weight: 600;
+}
+
+/* ---------- console / log panel ----------------------------------------- */
+
+.rss-console-card .card-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .75rem;
+}
+
+.rss-console-tools {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-inline-start: auto;
+}
+
+.rss-console-search {
+    position: relative;
+}
+
+.rss-console-search .form-control {
+    height: 32px;
+    width: 180px;
+    font-size: .75rem;
+    padding-inline-start: 2rem;
+    border-radius: 8px;
+}
+
+.rss-console-search i {
+    position: absolute;
+    inset-inline-start: .625rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: .875rem;
+    color: var(--vz-secondary-color, #878a99);
+    pointer-events: none;
+}
+
+.rss-console-tools .btn {
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    gap: .3125rem;
+    font-size: .75rem;
+    border-radius: 8px;
+}
+
+/* live / offline indicator */
+.rss-live {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    padding: .25rem .5625rem;
+    border-radius: 999px;
+    font-size: .6875rem;
+    font-weight: 500;
+    background-color: rgba(var(--vz-dark-rgb), .07);
+    color: var(--vz-secondary-color, #878a99);
+}
+
+.rss-live .rss-state-dot {
+    width: 7px;
+    height: 7px;
+}
+
+.rss-live.is-online {
+    background-color: rgba(var(--vz-success-rgb), .12);
+    color: var(--vz-success);
+}
+
+.rss-live.is-online .rss-state-dot {
+    animation: rss-pulse 2s infinite;
+}
+
+.rss-live.is-offline {
+    background-color: rgba(var(--vz-danger-rgb), .12);
+    color: var(--vz-danger);
+}
+
+.rss-console-body {
+    position: relative;
+    padding: 0;
+}
+
+/* the log surface — stays dark in both themes, like a real console */
+.terminal {
+    height: 520px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem 1.125rem;
+    background-color: #0d1117;
+    background-image:
+            radial-gradient(120% 80% at 100% 0%, rgba(37, 160, 226, .10), transparent 60%),
+            radial-gradient(90% 70% at 0% 100%, rgba(0, 189, 157, .07), transparent 60%);
+    color: #c9d1d9;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: .78125rem;
+    line-height: 1.75;
+    direction: rtl;
+    text-align: right;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, .18) transparent;
+}
+
+.terminal::-webkit-scrollbar {
+    width: 8px;
+}
+
+.terminal::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.terminal::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, .16);
+    border-radius: 8px;
+}
+
+.terminal::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, .28);
+}
+
+.terminal p {
+    position: relative;
+    margin: 0;
+    padding: .125rem .75rem .125rem .5rem;
+    border-radius: 5px;
+    border-inline-start: 2px solid transparent;
+    white-space: pre-wrap;
+    word-break: break-word;
+    /* the panel is RTL, but each log line keeps its own natural direction so
+       latin lines don't get their brackets/punctuation reordered */
+    unicode-bidi: plaintext;
+    text-align: right;
+    animation: rss-log-in .18s ease-out;
+}
+
+.terminal p:hover {
+    background-color: rgba(255, 255, 255, .05);
+}
+
 .terminal p.error {
-    color: #ff0000;
+    color: #ff7b72;
+    border-inline-start-color: #ff7b72;
+    background-color: rgba(240, 101, 72, .10);
+    /* keep the accent edge a straight bar, not a rounded bracket */
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+}
+
+/* rows hidden by the search box */
+.terminal p.rss-log-hidden {
+    display: none;
+}
+
+@keyframes rss-log-in {
+    from { opacity: 0; transform: translateY(3px); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* empty state shown until the first log arrives */
+.rss-console-empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    pointer-events: none;
+    color: rgba(201, 209, 217, .55);
+    font-size: .8125rem;
+}
+
+.rss-console-empty i {
+    font-size: 1.75rem;
+    opacity: .5;
+}
+
+.rss-console-empty.d-none {
+    display: none !important;
+}
+
+.rss-console-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: .5rem 1.125rem;
+    border-top: 1px solid var(--vz-border-color);
+    font-size: .6875rem;
+    color: var(--vz-secondary-color, #878a99);
+}
+
+.rss-console-foot code {
+    color: var(--rss-accent);
+    background-color: rgba(var(--vz-primary-rgb), .1);
+    padding: .0625rem .3125rem;
+    border-radius: 4px;
+}
+
+/* ---------- responsive -------------------------------------------------- */
+
+@media (max-width: 575.98px) {
+    .rss-console-tools {
+        width: 100%;
+        margin-inline-start: 0;
+    }
+
+    .rss-console-search {
+        flex: 1 1 auto;
+    }
+
+    .rss-console-search .form-control {
+        width: 100%;
+    }
+
+    .rss-source-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .rss-source-controls .input-group {
+        width: 100%;
+    }
+
+    .rss-source-controls .form-control {
+        flex: 1 1 auto;
+        width: auto;
+    }
+}
+
+@media (max-width: 1199.98px) {
+    .terminal {
+        height: 400px;
+    }
 }

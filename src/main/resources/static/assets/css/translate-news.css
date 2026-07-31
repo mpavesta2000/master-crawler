@@ -1,0 +1,311 @@
+/* ==========================================================================
+   Translate news page
+   Built on the Velzon CSS variables (theme aware) and logical properties (RTL).
+
+   NOTE for future edits: translate-news.js sets `dir` and inline `text-align`
+   on #translated-headline / -title / -subheadline / -lead when the target
+   language changes, so those four must stay plain inputs/textarea. The save
+   button is found with `#sendTranslate button[type="submit"]` — it must remain
+   the first submit button inside that form.
+   ========================================================================== */
+
+.tr-page {
+    --tr-radius: 14px;
+}
+
+.required::after {
+    content: " *";
+    color: var(--vz-danger);
+}
+
+.cke_notifications_area {
+    display: none !important;
+}
+
+/* Velzon forces a fixed height on textareas in some contexts */
+textarea.form-control {
+    height: auto !important;
+}
+
+/* ---------- cards -------------------------------------------------------- */
+
+.tr-card {
+    border: 1px solid var(--vz-border-color);
+    border-radius: var(--tr-radius);
+    box-shadow: 0 6px 24px -18px rgba(var(--vz-dark-rgb), .55);
+    overflow: hidden;
+}
+
+.tr-card > .card-header {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: 1rem 1.25rem;
+    background-color: transparent;
+    border-bottom: 1px solid var(--vz-border-color);
+}
+
+.tr-card-icon {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    font-size: 1.125rem;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.tr-card-heading {
+    margin: 0;
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.tr-card-sub {
+    margin: .125rem 0 0;
+    font-size: .75rem;
+    color: #878a99;
+}
+
+.tr-card-badge {
+    margin-inline-start: auto;
+    padding: .25rem .625rem;
+    border-radius: 999px;
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+    white-space: nowrap;
+}
+
+/* ---------- search + language -------------------------------------------- */
+
+.tr-search {
+    position: relative;
+    margin-bottom: 1.25rem;
+}
+
+.tr-search .form-control {
+    height: 40px;
+    border-radius: 10px;
+    padding-inline-start: 2.375rem;
+    font-size: .8125rem;
+}
+
+.tr-search-icon {
+    position: absolute;
+    inset-inline-start: .375rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 7px;
+    font-size: 1rem;
+    color: #878a99;
+    background-color: transparent;
+    transition: color .2s ease, background-color .2s ease;
+}
+
+.tr-search-icon:hover,
+.tr-search-icon:focus-visible {
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .1);
+}
+
+.tr-label {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    margin-bottom: .5rem;
+    font-size: .8125rem;
+    font-weight: 500;
+    color: var(--vz-heading-color);
+}
+
+.tr-lang {
+    position: relative;
+    margin-bottom: 1.25rem;
+}
+
+.tr-lang .form-select {
+    height: 42px;
+    border-radius: 10px;
+    padding-inline-start: 2.375rem;
+    font-size: .875rem;
+}
+
+.tr-lang-icon {
+    position: absolute;
+    inset-inline-start: .875rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    font-size: 1rem;
+    color: var(--vz-primary);
+    pointer-events: none;
+}
+
+/* ---------- news picker -------------------------------------------------- */
+
+.tr-section-title {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    margin: 0 0 .75rem;
+    font-size: .8125rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.tr-news-list {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    max-height: 420px;
+    overflow-y: auto;
+    padding-inline-end: .25rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--vz-dark-rgb), .25) transparent;
+}
+
+.tr-news-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tr-news-list::-webkit-scrollbar-thumb {
+    background-color: rgba(var(--vz-dark-rgb), .2);
+    border-radius: 6px;
+}
+
+/* each row is a <label> wrapping the radio, so the whole row is clickable */
+.tr-news {
+    display: flex;
+    align-items: flex-start;
+    gap: .625rem;
+    margin: 0;
+    padding: .625rem .75rem;
+    border: 1px solid var(--vz-border-color);
+    border-radius: 11px;
+    cursor: pointer;
+    background-color: rgba(var(--vz-light-rgb), .35);
+    transition: border-color .18s ease, background-color .18s ease;
+}
+
+.tr-news:hover {
+    border-color: rgba(var(--vz-primary-rgb), .4);
+}
+
+.tr-news:has(input[type="radio"]:checked) {
+    border-color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .07);
+}
+
+.tr-news .form-check-input {
+    flex: 0 0 auto;
+    margin: .1875rem 0 0;
+    cursor: pointer;
+}
+
+.tr-news-text {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.tr-news-id {
+    display: inline-block;
+    margin-bottom: .1875rem;
+    padding: .0625rem .375rem;
+    border-radius: 5px;
+    font-size: .6875rem;
+    color: #878a99;
+    background-color: rgba(var(--vz-dark-rgb), .06);
+}
+
+.tr-news-title {
+    display: block;
+    font-size: .8125rem;
+    font-weight: 500;
+    line-height: 1.7;
+    color: var(--vz-heading-color);
+}
+
+.tr-news-empty {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    border: 1px dashed var(--vz-border-color);
+    border-radius: 11px;
+    color: #878a99;
+    font-size: .8125rem;
+}
+
+.tr-news-empty i {
+    display: block;
+    margin-bottom: .375rem;
+    font-size: 1.5rem;
+    opacity: .45;
+}
+
+/* ---------- buttons ------------------------------------------------------ */
+
+.tr-action {
+    height: 42px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .375rem;
+    font-weight: 600;
+}
+
+/* ---------- result form -------------------------------------------------- */
+
+.tr-field {
+    margin-bottom: 1rem;
+}
+
+.tr-field .form-control {
+    border-radius: 10px;
+    font-size: .875rem;
+}
+
+.tr-field input.form-control {
+    height: 42px;
+}
+
+/* CKEditor replaces the #editor textarea */
+.tr-editor .cke_chrome {
+    border: 1px solid var(--vz-border-color);
+    border-radius: 11px;
+    overflow: hidden;
+    box-shadow: none;
+}
+
+/* ---------- pagination --------------------------------------------------- */
+
+.tr-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.25rem;
+}
+
+.tr-pagination .pagination {
+    flex-wrap: wrap;
+    gap: .25rem;
+    margin: 0;
+}
+
+.tr-pagination .page-link {
+    min-width: 34px;
+    text-align: center;
+    border-radius: 8px;
+    border-color: var(--vz-border-color);
+    font-size: .8125rem;
+}

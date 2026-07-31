@@ -1,0 +1,66 @@
+/* ==========================================================================
+   Jahad brand logo
+   Loaded globally via partials/head-css so the sidebar picks it up on every
+   page; the auth cover pages reuse the same classes.
+
+   IMPORTANT — why the blend modes:
+   both jahad-logo-*.jpeg are JPEGs (no alpha) on a solid near-white background,
+   and jahad-logo-white.jpeg is white ink on that white background, so it cannot
+   be shown on a dark surface at all. So the BLACK file is used as the single
+   source everywhere:
+     • on light surfaces  -> mix-blend-mode: multiply  (white bg drops out, black ink stays)
+     • on dark surfaces   -> invert(1) + screen        (becomes white ink, black bg drops out)
+   Swap in transparent PNGs and all of this can be deleted.
+   ========================================================================== */
+
+.brand-logo {
+    display: block;
+    width: auto;
+    object-fit: contain;
+}
+
+/* black ink on a light surface */
+.brand-logo-on-light {
+    mix-blend-mode: multiply;
+}
+
+/* white ink on a dark surface, derived from the same black file */
+.brand-logo-on-dark {
+    filter: invert(1);
+    mix-blend-mode: screen;
+}
+
+/* ---------- sidebar ------------------------------------------------------- */
+
+.navbar-brand-box .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 70px;
+}
+
+.navbar-brand-box .logo-lg .brand-logo {
+    height: 90px;
+}
+
+.navbar-brand-box .logo-sm .brand-logo {
+    height: 34px;
+}
+
+/* ---------- auth cover pages ---------------------------------------------- */
+
+.auth-brand .brand-logo {
+    height: 92px;
+    margin-bottom: 1.25rem;
+}
+
+.auth-brand-logo {
+    position: relative;
+    z-index: 1;
+}
+
+@media (max-width: 991.98px) {
+    .auth-brand .brand-logo {
+        height: 72px;
+    }
+}

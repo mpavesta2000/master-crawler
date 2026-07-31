@@ -1,0 +1,429 @@
+/* ==========================================================================
+   Voice → text page
+   Built on the Velzon CSS variables (theme aware) and logical properties (RTL).
+
+   NOTE for future edits: voice-to-text.js drives several elements directly —
+   it toggles `bg-danger` / `bg-light` / `text-dark` on #recording-status,
+   `d-none` on #audio-container, `disabled` on the record buttons, and it
+   REWRITES #copyButton's textContent (so that button must stay text-only).
+   The recording animation below keys off #recording-status.bg-danger.
+   ========================================================================== */
+
+.vtt-page {
+    --vtt-radius: 14px;
+}
+
+.vtt-card {
+    border: 1px solid var(--vz-border-color);
+    border-radius: var(--vtt-radius);
+    box-shadow: 0 6px 24px -18px rgba(var(--vz-dark-rgb), .55);
+    overflow: hidden;
+}
+
+.vtt-card > .card-header {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: 1rem 1.25rem;
+    background-color: transparent;
+    border-bottom: 1px solid var(--vz-border-color);
+}
+
+.vtt-card-icon {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    font-size: 1.125rem;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.vtt-card-heading {
+    margin: 0;
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.vtt-card-sub {
+    margin: .125rem 0 0;
+    font-size: .75rem;
+    color: #878a99;
+}
+
+.vtt-card-tools {
+    margin-inline-start: auto;
+}
+
+/* ---------- recorder ----------------------------------------------------- */
+
+.vtt-recorder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .875rem;
+    padding: 1.5rem 1rem 1.75rem;
+    border-radius: 12px;
+    background-color: rgba(var(--vz-light-rgb), .45);
+}
+
+/* the pulsing halo — visible only while the JS has put the status badge into
+   its recording (bg-danger) state */
+.vtt-pulse {
+    position: relative;
+    width: 84px;
+    height: 84px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background-color: rgba(var(--vz-primary-rgb), .1);
+    transition: background-color .3s ease;
+}
+
+.vtt-pulse::before,
+.vtt-pulse::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(var(--vz-danger-rgb), .55);
+    opacity: 0;
+}
+
+.vtt-recorder:has(#recording-status.bg-danger) .vtt-pulse {
+    background-color: rgba(var(--vz-danger-rgb), .12);
+}
+
+.vtt-recorder:has(#recording-status.bg-danger) .vtt-pulse::before,
+.vtt-recorder:has(#recording-status.bg-danger) .vtt-pulse::after {
+    animation: vtt-ripple 2s ease-out infinite;
+}
+
+.vtt-recorder:has(#recording-status.bg-danger) .vtt-pulse::after {
+    animation-delay: 1s;
+}
+
+@keyframes vtt-ripple {
+    0%   { transform: scale(1);    opacity: .8; }
+    100% { transform: scale(1.55); opacity: 0; }
+}
+
+.vtt-pulse-core {
+    width: 60px;
+    height: 60px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    font-size: 1.625rem;
+    color: #fff;
+    background: linear-gradient(135deg, rgb(var(--vz-primary-rgb)), rgba(var(--vz-primary-rgb), .7));
+    transition: background .3s ease;
+}
+
+.vtt-recorder:has(#recording-status.bg-danger) .vtt-pulse-core {
+    background: linear-gradient(135deg, rgb(var(--vz-danger-rgb)), rgba(var(--vz-danger-rgb), .7));
+}
+
+.vtt-timer {
+    font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: .04em;
+    color: var(--vz-heading-color);
+}
+
+/* keep the JS-driven bg-light / bg-danger colours, just reshape the pill */
+#recording-status {
+    padding: .3125rem .75rem;
+    border-radius: 999px;
+    font-size: .75rem;
+    font-weight: 500;
+}
+
+.vtt-rec-buttons {
+    display: flex;
+    justify-content: center;
+    gap: .5rem;
+    margin-top: .25rem;
+}
+
+.vtt-rec-buttons .btn {
+    height: 40px;
+    min-width: 132px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .375rem;
+    font-size: .8125rem;
+}
+
+.vtt-rec-buttons .btn:disabled {
+    opacity: .45;
+}
+
+/* preview block revealed after a recording stops */
+.vtt-preview {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px dashed var(--vz-border-color);
+}
+
+.vtt-preview audio {
+    width: 100%;
+    height: 40px;
+    margin-bottom: 1rem;
+}
+
+.vtt-label {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    margin-bottom: .5rem;
+    font-size: .8125rem;
+    font-weight: 500;
+    color: var(--vz-heading-color);
+}
+
+.vtt-preview .form-control {
+    height: 42px;
+    border-radius: 10px;
+    font-size: .875rem;
+}
+
+.vtt-preview .btn {
+    height: 40px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    font-size: .8125rem;
+}
+
+/* ---------- file list ---------------------------------------------------- */
+
+.vtt-section-title {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    margin: 0 0 .75rem;
+    font-size: .8125rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.vtt-files {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    max-height: 330px;
+    overflow-y: auto;
+    padding-inline-end: .25rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--vz-dark-rgb), .25) transparent;
+}
+
+.vtt-files::-webkit-scrollbar {
+    width: 6px;
+}
+
+.vtt-files::-webkit-scrollbar-thumb {
+    background-color: rgba(var(--vz-dark-rgb), .2);
+    border-radius: 6px;
+}
+
+/* each row is a <label> wrapping the radio, so the whole row is clickable */
+.vtt-file {
+    display: flex;
+    align-items: center;
+    gap: .625rem;
+    margin: 0;
+    padding: .625rem .75rem;
+    border: 1px solid var(--vz-border-color);
+    border-radius: 11px;
+    cursor: pointer;
+    background-color: rgba(var(--vz-light-rgb), .35);
+    transition: border-color .18s ease, background-color .18s ease;
+}
+
+.vtt-file:hover {
+    border-color: rgba(var(--vz-primary-rgb), .4);
+}
+
+.vtt-file:has(input[type="radio"]:checked) {
+    border-color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .07);
+}
+
+.vtt-file .form-check-input {
+    flex: 0 0 auto;
+    margin: 0;
+    cursor: pointer;
+}
+
+.vtt-file-icon {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    font-size: 1rem;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.vtt-file-text {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.file-name-text {
+    display: block;
+    font-size: .8125rem;
+    font-weight: 500;
+    color: var(--vz-heading-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vtt-file-size {
+    display: block;
+    font-size: .6875rem;
+    color: #878a99;
+}
+
+.vtt-file-actions {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    flex: 0 0 auto;
+}
+
+.vtt-file-actions .btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 8px;
+    font-size: .875rem;
+}
+
+.vtt-files-empty {
+    padding: 2rem 1rem;
+    text-align: center;
+    border: 1px dashed var(--vz-border-color);
+    border-radius: 11px;
+    color: #878a99;
+    font-size: .8125rem;
+}
+
+.vtt-files-empty i {
+    display: block;
+    margin-bottom: .375rem;
+    font-size: 1.5rem;
+    opacity: .45;
+}
+
+.vtt-submit {
+    height: 42px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .375rem;
+    font-weight: 600;
+}
+
+/* ---------- result / editor ---------------------------------------------- */
+
+/* CKEditor injects its own chrome in place of the #outcome textarea */
+.vtt-editor .cke_chrome {
+    border: 1px solid var(--vz-border-color);
+    border-radius: 11px;
+    overflow: hidden;
+    box-shadow: none;
+}
+
+.cke_notifications_area {
+    display: none !important;
+}
+
+#copyButton {
+    height: 34px;
+    border-radius: 9px;
+    font-size: .75rem;
+    white-space: nowrap;
+}
+
+/* ---------- filepond ----------------------------------------------------- */
+
+.vtt-card .filepond--root {
+    margin-bottom: 0;
+}
+
+.vtt-card .filepond--panel-root {
+    border-radius: 11px;
+    background-color: rgba(var(--vz-light-rgb), .5);
+    border: 1px dashed var(--vz-border-color);
+}
+
+/* ---------- audio modal -------------------------------------------------- */
+
+#audioModal .modal-content {
+    border: 0;
+    border-radius: var(--vtt-radius);
+}
+
+#audioModal .modal-body audio {
+    width: 100%;
+    height: 44px;
+}
+
+.vtt-modal-file {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: .875rem;
+    padding: .625rem .75rem;
+    border-radius: 10px;
+    background-color: rgba(var(--vz-light-rgb), .5);
+    font-size: .8125rem;
+    color: var(--vz-heading-color);
+}
+
+#audio-filename {
+    margin: 0;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ---------- responsive --------------------------------------------------- */
+
+@media (max-width: 575.98px) {
+    .vtt-rec-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .vtt-rec-buttons .btn {
+        width: 100%;
+    }
+
+    .vtt-file {
+        flex-wrap: wrap;
+    }
+
+    .vtt-file-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}

@@ -1,132 +1,160 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="fa" dir="rtl"
-	  data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none"
-	  data-preloader="disable">
+      data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none"
+      data-preloader="disable">
 
 <head>
-	<!--page title-->
-	<div th:replace="partials/title-meta :: title-meta('ثبت نام')"></div>
+    <!--page title-->
+    <div th:replace="partials/title-meta :: title-meta('ثبت نام')"></div>
 
-	<!-- Page CSS -->
-	<div th:replace="partials/head-css :: head-css"></div>
+    <!-- Page CSS -->
+    <div th:replace="partials/head-css :: head-css"></div>
 
-	<link href="/assets/css/custom-authentication.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/css/custom-authentication.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/css/auth-cover.css" rel="stylesheet" type="text/css"/>
 </head>
 
 <body>
 <!-- auth-page wrapper -->
-<div class="auth-page-wrapper auth-bg-cover min-vh-100">
-	<!-- Video Background -->
-	<div class="video-background">
-		<video autoplay muted loop playsinline class="background-video">
-			<source src="/assets/images/tinn-vid.mp4" type="video/mp4">
-			<!-- Fallback for browsers that don't support video -->
-			<img src="/assets/images/tinnnews-logo.png" alt="TinnNews Background" class="fallback-image">
-		</video>
-	</div>
+<div class="auth-page-wrapper auth-bg-cover auth-cover min-vh-100">
+    <!-- Overlay for better text readability -->
+    <div class="bg-overlay"></div>
 
-	<!-- Overlay for better text readability -->
-	<div class="bg-overlay"></div>
-	<!-- auth-page content -->
-	<div class="auth-page-content overflow-hidden pt-lg-5">
-		<div class="container">
-			<div class="row justify-content-center">
-				<div class="col-lg-6">
-					<div class="card overflow-hidden m-0">
-						<div class="row justify-content-center">
-							<div class="col-lg-12">
-								<div class="p-lg-5 p-4">
-									<div>
-										<h2 class="text-primary">ثبت نام نکردی تو RAVII؟واقعا؟</h2>
-										<p class="text-muted">الان بیا در دامی ثبت نام کن!</p>
-									</div>
+    <!-- auth-page content -->
+    <div class="auth-page-content overflow-hidden pt-lg-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xxl-8 col-lg-10">
+                    <div class="card overflow-hidden m-0">
+                        <div class="row g-0">
 
-									<div class="mt-4">
-										<form class="needs-validation" method="post" novalidate th:action="@{/admin/signup/save}" th:object="${user}">
+                            <!-- ===================== معرفی ===================== -->
+                            <div class="col-lg-5 d-none d-lg-block">
+                                <div class="auth-brand h-100">
+                                    <div class="auth-brand-logo">
+                                        <img src="/assets/images/jahad-logo-black-transparent.png" alt="جهاد دانشگاهی"
+                                             class="brand-logo brand-logo-on-dark">
+                                    </div>
 
-											<div class="mb-3">
-												<label for="useremail" class="form-label">ایمیل <span
-														class="text-danger">*</span></label>
-												<input type="email" class="form-control" th:field="*{email}" id="useremail"
-													   placeholder=".ایمیل خود را وارد کنید" required>
-												<div class="invalid-feedback">
-													لطفاایمیل خود را وارد کنید
-												</div>
-											</div>
-											<div class="mb-3">
-												<label class="form-label">نوع کاربر<span
-														class="text-danger">*</span></label>
-												<select th:field="*{userTypeId}" class="form-select mb-3" aria-label="Default select example">
-													<option th:each="type : ${getAllTypes}" th:text="${type.getUserTypeName() == 'Admin' ? 'ادمین' : (type.getUserTypeName() == 'User' ? 'ویراستار' : type.getUserTypeName())}" th:value="${type.getUserTypeId()}"></option>
-												</select>
-											</div>
+                                    <div class="auth-brand-body">
+                                        <h2 class="auth-brand-title">به ما بپیوندید</h2>
+                                        <p class="auth-brand-text">
+                                            حساب کاربری بسازید و به ابزارهای تولید و مدیریت خبر دسترسی پیدا کنید.
+                                        </p>
 
-											<div class="mb-3">
-												<label class="form-label" for="password-input">رمزعبور</label>
-												<div class="position-relative auth-pass-inputgroup">
-													<input type="password" th:field="*{password}" class="form-control pe-5 password-input"
-														   onpaste="return false" placeholder="رمزعبور خود را وارد کنید."
-														   id="password-input" aria-describedby="passwordInput"
-														   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required>
-													<button
-															class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
-															type="button" id="password-addon"><i
-															class="ri-eye-fill align-middle"></i></button>
-													<div class="invalid-feedback">
-														لطفا رمزعبور خود را وارد کنید
-													</div>
-												</div>
-											</div>
+                                        <ul class="auth-brand-list">
+                                            <li><i class="ri-shield-check-line"></i> دسترسی بر اساس نقش کاربری</li>
+                                            <li><i class="ri-magic-line"></i> ابزارهای هوش مصنوعی تولید محتوا</li>
+                                            <li><i class="ri-bar-chart-2-line"></i> گزارش عملکرد و آمار فعالیت</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
 
-											<div class="mb-4">
+                            <!-- ====================== فرم ====================== -->
+                            <div class="col-lg-7">
+                                <div class="auth-form-side h-100">
+                                    <h2 class="auth-form-title">ساخت حساب کاربری</h2>
+                                    <p class="auth-form-sub">اطلاعات زیر را تکمیل کنید.</p>
 
-											</div>
+                                    <form class="needs-validation" method="post" novalidate
+                                          th:action="@{/admin/signup/save}" th:object="${user}">
 
-											<div id="password-contain" class="p-3 bg-light mb-2 rounded">
-												<h5 class="fs-13">رمز عبور باید شامل:</h5>
-												<p id="pass-length" class="invalid fs-12 mb-2">حداقل <b>۸ کاراکتر</b></p>
-												<p id="pass-lower" class="invalid fs-12 mb-2">حداقل یک <b>حرف کوچک</b> (a-z)</p>
-												<p id="pass-upper" class="invalid fs-12 mb-2">حداقل یک <b>حرف بزرگ</b> (A-Z)</p>
-												<p id="pass-number" class="invalid fs-12 mb-0">حداقل یک <b>عدد</b> (0-9)</p>
-											</div>
+                                        <div class="auth-field">
+                                            <label for="useremail" class="auth-label">
+                                                <i class="ri-mail-line"></i> ایمیل <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="email" class="form-control" th:field="*{email}" id="useremail"
+                                                   placeholder="ایمیل خود را وارد کنید" dir="ltr" required>
+                                            <div class="invalid-feedback">
+                                                لطفاایمیل خود را وارد کنید
+                                            </div>
+                                        </div>
 
+                                        <div class="auth-field">
+                                            <label class="auth-label" for="userTypeId">
+                                                <i class="ri-user-settings-line"></i> نوع کاربر <span
+                                                    class="text-danger">*</span>
+                                            </label>
+                                            <select th:field="*{userTypeId}" id="userTypeId" class="form-select"
+                                                    aria-label="نوع کاربر">
+                                                <option th:each="type : ${getAllTypes}"
+                                                        th:text="${type.getUserTypeName() == 'Admin' ? 'ادمین' : (type.getUserTypeName() == 'User' ? 'ویراستار' : type.getUserTypeName())}"
+                                                        th:value="${type.getUserTypeId()}"></option>
+                                            </select>
+                                        </div>
 
-											<div class="mt-4">
-												<button class="btn btn-primary w-100" type="submit">ثبت نام</button>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!-- end card -->
-				</div>
-				<!-- end col -->
+                                        <div class="auth-field">
+                                            <label class="auth-label" for="password-input">
+                                                <i class="ri-lock-2-line"></i> رمزعبور <span
+                                                    class="text-danger">*</span>
+                                            </label>
+                                            <div class="position-relative auth-pass-inputgroup">
+                                                <input type="password" th:field="*{password}"
+                                                       class="form-control pe-5 password-input"
+                                                       onpaste="return false" placeholder="رمزعبور خود را وارد کنید"
+                                                       id="password-input" aria-describedby="passwordInput"
+                                                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required>
+                                                <button
+                                                        class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
+                                                        type="button" id="password-addon"><i
+                                                        class="ri-eye-fill align-middle"></i></button>
+                                                <div class="invalid-feedback">
+                                                    لطفا رمزعبور خود را وارد کنید
+                                                </div>
+                                            </div>
+                                        </div>
 
-			</div>
-			<!-- end row -->
-		</div>
-		<!-- end container -->
-	</div>
-	<!-- end auth page content -->
+                                        <div id="password-contain" class="p-3 bg-light mb-3 rounded">
+                                            <h5 class="fs-13">رمز عبور باید شامل:</h5>
+                                            <p id="pass-length" class="invalid fs-12 mb-2">حداقل <b>۸ کاراکتر</b></p>
+                                            <p id="pass-lower" class="invalid fs-12 mb-2">حداقل یک <b>حرف کوچک</b> (a-z)
+                                            </p>
+                                            <p id="pass-upper" class="invalid fs-12 mb-2">حداقل یک <b>حرف بزرگ</b> (A-Z)
+                                            </p>
+                                            <p id="pass-number" class="invalid fs-12 mb-0">حداقل یک <b>عدد</b> (0-9)</p>
+                                        </div>
 
-	<!-- footer -->
-	<footer class="footer glassy-footer">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="text-center">
-						<p class="mb-0 glassy-footer-text">
-							توسعه شده توسط تیم راوی - ۱۴۰۳
-							&copy;
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</footer>
-	<!-- end Footer -->
+                                        <button class="btn btn-primary auth-submit" type="submit">
+                                            <i class="ri-user-add-line"></i> ثبت نام
+                                        </button>
+                                    </form>
+
+                                    <p class="auth-alt">
+                                        قبلاً ثبت نام کرده‌اید؟
+                                        <a th:href="@{/admin/login}">وارد شوید</a>
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- end card -->
+                </div>
+                <!-- end col -->
+
+            </div>
+            <!-- end row -->
+        </div>
+        <!-- end container -->
+    </div>
+    <!-- end auth page content -->
+
+    <!-- footer -->
+    <footer class="footer glassy-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="text-center">
+                        <p class="mb-0 glassy-footer-text">
+                            طراحی شده توسط تیم مرکز راهبری پژوهش و پیشرفت هوش مصنوعی - ۱۴۰۳
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- end Footer -->
 </div>
 <!-- end auth-page-wrapper -->
 

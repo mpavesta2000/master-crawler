@@ -11,50 +11,49 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="/assets/css/admin-list.css" type="text/css">
 </head>
 
 <body>
 <div layout:fragment="content">
-    <div th:replace="partials/page-title :: page-title('ادمین‌ها','فروشگاه')"></div>
+    <div th:replace="partials/page-title :: page-title('ادمین‌ها','کاربران')"></div>
 
-    <div class="row">
+    <div class="row al-page">
         <div class="col-lg-12">
-            <div>
-                <div class="card">
-                    <div class="card-header border-0">
-                        <div class="row g-4 align-items-center">
-                            <div class="col">
-                                <h5 class="card-title mb-0">لیست ادمین‌ها</h5>
-                            </div>
-                            <div class="col-auto ms-auto">
-                                <a href="/admin/signup/4f8e3bc28e934dc29b97f3ae9f25a7e1" class="btn btn-primary">افزودن ادمین</a>
-                            </div>
-                        </div>
+            <div class="card al-card">
 
+                <div class="card-header">
+                    <span class="al-card-icon"><i class="ri-shield-user-line"></i></span>
+                    <div>
+                        <h5 class="al-card-heading">لیست ادمین‌ها</h5>
+                        <p class="al-card-sub">مدیریت حساب‌های کاربری و سطح دسترسی</p>
                     </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="table-responsive">
-                                    <table id="customers-datatables" class="table table-bordered nowrap table-striped align-middle table-responsive" style="width:100%">
-                                        <thead>
-                                        <tr>
-                                            <th>کد ادمین‌</th>
-                                            <th>ایمیل</th>
-                                            <th>وضیعت</th>
-                                            <th>تاریخ ساخت اکانت</th>
-                                            <th>تاریخ آخرین تغییر اکانت</th>
-                                            <th>عملیات</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div> <!-- /.card-body -->
-                </div> <!-- /.card -->
-            </div>
+
+                    <div class="al-card-tools">
+                        <a href="/admin/signup/4f8e3bc28e934dc29b97f3ae9f25a7e1" class="btn btn-primary al-add">
+                            <i class="ri-user-add-line"></i> افزودن ادمین
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="customers-datatables" class="table table-bordered nowrap table-striped align-middle" style="width:100%">
+                            <thead>
+                            <tr>
+                                <th>کد ادمین‌</th>
+                                <th>ایمیل</th>
+                                <th>وضیعت</th>
+                                <th>تاریخ ساخت اکانت</th>
+                                <th>تاریخ آخرین تغییر اکانت</th>
+                                <th>عملیات</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div> <!-- /.card-body -->
+            </div> <!-- /.card -->
         </div>
     </div>
 </div>
@@ -65,6 +64,7 @@
             <div class="modal-content">
                 <form id="editUserForm">
                     <div class="modal-header">
+                        <span class="al-card-icon"><i class="ri-user-settings-line"></i></span>
                         <h5 class="modal-title" id="editUserModalLabel">ویرایش کاربر</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                     </div>
@@ -72,17 +72,23 @@
                         <input type="hidden" id="edit-user-id" name="id">
 
                         <div class="mb-3">
-                            <label for="edit-email" class="form-label">ایمیل</label>
-                            <input type="email" class="form-control" id="edit-email" name="email">
+                            <label for="edit-email" class="form-label">
+                                <i class="ri-mail-line"></i> ایمیل
+                            </label>
+                            <input type="email" class="form-control" id="edit-email" name="email" dir="ltr">
                         </div>
 
                         <div class="mb-3">
-                            <label for="edit-password" class="form-label">رمز عبور (در صورت نیاز)</label>
+                            <label for="edit-password" class="form-label">
+                                <i class="ri-lock-2-line"></i> رمز عبور (در صورت نیاز)
+                            </label>
                             <input type="password" class="form-control" id="edit-password" name="password">
                         </div>
 
-                        <div class="mb-3">
-                            <label for="edit-status" class="form-label">وضعیت</label>
+                        <div class="mb-0">
+                            <label for="edit-status" class="form-label">
+                                <i class="ri-toggle-line"></i> وضعیت
+                            </label>
                             <select class="form-select" id="edit-status" name="active">
                                 <option value="true">فعال</option>
                                 <option value="false">غیرفعال</option>
@@ -91,8 +97,10 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
-                        <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">بستن</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="ri-save-3-line"></i> ذخیره تغییرات
+                        </button>
                     </div>
                 </form>
             </div>

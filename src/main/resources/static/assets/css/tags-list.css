@@ -1,0 +1,193 @@
+/* ==========================================================================
+   Tags list
+   Built on the Velzon CSS variables (theme aware) and logical properties (RTL).
+
+   NOTE for future edits: tags-list.js initialises the table by the id
+   #news-datatables (yes, on the tags page too) and defines exactly 3 columns —
+   id · name · actions. The name chip and the delete button are HTML strings
+   inside that file, not in this template.
+   ========================================================================== */
+
+.tl-page {
+    --tl-radius: 14px;
+}
+
+.tl-card {
+    border: 1px solid var(--vz-border-color);
+    border-radius: var(--tl-radius);
+    box-shadow: 0 6px 24px -18px rgba(var(--vz-dark-rgb), .55);
+}
+
+.tl-card > .card-header {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: 1rem 1.25rem;
+    background-color: transparent;
+    border-bottom: 1px solid var(--vz-border-color);
+}
+
+.tl-card-icon {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    font-size: 1.125rem;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.tl-card-heading {
+    margin: 0;
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--vz-heading-color);
+}
+
+.tl-card-sub {
+    margin: .125rem 0 0;
+    font-size: .75rem;
+    color: #878a99;
+}
+
+/* ---------- table ---------------------------------------------------------- */
+
+#news-datatables thead th {
+    padding: .75rem .625rem;
+    font-size: .75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    color: #878a99;
+    background-color: rgba(var(--vz-light-rgb), .6);
+    border-bottom: 1px solid var(--vz-border-color);
+}
+
+#news-datatables tbody td {
+    padding: .625rem;
+    font-size: .8125rem;
+    vertical-align: middle;
+    border-color: var(--vz-border-color);
+}
+
+#news-datatables tbody tr:hover > td {
+    background-color: rgba(var(--vz-primary-rgb), .04);
+}
+
+#news-datatables tbody td:first-child {
+    font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+    font-size: .75rem;
+    color: #878a99;
+    white-space: nowrap;
+    width: 1%;
+}
+
+/* ---------- cells rendered by tags-list.js -------------------------------- */
+
+.tl-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: .3125rem;
+    padding: .25rem .625rem;
+    border-radius: 999px;
+    font-size: .75rem;
+    font-weight: 500;
+    color: var(--vz-primary);
+    background-color: rgba(var(--vz-primary-rgb), .12);
+}
+
+.tl-tag i {
+    font-size: .8125rem;
+    opacity: .8;
+}
+
+.tl-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+}
+
+.tl-actions form {
+    margin: 0;
+    display: inline;
+}
+
+.tl-action {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: inline-grid;
+    place-items: center;
+    border: 0;
+    border-radius: 8px;
+    font-size: .875rem;
+    line-height: 1;
+    color: var(--vz-danger);
+    background-color: rgba(var(--vz-danger-rgb), .12);
+    transition: background-color .16s ease, color .16s ease;
+}
+
+.tl-action:hover {
+    color: #fff;
+    background-color: var(--vz-danger);
+}
+
+/* ---------- datatables chrome ---------------------------------------------- */
+
+.tl-card .dataTables_wrapper .dt-buttons {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: .375rem;
+    margin-bottom: .875rem;
+}
+
+.tl-card .dataTables_wrapper .dt-button {
+    height: 32px;
+    padding: 0 .75rem;
+    border: 1px solid var(--vz-border-color);
+    border-radius: 8px;
+    font-size: .75rem;
+    color: var(--vz-body-color);
+    background: rgba(var(--vz-light-rgb), .6);
+}
+
+.tl-card .dataTables_wrapper .dt-button:hover {
+    color: var(--vz-primary);
+    border-color: rgba(var(--vz-primary-rgb), .5);
+    background: rgba(var(--vz-primary-rgb), .08);
+}
+
+.tl-card .dataTables_wrapper .dataTables_filter input,
+.tl-card .dataTables_wrapper .dataTables_length select {
+    height: 34px;
+    border: 1px solid var(--vz-border-color);
+    border-radius: 8px;
+    padding-inline: .625rem;
+    font-size: .8125rem;
+    background-color: transparent;
+    color: var(--vz-body-color);
+}
+
+.tl-card .dataTables_wrapper .dataTables_filter,
+.tl-card .dataTables_wrapper .dataTables_length,
+.tl-card .dataTables_wrapper .dataTables_info {
+    font-size: .8125rem;
+    color: #878a99;
+}
+
+.tl-card .dataTables_wrapper .dataTables_paginate .paginate_button {
+    min-width: 32px;
+    border-radius: 8px !important;
+    font-size: .8125rem;
+}
+
+.tl-card .dataTables_wrapper .dataTables_processing {
+    border: 1px solid var(--vz-border-color);
+    border-radius: 10px;
+    box-shadow: 0 10px 26px -18px rgba(var(--vz-dark-rgb), .9);
+}
+
+.tl-table-scroll {
+    overflow-x: auto;
+}

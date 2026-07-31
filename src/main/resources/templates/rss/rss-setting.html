@@ -14,84 +14,196 @@
 <body>
 <div layout:fragment="content">
   <div th:replace="partials/page-title :: page-title('تنظیمات RSS','RSS')"></div>
-  <div class="row">
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-header">تنظیمات RSS خبرگزاری برنا</div>
+
+  <div class="row rss-page">
+
+    <!-- ============================ منابع RSS ============================ -->
+    <div class="col-xxl-4 col-lg-5">
+      <div class="card rss-card rss-sources-card">
+        <div class="card-header">
+          <h5 class="rss-card-title"><i class="ri-rss-line"></i> منابع خبری</h5>
+          <p class="rss-card-subtitle">وضعیت دریافت خودکار و حداکثر تعداد اخبار هر منبع</p>
+        </div>
+
         <div class="card-body">
-          <div class="form-check form-switch mb-4">
-            <div class="row">
-              <div class="col-md-6">
-                <input class="form-check-input" type="checkbox" id="bornaRSSToggle" th:checked="${bornaRSSEnabled}">
-                <label class="form-check-label" for="bornaRSSToggle">فعال کردن RSS خبرگزاری برنا</label>
+          <div class="rss-sources">
+
+            <!-- برنا -->
+            <div class="rss-source" data-rss-source style="--rss-accent-rgb: 37,160,226;">
+              <div class="rss-source-head">
+                <div class="rss-source-avatar"><i class="ri-rss-fill"></i></div>
+                <div class="rss-source-info">
+                  <h6 class="rss-source-name">خبرگزاری برنا</h6>
+                  <div class="rss-source-meta">
+                    <span class="rss-chip">فارسی</span>
+                    <span class="rss-state" data-rss-state>
+                      <span class="rss-state-dot"></span><span data-rss-state-text>غیرفعال</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" id="bornaRSSToggle"
+                         data-rss-toggle th:checked="${bornaRSSEnabled}">
+                  <label class="form-check-label visually-hidden" for="bornaRSSToggle">فعال کردن RSS خبرگزاری برنا</label>
+                </div>
               </div>
-              <div class="col-md-6 d-flex">
-                <input type="number" class="form-control" id="maxNewsInput" min="1" max="20"
-                       th:value="${defaultBornaMaxNews ?: 5}" placeholder="حداکثر تعداد اخبار">
-                <button class="btn btn-primary ms-2" id="setMaxNewsBtn">تنظیم</button>
+
+              <div class="rss-source-controls">
+                <label class="rss-control-label" for="maxNewsInput">
+                  <i class="ri-stack-line"></i> حداکثر تعداد اخبار
+                </label>
+                <div class="input-group input-group-sm">
+                  <input type="number" class="form-control" id="maxNewsInput" min="1" max="20"
+                         th:value="${defaultBornaMaxNews ?: 5}" placeholder="۵">
+                  <button class="btn btn-primary" id="setMaxNewsBtn" type="button">تنظیم</button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <hr class="my-4">
-
-          <div class="form-check form-switch mb-4">
-            <div class="row">
-              <div class="col-md-6">
-                <input class="form-check-input" type="checkbox" id="fararuRSSToggle" th:checked="${fararuRSSEnabled}">
-                <label class="form-check-label" for="fararuRSSToggle">فعال کردن RSS خبرگزاری فرارو</label>
+            <!-- فرارو -->
+            <div class="rss-source" data-rss-source style="--rss-accent-rgb: 111,66,193;">
+              <div class="rss-source-head">
+                <div class="rss-source-avatar"><i class="ri-rss-fill"></i></div>
+                <div class="rss-source-info">
+                  <h6 class="rss-source-name">خبرگزاری فرارو</h6>
+                  <div class="rss-source-meta">
+                    <span class="rss-chip">فارسی</span>
+                    <span class="rss-state" data-rss-state>
+                      <span class="rss-state-dot"></span><span data-rss-state-text>غیرفعال</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" id="fararuRSSToggle"
+                         data-rss-toggle th:checked="${fararuRSSEnabled}">
+                  <label class="form-check-label visually-hidden" for="fararuRSSToggle">فعال کردن RSS خبرگزاری فرارو</label>
+                </div>
               </div>
-              <div class="col-md-6 d-flex">
-                <input type="number" class="form-control" id="maxFararuNewsInput" min="1" max="20"
-                       th:value="${defaultFararuMaxNews ?: 5}" placeholder="حداکثر تعداد اخبار">
-                <button class="btn btn-primary ms-2" id="setFararuMaxNewsBtn">تنظیم</button>
-              </div>
-            </div>
-          </div>
 
-          <hr class="my-4">
-
-          <div class="form-check form-switch mb-4">
-            <div class="row">
-              <div class="col-md-6">
-                <input class="form-check-input" type="checkbox" id="bbcArabicRSSToggle" th:checked="${bbcArabicRSSEnabled}">
-                <label class="form-check-label" for="bbcArabicRSSToggle">فعال کردن RSS بی بی سی عربی</label>
-              </div>
-              <div class="col-md-6 d-flex">
-                <input type="number" class="form-control" id="maxBBCArabicNewsInput" min="1" max="20"
-                       th:value="${defaultBBCArabicMaxNews ?: 5}" placeholder="حداکثر تعداد اخبار">
-                <button class="btn btn-primary ms-2" id="setBBCArabicMaxNewsBtn">تنظیم</button>
-              </div>
-            </div>
-          </div>
-
-          <hr class="my-4">
-
-          <div class="form-check form-switch mb-4">
-            <div class="row">
-              <div class="col-md-6">
-                <input class="form-check-input" type="checkbox" id="alWatanRSSToggle" th:checked="${alWatanRSSEnabled}">
-                <label class="form-check-label" for="alWatanRSSToggle">فعال کردن RSS الوطن</label>
-              </div>
-              <div class="col-md-6 d-flex">
-                <input type="number" class="form-control" id="maxAlWatanNewsInput" min="1" max="20"
-                       th:value="${defaultAlWatanMaxNews ?: 5}" placeholder="حداکثر تعداد اخبار">
-                <button class="btn btn-primary ms-2" id="setAlWatanMaxNewsBtn">تنظیم</button>
+              <div class="rss-source-controls">
+                <label class="rss-control-label" for="maxFararuNewsInput">
+                  <i class="ri-stack-line"></i> حداکثر تعداد اخبار
+                </label>
+                <div class="input-group input-group-sm">
+                  <input type="number" class="form-control" id="maxFararuNewsInput" min="1" max="20"
+                         th:value="${defaultFararuMaxNews ?: 5}" placeholder="۵">
+                  <button class="btn btn-primary" id="setFararuMaxNewsBtn" type="button">تنظیم</button>
+                </div>
               </div>
             </div>
+
+            <!-- بی بی سی عربی -->
+            <div class="rss-source" data-rss-source style="--rss-accent-rgb: 240,101,72;">
+              <div class="rss-source-head">
+                <div class="rss-source-avatar"><i class="ri-rss-fill"></i></div>
+                <div class="rss-source-info">
+                  <h6 class="rss-source-name">بی بی سی عربی</h6>
+                  <div class="rss-source-meta">
+                    <span class="rss-chip">عربی</span>
+                    <span class="rss-state" data-rss-state>
+                      <span class="rss-state-dot"></span><span data-rss-state-text>غیرفعال</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" id="bbcArabicRSSToggle"
+                         data-rss-toggle th:checked="${bbcArabicRSSEnabled}">
+                  <label class="form-check-label visually-hidden" for="bbcArabicRSSToggle">فعال کردن RSS بی بی سی عربی</label>
+                </div>
+              </div>
+
+              <div class="rss-source-controls">
+                <label class="rss-control-label" for="maxBBCArabicNewsInput">
+                  <i class="ri-stack-line"></i> حداکثر تعداد اخبار
+                </label>
+                <div class="input-group input-group-sm">
+                  <input type="number" class="form-control" id="maxBBCArabicNewsInput" min="1" max="20"
+                         th:value="${defaultBBCArabicMaxNews ?: 5}" placeholder="۵">
+                  <button class="btn btn-primary" id="setBBCArabicMaxNewsBtn" type="button">تنظیم</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- الوطن -->
+            <div class="rss-source" data-rss-source style="--rss-accent-rgb: 0,189,157;">
+              <div class="rss-source-head">
+                <div class="rss-source-avatar"><i class="ri-rss-fill"></i></div>
+                <div class="rss-source-info">
+                  <h6 class="rss-source-name">الوطن</h6>
+                  <div class="rss-source-meta">
+                    <span class="rss-chip">عربی</span>
+                    <span class="rss-state" data-rss-state>
+                      <span class="rss-state-dot"></span><span data-rss-state-text>غیرفعال</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" id="alWatanRSSToggle"
+                         data-rss-toggle th:checked="${alWatanRSSEnabled}">
+                  <label class="form-check-label visually-hidden" for="alWatanRSSToggle">فعال کردن RSS الوطن</label>
+                </div>
+              </div>
+
+              <div class="rss-source-controls">
+                <label class="rss-control-label" for="maxAlWatanNewsInput">
+                  <i class="ri-stack-line"></i> حداکثر تعداد اخبار
+                </label>
+                <div class="input-group input-group-sm">
+                  <input type="number" class="form-control" id="maxAlWatanNewsInput" min="1" max="20"
+                         th:value="${defaultAlWatanMaxNews ?: 5}" placeholder="۵">
+                  <button class="btn btn-primary" id="setAlWatanMaxNewsBtn" type="button">تنظیم</button>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
-      </div>
-    </div>
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-header">لاگ RSS</div>
-        <div class="card-body">
-          <div class="terminal rounded-2" id="logsContainer"></div>
+        <div class="rss-summary">
+          <span><i class="ri-checkbox-circle-line align-bottom me-1"></i>
+            <strong id="rssActiveCount">0</strong> از <strong id="rssTotalCount">0</strong> منبع فعال است
+          </span>
+          <span class="d-none d-sm-inline">تغییرات بلافاصله ذخیره می‌شود</span>
         </div>
       </div>
     </div>
+
+    <!-- ============================ لاگ زنده ============================= -->
+    <div class="col-xxl-8 col-lg-7">
+      <div class="card rss-card rss-console-card">
+        <div class="card-header">
+          <h5 class="rss-card-title"><i class="ri-terminal-box-line"></i> لاگ زنده RSS</h5>
+
+          <span class="rss-live is-offline" id="rssLiveStatus">
+            <span class="rss-state-dot"></span><span id="rssLiveStatusText">در حال اتصال…</span>
+          </span>
+
+          <div class="rss-console-tools">
+            <div class="rss-console-search">
+              <i class="ri-search-line"></i>
+              <input type="text" class="form-control" id="rssLogSearch" placeholder="جستجو در لاگ…" autocomplete="off">
+            </div>
+            <button type="button" class="btn btn-soft-danger" id="rssLogClear">
+              <i class="ri-delete-bin-line"></i> پاک کردن
+            </button>
+          </div>
+        </div>
+
+        <div class="card-body rss-console-body">
+          <div class="terminal" id="logsContainer"></div>
+          <div class="rss-console-empty" id="rssConsoleEmpty">
+            <i class="ri-pulse-line"></i>
+            <span>هنوز لاگی ثبت نشده است — در انتظار رویدادهای RSS…</span>
+          </div>
+        </div>
+
+        <div class="rss-console-foot">
+          <span><i class="ri-file-list-2-line align-bottom me-1"></i> <span id="rssLogCount">0</span> خط</span>
+          <span>کانال <code>/topic/logs</code></span>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -102,6 +214,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
   <script src="/assets/js/crawler/rss-setting.js"></script>
+  <script src="/assets/js/crawler/rss-setting-ui.js"></script>
 </th:block>
 </body>
 
