@@ -6,6 +6,7 @@ import com.avesta.mastercrawler.service.INewsService;
 import com.avesta.mastercrawler.model.Users;
 import com.avesta.mastercrawler.model.UserMonthlyReport;
 import com.avesta.mastercrawler.model.News;
+import com.avesta.mastercrawler.utility.DataScope;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,6 +36,11 @@ public class AnalyticsController {
 
     @GetMapping("/full-users/report")
     public String adminAnalytics(Model model) {
+        // system-wide stats; Ai users only see their own report
+        if (DataScope.isOwnDataOnly()) {
+            return "redirect:/admin/user/report";
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Users user = iUsersService.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("user not found."));
 

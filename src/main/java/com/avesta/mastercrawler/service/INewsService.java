@@ -24,6 +24,8 @@ public interface INewsService {
     List<News> findAllByVideoName(String name);
     List<News> findByMainVideo(String oldVideoName);
     Page<News> searchNews(String search, Pageable pageable);
+    /** Same as {@link #searchNews(String, Pageable)}, limited to one author when ownerEmail is not null. */
+    Page<News> searchNews(String search, String ownerEmail, Pageable pageable);
     List<News> getBreakingNews();
     List<News> getNewsHeadline();
     List<News> getMostViewed();

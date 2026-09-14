@@ -5,6 +5,7 @@ import com.avesta.mastercrawler.model.News;
 import com.avesta.mastercrawler.service.ICommentsService;
 import com.avesta.mastercrawler.service.INewsService;
 import com.avesta.mastercrawler.service.IUserProfileService;
+import com.avesta.mastercrawler.utility.DataScope;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -36,7 +37,8 @@ public class CommentsController {
 
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             Optional<News> newsOptional = iNewsService.findById(id);
-            if (newsOptional.isPresent()) {
+            // Ai users may only comment on their own news
+            if (newsOptional.isPresent() && DataScope.canAccess(newsOptional.get())) {
                 News news = newsOptional.get();
 
                 Comments newComment = new Comments();

@@ -57,6 +57,22 @@ public class SecurityConfig {
             "/api/news/find"
     };
 
+    // Pages that list everyone's data. "Ai" users only see their own data, so
+    // they are kept out of these (their sidebar links are hidden as well).
+    private final String[] notForAiUrl = {
+            "/admin/users/**",
+            "/api/users/**",
+            "/admin/comments/list",
+            "/admin/comments/delete/**",
+            "/admin/comments/changeStatus/**",
+            "/api/comments/**",
+            "/admin/news/sort",
+            "/admin/news/sort/**",
+            "/api/news/*/save",
+            "/api/news/*/order/save",
+            "/api/news/delete/**"
+    };
+
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -64,6 +80,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth ->
                         auth
                                 .requestMatchers(publicUrl).permitAll()
+                                .requestMatchers(notForAiUrl).hasAnyAuthority("Admin", "User")
                                 .anyRequest().authenticated())
                 .formLogin(form->
                         form.loginPage("/admin/login").permitAll()

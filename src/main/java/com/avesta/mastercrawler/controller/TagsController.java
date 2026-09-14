@@ -1,6 +1,7 @@
 package com.avesta.mastercrawler.controller;
 
 import com.avesta.mastercrawler.service.ITagsService;
+import com.avesta.mastercrawler.utility.DataScope;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,6 +31,10 @@ public class TagsController {
     public String deleteTags(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            // Ai users may only delete tags they created
+            if (DataScope.isOwnDataOnly() && !iTagsService.findById(id).map(DataScope::canAccess).orElse(false)) {
+                return "redirect:/admin/tags/list";
+            }
             iTagsService.deleteTag(id);
             redirectAttributes.addFlashAttribute("deleted", true);
         }

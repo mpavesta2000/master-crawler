@@ -43,12 +43,12 @@
 						<div class="collapse menu-dropdown" id="sidebarDashboards">
 							<ul class="nav nav-sm flex-column">
 								<li class="nav-item"
-									th:if="${#authorization.expression('hasAuthority(''Admin'') or hasAuthority(''Ai'')')}">
+									th:if="${#authorization.expression('hasAuthority(''Admin'')')}">
 									<a href="/admin/full-users/report" class="nav-link" data-key="t-admin-analytics">
 										آمار مدیریت
 									</a>
 								</li>
-								<li class="nav-item" th:if="${#authorization.expression('hasAuthority(''User'')')}">
+								<li class="nav-item" th:if="${#authorization.expression('hasAuthority(''User'') or hasAuthority(''Ai'')')}">
 									<a href="/admin/user/report" class="nav-link" data-key="t-editor-analytics">
 										آمار خبرنگار </a>
 								</li>
@@ -260,7 +260,7 @@
 						</div>
 					</li>
 					<!--						Users-->
-					<li class="nav-item">
+					<li th:if="${!#authorization.expression('hasAuthority(''Ai'')')}" class="nav-item">
 						<a class="nav-link menu-link" href="#sidebarUsers" data-bs-toggle="collapse"
 						   role="button" aria-expanded="false" aria-controls="sidebarUsers">
 							<i class="ri-user-line"></i> <span data-key="t-users">کاربران</span>

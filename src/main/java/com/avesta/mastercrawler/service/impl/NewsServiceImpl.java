@@ -152,11 +152,20 @@ public class NewsServiceImpl implements INewsService {
 
     @Override
     public Page<News> searchNews(String search, Pageable pageable) {
+        return searchNews(search, null, pageable);
+    }
+
+    @Override
+    public Page<News> searchNews(String search, String ownerEmail, Pageable pageable) {
         if (search == null || search.isEmpty()) {
             Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
-            return newsRepository.findAllByGetTranslatedTrue(sortedPageable);
+            return ownerEmail == null
+                    ? newsRepository.findAllByGetTranslatedTrue(sortedPageable)
+                    : newsRepository.findAllByGetTranslatedTrueAndUserId_Email(ownerEmail, sortedPageable);
         } else {
-            return newsRepository.findAllByTitleContainingAndGetTranslatedTrue(search, pageable);
+            return ownerEmail == null
+                    ? newsRepository.findAllByTitleContainingAndGetTranslatedTrue(search, pageable)
+                    : newsRepository.findAllByTitleContainingAndGetTranslatedTrueAndUserId_Email(search, ownerEmail, pageable);
         }
     }
 

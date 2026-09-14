@@ -45,6 +45,10 @@ public interface NewsRepository extends JpaRepository<News, Integer> {
 
     Page<News> findAllByTitleContainingAndGetTranslatedTrue(String title, Pageable pageable);
 
+    Page<News> findAllByGetTranslatedTrueAndUserId_Email(String email, Pageable pageable);
+
+    Page<News> findAllByTitleContainingAndGetTranslatedTrueAndUserId_Email(String title, String email, Pageable pageable);
+
     List<News> findAllByMainVideo(String name);
 
     List<News> findByMainVideo(String oldVideoName);

@@ -29,8 +29,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             System.out.println("Redirecting to /admin/user/report");
             httpServletResponse.sendRedirect("/admin/user/report");
         } else if (hasAiRole) {
+            // Ai users only see their own data, so they get the per-user report
             System.out.println("Redirecting to /admin/user/report");
-            httpServletResponse.sendRedirect("/admin/full-users/report");
+            httpServletResponse.sendRedirect("/admin/user/report");
         }else {
             System.out.println("No admin or user role detected.");
         }

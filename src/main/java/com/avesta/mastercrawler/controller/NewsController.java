@@ -4,6 +4,7 @@ import com.avesta.mastercrawler.dto.NewsDto;
 import com.avesta.mastercrawler.model.*;
 import com.avesta.mastercrawler.service.*;
 import com.avesta.mastercrawler.service.cms.AasaamCmsUploader;
+import com.avesta.mastercrawler.utility.DataScope;
 import com.avesta.mastercrawler.utility.ImageDownloadUtil;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -97,6 +98,11 @@ public class NewsController {
                     .orElseThrow(() -> new UsernameNotFoundException("User not found."));
             NewsType newsType = iNewsTypeService.findById(2)
                     .orElseThrow(() -> new IllegalArgumentException("NewsType with id 2 not found"));
+
+            // Ai users may only edit their own news
+            if (isForeignNews(news.getId())) {
+                return "redirect:/admin/news/list";
+            }
 
             if (news.getId() != null) {
                 Optional<News> existingNews = iNewsService.findById(news.getId());
@@ -250,6 +256,9 @@ public class NewsController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(!(authentication instanceof AnonymousAuthenticationToken)) {
             Optional<News> foundNews = iNewsService.findById(id);
+            if (foundNews.isPresent() && !DataScope.canAccess(foundNews.get())) {
+                return "redirect:/admin/news/list";
+            }
             List<Category> categoryList = iCategoryService.findAll();
 
             model.addAttribute("categories", categoryList);
@@ -301,6 +310,11 @@ public class NewsController {
                     orElseThrow(()->new UsernameNotFoundException("user not found."));
             NewsType newsType = iNewsTypeService.findById(1)
                     .orElseThrow(() -> new IllegalArgumentException("NewsType with id 1 not found"));
+
+            // Ai users may only edit their own news
+            if (isForeignNews(news.getId())) {
+                return "redirect:/admin/news/list";
+            }
 
             if (news.getId() != null) {
                 Optional<News> existingNews = iNewsService.findById(news.getId());
@@ -469,6 +483,9 @@ public class NewsController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(!(authentication instanceof AnonymousAuthenticationToken)) {
             Optional<News> foundNews = iNewsService.findById(id);
+            if (foundNews.isPresent() && !DataScope.canAccess(foundNews.get())) {
+                return "redirect:/admin/news/list";
+            }
             List<Category> categoryList = iCategoryService.findAll();
             List<String> images = iNewsService.fileManagerImages();
 
@@ -513,6 +530,11 @@ public class NewsController {
             Users user = iUsersService.findByEmail(authentication.getName()).orElseThrow(()->new UsernameNotFoundException("user not found."));
             NewsType newsType = iNewsTypeService.findById(3)
                     .orElseThrow(() -> new IllegalArgumentException("NewsType with id 3 not found"));
+
+            // Ai users may only edit their own news
+            if (isForeignNews(news.getId())) {
+                return "redirect:/admin/news/list";
+            }
 
             if (news.getId() != null) {
                 Optional<News> existingNews = iNewsService.findById(news.getId());
@@ -671,7 +693,9 @@ public class NewsController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
 
-            List<News> news = iNewsService.searchNews(search, status);
+            List<News> news = iNewsService.searchNews(search, status).stream()
+                    .filter(DataScope::canAccess)
+                    .toList();
             List<NewsDto> newsDtos = new ArrayList<>();
             for (int i = 0; i < news.size(); i++) {
                 NewsDto dto = new NewsDto();
@@ -701,7 +725,11 @@ public class NewsController {
 
     @GetMapping("/list")
     public String showList(Model model) {
-        model.addAttribute("userNames", iUsersService.findAll());
+        // the author filter of an Ai user only offers themselves
+        List<Users> userNames = DataScope.isOwnDataOnly()
+                ? iUsersService.findByEmail(DataScope.currentEmail()).map(List::of).orElse(List.of())
+                : iUsersService.findAll();
+        model.addAttribute("userNames", userNames);
         return "news/news-list";
     }
 
@@ -710,6 +738,9 @@ public class NewsController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(!(authentication instanceof AnonymousAuthenticationToken)) {
             Optional<News> foundNews = iNewsService.findById(id);
+            if (foundNews.isPresent() && !DataScope.canAccess(foundNews.get())) {
+                return "redirect:/admin/news/list";
+            }
             List<Category> categoryList = iCategoryService.findAll();
             List<String> images = iNewsService.fileManagerImages();
             System.out.println(aasaamCmsUploader.getCategories());
@@ -727,6 +758,9 @@ public class NewsController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             News news = iNewsService.findById(id).orElseThrow(() -> new NullPointerException("news not found"));
+            if (!DataScope.canAccess(news)) {
+                return "redirect:/admin/news/list";
+            }
             YearMonth reportMonth = YearMonth.from(news.getCreatedAt());
             iUserMonthlyReportService.findByUserAndReportMonth(news.getUserId(), reportMonth)
                     .ifPresent(report -> {
@@ -768,6 +802,9 @@ public class NewsController {
         if(!(authentication instanceof AnonymousAuthenticationToken)) {
             Optional<Users> userProfile = iUsersService.findByEmail(authentication.getName());
             Optional<News> foundNews = iNewsService.findById(id);
+            if (foundNews.isPresent() && !DataScope.canAccess(foundNews.get())) {
+                return "redirect:/admin/news/list";
+            }
             if(foundNews.isPresent()) {
                 model.addAttribute("comment", new Comments());
                 model.addAttribute("userProfile", userProfile.get().getUserProfile());
@@ -777,6 +814,20 @@ public class NewsController {
             }
         }
         return "news/news-overview";
+    }
+
+    /**
+     * True when an Ai user asks for a news item that belongs to someone else.
+     * Admin and User are never restricted, and ids that don't exist are left
+     * to the existing handling.
+     */
+    private boolean isForeignNews(Integer id) {
+        if (id == null || !DataScope.isOwnDataOnly()) {
+            return false;
+        }
+        return iNewsService.findById(id)
+                .map(news -> !DataScope.canAccess(news))
+                .orElse(false);
     }
 
 }

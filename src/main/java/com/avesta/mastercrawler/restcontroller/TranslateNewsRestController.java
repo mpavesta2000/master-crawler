@@ -8,6 +8,7 @@ import com.avesta.mastercrawler.service.ICategoryService;
 import com.avesta.mastercrawler.service.INewsService;
 import com.avesta.mastercrawler.service.INewsTypeService;
 import com.avesta.mastercrawler.service.IUsersService;
+import com.avesta.mastercrawler.utility.DataScope;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -50,7 +51,8 @@ public class TranslateNewsRestController {
         }
 
         Optional<News> foundedNews = iNewsService.findById(parsedNewsId);
-        if (foundedNews.isEmpty()) {
+        // Ai users may only translate their own news
+        if (foundedNews.isEmpty() || !DataScope.canAccess(foundedNews.get())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "News not found"));
         }
 

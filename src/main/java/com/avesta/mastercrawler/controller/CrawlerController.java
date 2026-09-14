@@ -3,6 +3,7 @@ package com.avesta.mastercrawler.controller;
 import com.avesta.mastercrawler.dto.VoiceDto;
 import com.avesta.mastercrawler.model.*;
 import com.avesta.mastercrawler.service.INewsService;
+import com.avesta.mastercrawler.utility.DataScope;
 import com.avesta.mastercrawler.utility.FileUploadUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -170,7 +171,8 @@ public class CrawlerController {
                                 @RequestParam(required = false) String search) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<News> newsPage = iNewsService.searchNews(search, pageRequest);
+        // null for Admin/User (all news); the Ai user's own email otherwise
+        Page<News> newsPage = iNewsService.searchNews(search, DataScope.ownerEmailFilter(), pageRequest);
 
         model.addAttribute("news", newsPage.getContent());
         model.addAttribute("currentPage", page);

@@ -54,6 +54,14 @@ public class TagsServiceImpl implements ITagsService {
     }
 
     @Override
+    public Page<Tags> findAllWithFilters(String searchValue, String ownerEmail, Pageable pageable) {
+        if (ownerEmail == null) {
+            return findAllWithFilters(searchValue, pageable);
+        }
+        return tagsRepository.findByOwnerAndFilters(ownerEmail, searchValue, pageable);
+    }
+
+    @Override
     public Tags save(Tags tags) {
         return tagsRepository.save(tags);
     }

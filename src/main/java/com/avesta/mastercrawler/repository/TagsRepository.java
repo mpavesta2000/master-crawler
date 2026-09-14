@@ -21,4 +21,12 @@ public interface TagsRepository extends JpaRepository<Tags, Integer> {
     Page<Tags> findByFilters(
             @Param("searchValue") String searchValue,
             Pageable pageable);
+
+    @Query("SELECT t FROM Tags t " +
+            "WHERE t.userId.email = :ownerEmail " +
+            "AND (:searchValue IS NULL OR :searchValue = '' OR LOWER(t.name) LIKE LOWER(CONCAT('%', :searchValue, '%')))")
+    Page<Tags> findByOwnerAndFilters(
+            @Param("ownerEmail") String ownerEmail,
+            @Param("searchValue") String searchValue,
+            Pageable pageable);
 }

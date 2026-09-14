@@ -19,7 +19,7 @@ public class RootRedirectController {
     public String rootRedirect() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Users user = iUsersService.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("user not found."));
-        if(user.getUserTypeId().getUserTypeName().equals("Ai") || user.getUserTypeId().getUserTypeName().equals("Admin")) {
+        if(user.getUserTypeId().getUserTypeName().equals("Admin")) {
             return "redirect:/admin/full-users/report";
         }else {
             return "redirect:/admin/user/report";

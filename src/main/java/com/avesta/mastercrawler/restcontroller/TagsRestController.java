@@ -3,6 +3,7 @@ package com.avesta.mastercrawler.restcontroller;
 import com.avesta.mastercrawler.model.Tags;
 import com.avesta.mastercrawler.service.INewsService;
 import com.avesta.mastercrawler.service.ITagsService;
+import com.avesta.mastercrawler.utility.DataScope;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -47,7 +48,8 @@ public class TagsRestController {
         Pageable pageable = PageRequest.of(start / length, length,
                 orderDir.equals("asc") ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending());
 
-        Page<Tags> tagsPage = iTagsService.findAllWithFilters(searchValue, pageable);
+        // null for Admin/User (all tags); the Ai user's own email otherwise
+        Page<Tags> tagsPage = iTagsService.findAllWithFilters(searchValue, DataScope.ownerEmailFilter(), pageable);
 
         List<Map<String, Object>> tagsData = tagsPage.getContent().stream().map(tags -> {
             Map<String, Object> data = new HashMap<>();

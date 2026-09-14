@@ -3,6 +3,7 @@ package com.avesta.mastercrawler.restcontroller;
 import com.avesta.mastercrawler.model.Category;
 import com.avesta.mastercrawler.model.News;
 import com.avesta.mastercrawler.service.INewsService;
+import com.avesta.mastercrawler.utility.DataScope;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -51,6 +52,11 @@ public class NewsDataRestController {
         Boolean chapChinFilterBool = null;
         if (chapChinFilter != null && !chapChinFilter.trim().isEmpty()) {
             chapChinFilterBool = Boolean.parseBoolean(chapChinFilter);
+        }
+
+        // Ai users only get their own news, whatever author filter was sent
+        if (DataScope.isOwnDataOnly()) {
+            userFilter = DataScope.currentEmail();
         }
 
         String[] columnMapping = {"id", "title", "newsTypeId.newsTypeName", "userId.email", "postedDate", "status", "categories"};
