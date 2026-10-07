@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{zolal/layout}">
+
+<head>
+<title>تماس با ما | خبرگزاری زلال</title>
+<th:block layout:fragment="meta">
+<meta name="description" content="راه‌های تماس با تحریریه، واحد آگهی و روابط عمومی خبرگزاری زلال.">
+<meta property="og:title" content="تماس با ما | خبرگزاری زلال">
+<meta property="og:description" content="راه‌های تماس با تحریریه، واحد آگهی و روابط عمومی خبرگزاری زلال.">
+<meta property="og:image" content="https://example.com/assets/zolal/img/video-spring-1600.jpg">
+</th:block>
+</head>
+
+<body>
+
+<main layout:fragment="main" id="main" tabindex="-1" class="page">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="مسیر صفحه"><ol><li><a href="/">خانه</a></li><li aria-current="page">تماس با ما</li></ol></nav>
+    <header class="page-head">
+      <div>
+        <h1><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>تماس با ما</h1>
+        <p>پیشنهاد سوژه، گزارش اشتباه، آگهی یا همکاری؛ پیام شما به بخش مربوط می‌رسد.</p>
+      </div>
+    </header>
+    <div class="contact-grid">
+      <section class="box" id="form" style="margin-top:0" aria-labelledby="form-title">
+        <h2 id="form-title"><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>فرم تماس</h2>
+        <form data-demo-form data-done="پیام شما ثبت شد. این نسخهٔ نمایشی است و پیامی ارسال نمی‌شود." novalidate>
+          <div class="form-grid">
+            <div class="field"><label for="c-name">نام شما</label><input id="c-name" name="c-name" type="text" placeholder="" required data-req="این بخش را پر کنید." autocomplete="name" aria-describedby="c-name-err"><p class="field__err" id="c-name-err"></p></div>
+            <div class="field"><label for="c-email">ایمیل</label><input id="c-email" name="c-email" type="email" placeholder="name@mail.ir" required data-req="این بخش را پر کنید." autocomplete="email" aria-describedby="c-email-err"><p class="field__err" id="c-email-err"></p></div>
+            <div class="field full"><label for="c-subject">موضوع</label><select id="c-subject" name="c-subject"><option value="tip">پیشنهاد سوژه یا ارسال خبر</option><option value="correction">گزارش اشتباه در یک خبر</option><option value="ads">آگهی</option><option value="work">همکاری با زلال</option><option value="other">سایر</option></select><p class="field__err" id="c-subject-err"></p></div>
+            <div class="field full"><label for="c-link">نشانی خبر <small>(اگر دربارهٔ خبر خاصی می‌نویسید)</small></label><input id="c-link" name="c-link" type="url" placeholder="https://" aria-describedby="c-link-err"><p class="field__err" id="c-link-err"></p></div>
+            <div class="field full"><label for="c-msg">پیام</label><textarea id="c-msg" name="c-msg" placeholder="پیام خود را بنویسید" required data-req="این بخش را پر کنید." aria-describedby="c-msg-err"></textarea><p class="field__err" id="c-msg-err"></p></div>
+          </div>
+          <div class="form-foot"><button class="btn btn--accent" type="submit">ارسال پیام</button><p>نام شما بدون اجازه‌تان در هیچ خبری منتشر نمی‌شود.</p></div>
+          <p class="form-done" role="status" aria-live="polite" hidden></p>
+        </form>
+      </section>
+      <div>
+        <div class="contact-cards">
+          <div class="ccard"><h3>تحریریه</h3><p>برای خبر، سوژه و پرسش دربارهٔ یک گزارش</p><a href="mailto:newsroom@zolal.example">newsroom@zolal.example</a></div>
+          <div class="ccard"><h3>اصلاحیه‌ها</h3><p>اگر در خبری اشتباه دیده‌اید</p><a href="mailto:corrections@zolal.example">corrections@zolal.example</a></div>
+          <div class="ccard"><h3>آگهی</h3><p>تعرفه و <a href="/advertise" style="direction:rtl;margin:0">جایگاه‌های آگهی</a></p><a href="mailto:ads@zolal.example">ads@zolal.example</a></div>
+          <div class="ccard"><h3>روابط عمومی</h3><p>همکاری، رسانه و رویدادها</p><a href="mailto:pr@zolal.example">pr@zolal.example</a></div>
+          <div class="ccard ccard--wide"><h3>دفتر مرکزی</h3><p>تهران، خیابان نمونه، پلاک ۱۴<br>تلفن: <span dir="ltr">۰۲۱-۰۰۰۰۰۰۰۰</span><br>ساعت کاری: شنبه تا چهارشنبه، ۸ تا ۱۶. تحریریه در همهٔ ساعت‌های شبانه‌روز پاسخگوست.</p></div>
+        </div>
+        <div class="aside-box" style="margin-top:20px">
+          <h2>زلال در شبکه‌های اجتماعی</h2>
+          <div class="social social--light">
+            <a href="#" aria-label="زلال در تلگرام"><svg aria-hidden="true"><use href="#s-telegram"/></svg></a>
+            <a href="#" aria-label="زلال در اینستاگرام"><svg aria-hidden="true"><use href="#s-instagram"/></svg></a>
+            <a href="#" aria-label="زلال در ایکس"><svg aria-hidden="true"><use href="#s-x"/></svg></a>
+            <a href="#" aria-label="ویدیوهای زلال"><svg aria-hidden="true"><use href="#s-video"/></svg></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

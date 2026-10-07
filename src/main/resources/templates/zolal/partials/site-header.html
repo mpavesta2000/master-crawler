@@ -1,0 +1,124 @@
+<!--/* Utility bar, masthead, main nav, mobile drawer and breaking ticker.
+        `activeNav` (set by ZolalSiteController) marks the current menu item. */-->
+<th:block th:fragment="header(activeNav)" xmlns:th="http://www.thymeleaf.org">
+<!-- utility bar -->
+<div class="utility">
+  <div class="wrap">
+    <p class="utility__dates">
+      <strong data-date="fa">سه‌شنبه ۱۴ مهر ۱۴۰۵</strong>
+      <span class="sep" aria-hidden="true">|</span>
+      <span class="alt" data-date="hijri">۲۵ ربیع‌الثانی ۱۴۴۸</span>
+      <span class="sep" aria-hidden="true">|</span>
+      <span class="alt" data-date="greg">۶ اکتبر ۲۰۲۶</span>
+    </p>
+    <ul class="utility__links">
+      <li class="utility__weather">تهران <bdi dir="ltr">۲۲°</bdi> نیمه‌ابری</li>
+      <li class="hide-sm"><a href="#" lang="en" dir="ltr">English</a></li>
+      <li class="hide-sm"><a href="#" lang="ar">العربیة</a></li>
+      <li class="hide-sm"><a href="/archive">آرشیو</a></li>
+      <li class="hide-sm"><a href="/contact">تماس با ما</a></li>
+    </ul>
+  </div>
+</div>
+
+<!-- masthead -->
+<header class="masthead">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="خبرگزاری زلال، صفحه اصلی">
+      <svg class="brand__mark" style="color:#0A4A50" aria-hidden="true"><use href="#brand-mark"/></svg>
+      <span class="brand__text">
+        <span class="brand__word" aria-hidden="true">زلال</span>
+        <span class="brand__sub">خبرگزاری زلال</span>
+        <span class="brand__latin" lang="en">ZOLAL NEWS AGENCY</span>
+      </span>
+    </a>
+    <div class="masthead__tools">
+      <div>
+        <form class="search" role="search" action="/search" method="get">
+          <label class="sr-only" for="q">جستجو در اخبار</label>
+          <input id="q" name="q" type="search" placeholder="جستجو در اخبار…" autocomplete="off">
+          <button type="submit" aria-label="جستجو"><svg width="20" height="20" aria-hidden="true"><use href="#i-search"/></svg></button>
+        </form>
+      </div>
+      <a class="btn btn--accent" href="/#newsletter">خبرنامه</a>
+      <button class="menu-btn" type="button" data-drawer="open" aria-controls="drawer" aria-expanded="false" aria-label="باز کردن فهرست">
+        <svg width="24" height="24" aria-hidden="true"><use href="#i-menu"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- main nav -->
+<nav class="nav" aria-label="سرویس‌های خبری">
+  <div class="wrap">
+    <ul>
+      <li><a href="/" th:attr="aria-current=${activeNav == 'home' ? 'page' : null}">صفحه اصلی</a></li>
+      <li><a href="/#cat-politics">سیاسی</a></li>
+      <li><a href="/#cat-economy">اقتصادی</a></li>
+      <li><a href="/#cat-society">اجتماعی</a></li>
+      <li><a href="/#cat-world">بین‌الملل</a></li>
+      <li><a href="/#cat-culture">فرهنگی</a></li>
+      <li><a href="/#cat-sport">ورزشی</a></li>
+      <li><a href="/#science">علم و فناوری</a></li>
+      <li><a href="/#provinces">استان‌ها</a></li>
+      <li><a href="/gallery" th:attr="aria-current=${activeNav == 'gallery' ? 'page' : null}">عکس</a></li>
+      <li><a href="/videos" th:attr="aria-current=${activeNav == 'videos' ? 'page' : null}">ویدیو</a></li>
+      <li><a href="/#opinions">یادداشت</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- mobile drawer -->
+<div class="drawer" id="drawer" inert>
+  <div class="drawer__scrim" data-drawer="close"></div>
+  <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="فهرست سایت">
+    <div class="drawer__head">
+      <span class="brand__sub">خبرگزاری زلال</span>
+      <button class="drawer__close" type="button" data-drawer="close" aria-label="بستن فهرست">×</button>
+    </div>
+    <div>
+      <form class="search" role="search" action="/search" method="get">
+        <label class="sr-only" for="q2">جستجو در اخبار</label>
+        <input id="q2" name="q" type="search" placeholder="جستجو در اخبار…" autocomplete="off">
+        <button type="submit" aria-label="جستجو"><svg width="20" height="20" aria-hidden="true"><use href="#i-search"/></svg></button>
+      </form>
+    </div>
+    <nav aria-label="سرویس‌های خبری">
+      <a href="/" th:attr="aria-current=${activeNav == 'home' ? 'page' : null}">صفحه اصلی</a>
+      <a href="/#cat-politics">سیاسی</a>
+      <a href="/#cat-economy">اقتصادی</a>
+      <a href="/#cat-society">اجتماعی</a>
+      <a href="/#cat-world">بین‌الملل</a>
+      <a href="/#cat-culture">فرهنگی</a>
+      <a href="/#cat-sport">ورزشی</a>
+      <a href="/#science">علم و فناوری</a>
+      <a href="/#provinces">استان‌ها</a>
+      <a href="/gallery" th:attr="aria-current=${activeNav == 'gallery' ? 'page' : null}">عکس</a>
+      <a href="/videos" th:attr="aria-current=${activeNav == 'videos' ? 'page' : null}">ویدیو</a>
+      <a href="/#opinions">یادداشت</a>
+      <a href="#" lang="en" dir="ltr" style="text-align:right">English</a>
+    </nav>
+    <a class="btn btn--accent" href="/#newsletter" data-drawer="close">عضویت در خبرنامه</a>
+  </div>
+</div>
+
+<!-- breaking ticker -->
+<section class="ticker" aria-label="خبرهای فوری">
+  <div class="wrap">
+    <span class="ticker__tag">فوری</span>
+    <div class="ticker__viewport">
+      <p class="ticker__item is-on"><time>۱۳:۲۰</time><a href="/news">هواشناسی: بارش باران از فردا در ۱۲ استان؛ هشدار سطح زرد برای استان‌های شمالی</a></p>
+      <p class="ticker__item"><time>۱۳:۰۵</time><a href="/news">ساعت کاری ادارات استان تهران از شنبه ۱۹ مهر یک ساعت جلو می‌آید</a></p>
+      <p class="ticker__item"><time>۱۲:۵۲</time><a href="/news">فروش اینترنتی بلیت قطارهای آبان‌ماه از ساعت ۱۰ امروز آغاز شد</a></p>
+      <p class="ticker__item"><time>۱۲:۳۸</time><a href="/news">زمین‌لرزهٔ ۳.۹ ریشتری حوالی راور در استان کرمان؛ گزارشی از خسارت نرسیده است</a></p>
+      <p class="ticker__item"><time>۱۲:۱۵</time><a href="/news">تیم ملی والیبال ساعت ۲۲ امشب وارد فرودگاه امام خمینی می‌شود</a></p>
+    </div>
+    <div class="ticker__ctrl">
+      <button type="button" data-ticker="prev" aria-label="خبر فوری قبلی"><svg width="18" height="18" aria-hidden="true"><use href="#i-prev"/></svg></button>
+      <button type="button" data-ticker="pause" aria-pressed="false" aria-label="توقف خبرهای فوری"><svg class="i-pause" width="18" height="18" aria-hidden="true"><use href="#i-pause"/></svg><svg class="i-play" width="18" height="18" aria-hidden="true" style="display:none"><use href="#i-play"/></svg></button>
+      <button type="button" data-ticker="next" aria-label="خبر فوری بعدی"><svg width="18" height="18" aria-hidden="true"><use href="#i-next"/></svg></button>
+    </div>
+  </div>
+</section>
+
+</th:block>

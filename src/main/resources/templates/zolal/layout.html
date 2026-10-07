@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!--/*
+  Zolal public site layout. Pages under templates/zolal decorate it with
+  layout:decorate="~{zolal/layout}" and fill the `main` fragment; per-page
+  <title> and the `meta` fragment (description / og / preload) override it.
+*/-->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0A4A50">
+<!-- DEMO: remove the robots tag and the .demo-bar below once real news replaces the sample content -->
+<meta name="robots" content="noindex, nofollow">
+<!-- DEPLOY STEP: replace both URLs below with the live absolute address -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fa_IR">
+<meta property="og:url" content="https://example.com/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 52 52'%3E%3CclipPath id='c'%3E%3Ccircle cx='26' cy='26' r='21'/%3E%3C/clipPath%3E%3Ccircle cx='26' cy='26' r='24' fill='%23F9FBFA'/%3E%3Ccircle cx='26' cy='26' r='23' fill='none' stroke='%230A4A50' stroke-width='3'/%3E%3Cg clip-path='url(%23c)'%3E%3Cpath d='M0 25C8 22 16 28 26 25S44 22 52 25V52H0Z' fill='%230B7579'/%3E%3C/g%3E%3Ccircle cx='19' cy='40' r='2' fill='%23E2C99A'/%3E%3Ccircle cx='26' cy='42' r='2' fill='%23E2C99A'/%3E%3Ccircle cx='33' cy='40' r='2' fill='%23E2C99A'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@600;700&family=Vazirmatn:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@700&text=%D8%B2%D9%84%D8%A7%D9%84&display=swap">
+<link rel="stylesheet" href="/assets/zolal/css/site.css">
+<title>خبرگزاری زلال</title>
+<th:block layout:fragment="meta"></th:block>
+</head>
+
+<body>
+
+<div th:replace="~{zolal/partials/site-icons :: icons}"></div>
+
+<a class="skip" href="#main">رفتن به محتوای اصلی</a>
+
+<p class="demo-bar">نسخهٔ نمایشی: این سایت نمونهٔ طراحی است و خبرهای آن واقعی نیستند.</p>
+
+<div th:replace="~{zolal/partials/site-header :: header(${activeNav})}"></div>
+
+<main layout:fragment="main" id="main" tabindex="-1"></main>
+
+<div th:replace="~{zolal/partials/site-footer :: footer}"></div>
+
+<script src="/assets/zolal/js/site.js" defer></script>
+</body>
+</html>

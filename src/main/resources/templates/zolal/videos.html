@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{zolal/layout}">
+
+<head>
+<title>ویدیو | خبرگزاری زلال</title>
+<th:block layout:fragment="meta">
+<meta name="description" content="گزارش، مستند و گفت‌وگوهای تصویری خبرگزاری زلال.">
+<meta property="og:title" content="ویدیو | خبرگزاری زلال">
+<meta property="og:description" content="گزارش، مستند و گفت‌وگوهای تصویری خبرگزاری زلال.">
+<meta property="og:image" content="https://example.com/assets/zolal/img/video-spring-1600.jpg">
+<link rel="preload" as="image" href="/assets/zolal/img/video-spring-1600.jpg" imagesrcset="/assets/zolal/img/video-spring-800.jpg 800w, /assets/zolal/img/video-spring-1600.jpg 1600w" imagesizes="(min-width:1100px) 820px, 100vw">
+</th:block>
+</head>
+
+<body>
+
+<main layout:fragment="main" id="main" tabindex="-1" class="page">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="مسیر صفحه"><ol><li><a href="/">خانه</a></li><li aria-current="page">ویدیو</li></ol></nav>
+    <header class="page-head">
+      <div>
+        <h1><svg class="glyph" aria-hidden="true"><use href="#s-video"/></svg>ویدیو</h1>
+        <p>گزارش، مستند و گفت‌وگوهای تصویری خبرگزاری زلال</p>
+      </div>
+      <div class="filters" role="group" aria-label="دسته‌بندی ویدیوها" data-filter-group="v-list" data-status="v-status"><button type="button" data-filter="all" aria-pressed="true">همه</button><button type="button" data-filter="report" aria-pressed="false">گزارش</button><button type="button" data-filter="doc" aria-pressed="false">مستند</button><button type="button" data-filter="talk" aria-pressed="false">گفت‌وگو</button><button type="button" data-filter="news" aria-pressed="false">خبر</button><button type="button" data-filter="culture" aria-pressed="false">فرهنگی</button><button type="button" data-filter="sport" aria-pressed="false">ورزشی</button></div>
+    </header>
+
+    <div class="v-top">
+      <a class="v-feature card-link" href="/news/video">
+        <div class="frame"><span class="cat-chip">مستند</span><img src="/assets/zolal/img/video-spring-800.jpg" srcset="/assets/zolal/img/video-spring-800.jpg 800w, /assets/zolal/img/video-spring-1600.jpg 1600w" sizes="(min-width:960px) 800px, 100vw" width="1600" height="893" fetchpriority="high" alt="نمای زیر آب یک چشمه با نور خورشید و ذرات شن معلق"><span class="play" aria-hidden="true"><span><svg><use href="#i-play"/></svg></span></span><span class="dur">۰۴:۱۲</span></div>
+        <h2>مستند کوتاه: چشمه‌هایی که هنوز زلال‌اند</h2>
+        <p>گزارش تصویری از سه چشمهٔ دائمی زاگرس و مردمی که از آن‌ها نگهداری می‌کنند.</p>
+        <div class="meta" style="margin-top:6px"><time>۱۴ مهر ۱۴۰۵</time><span>۱۲٬۴۰۰ بازدید</span></div>
+      </a>
+      <div class="aside-box">
+        <h2>پربازدیدترین‌های هفته</h2>
+        <ul class="mini-list">
+          <li><a href="/news/video"><div class="frame"><img src="/assets/zolal/img/society-class-800.jpg" srcset="/assets/zolal/img/society-class-800.jpg 800w, /assets/zolal/img/society-class-1600.jpg 1600w" sizes="96px" width="1600" height="1062" loading="lazy" alt="کلاس درس خالی با نیمکت‌های چوبی و تخته‌سیاه سبز در نور صبح"><span class="dur">۰۵:۰۲</span></div><span><span class="t">سه پایه، یک کلاس: گزارش ویدیویی از مدرسه‌های چندپایه</span><span class="m">گزارش، ۱۴ مهر ۱۴۰۵</span></span></a></li>
+          <li><a href="/news/video"><div class="frame"><img src="/assets/zolal/img/photo-metro-800.jpg" srcset="/assets/zolal/img/photo-metro-800.jpg 800w, /assets/zolal/img/photo-metro-1600.jpg 1600w" sizes="96px" width="1600" height="1062" loading="lazy" alt="سکوی ایستگاه مترو هنگام رسیدن قطار"><span class="dur">۰۴:۰۰</span></div><span><span class="t">ساعت‌های شلوغ مترو؛ گفت‌وگو با مسافران</span><span class="m">گفت‌وگو، ۱۳ مهر ۱۴۰۵</span></span></a></li>
+          <li><a href="/news/video"><div class="frame"><img src="/assets/zolal/img/lead-dam-800.jpg" srcset="/assets/zolal/img/lead-dam-800.jpg 800w, /assets/zolal/img/lead-dam-1600.jpg 1600w" sizes="96px" width="1600" height="1062" loading="lazy" alt="سد ذخیرهٔ آب در میان کوه‌ها با سطح آب پایین و حاشیهٔ خشک‌شدهٔ دریاچه"><span class="dur">۰۲:۴۸</span></div><span><span class="t">سدهای تهران در پاییز ۱۴۰۵؛ از نزدیک</span><span class="m">گزارش، ۱۴ مهر ۱۴۰۵</span></span></a></li>
+          <li><a href="/news/video"><div class="frame"><img src="/assets/zolal/img/photo-rice-800.jpg" srcset="/assets/zolal/img/photo-rice-800.jpg 800w, /assets/zolal/img/photo-rice-1600.jpg 1600w" sizes="96px" width="1600" height="1062" loading="lazy" alt="شالیزارهای سبز در مه صبحگاهی با کشاورزی در دوردست"><span class="dur">۰۳:۲۲</span></div><span><span class="t">برداشت برنج در گیلان؛ از شالیزار تا بازار</span><span class="m">گزارش، ۱۱ مهر ۱۴۰۵</span></span></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <section class="section" aria-labelledby="all-v" style="padding-bottom:0">
+      <div class="sec-head"><h2 id="all-v"><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>همهٔ ویدیوها</h2></div>
+      <p class="filter-status" id="v-status" role="status" aria-live="polite"></p>
+      <div>
+        <div class="v-grid" id="v-list">
+          <a class="vcard card-link" href="/news/video" data-cat="report"><div class="frame"><span class="cat-chip">گزارش</span><img src="/assets/zolal/img/lead-dam-800.jpg" srcset="/assets/zolal/img/lead-dam-800.jpg 800w, /assets/zolal/img/lead-dam-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="سد ذخیرهٔ آب در میان کوه‌ها با سطح آب پایین و حاشیهٔ خشک‌شدهٔ دریاچه"><span class="play play--sm" aria-hidden="true"><span><svg><use href="#i-play"/></svg></span></span><span class="dur">۰۲:۴۸</span></div><h3>سدهای تهران در پاییز ۱۴۰۵؛ از نزدیک</h3><div class="meta"><time>۱۴ مهر ۱۴۰۵</time></div></a>
+          <a class="vcard card-link" href="/news/video" data-cat="report"><div class="frame"><span class="cat-chip">گزارش</span><img src="/assets/zolal/img/society-class-800.jpg" srcset="/assets/zolal/img/society-class-800.jpg 800w, /assets/zolal/img/society-class-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="کلاس درس خالی با نیمکت‌های چوبی و تخته‌سیاه سبز در نور صبح"><span class="play play--sm" aria-hidden="true"><span><svg><use href="#i-play"/></svg></span></span><span class="dur">۰۵:۰۲</span></div><h3>سه پایه، یک کلاس: گزارش ویدیویی از مدرسه‌های چندپایه</h3><div class="meta"><time>۱۴ مهر ۱۴۰۵</time></div></a>
+          <a class="vcard card-link" href="/news/video" data-cat="news"><div class="frame"><span class="cat-chip">خبر</span><img src="/assets/zolal/img/politics-press-800.jpg" srcset="/assets/zolal/img/politics-press-800.jpg 800w, /assets/zolal/img/politics-press-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="سالن نشست خبری با تریبون چوبی، میکروفون‌ها و صندلی‌های خالی"><span class="play play--sm" aria-hidden="true"><span><svg><use href="#i-play"/></svg></span></span><span class="dur">۰۶:۱۵</span></div><h3>خلاصهٔ نشست خبری هفتگی سخنگوی دولت</h3><div class="meta"><time>۱۳ مهر ۱۴۰۵</time></div></a>
+          <a class="vcard card-link" href="/news/video" data-cat="report"><div class="frame"><span class="cat-chip">گزارش</span><img src="/assets/zolal/img/economy-port-800.jpg" srcset="/assets/zolal/img/economy-port-800.jpg 800w, /assets/zolal/img/economy-port-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="بندر تجاری با ردیف کانتینرها، جرثقیل‌های بزرگ و یک کشتی باری در مه صبحگاهی"><span class="play play--sm" aria-hidden="true"><span><svg><use href="#i-play"/></svg></span></span><span class="dur">۰۳:۳۰</span></div><h3>یک روز در بندر؛ کانتینرها از کجا می‌آیند؟</h3><div class="meta"><time>۱۳ مهر ۱۴۰۵</time></div></a>
+          <a class="vcard card-link" href="/news/video" data-cat="talk"><div class="frame"><span class="cat-chip">گفت‌وگو</span><img src="/assets/zolal/img/photo-metro-800.jpg" srcset="/assets/zolal/img/photo-metro-800.jpg 800w, /assets/zolal/img/photo-metro-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="سکوی ایستگاه مترو هنگام رسیدن قطار"><span class="play play--sm" aria-hidden="true"><span><svg><use href="#i-play"/></svg></span></span><span class="dur">۰۴:۰۰</span></div><h3>ساعت‌های شلوغ مترو؛ گفت‌وگو با مسافران</h3><div class="meta"><time>۱۳ مهر ۱۴۰۵</time></div></a>
+          <a class="vcard card-link" href="/news/video" data-cat="culture"><div class="frame"><span class="cat-chip">فرهنگی</span><img src="/assets/zolal/img/culture-cinema-800.jpg" srcset="/assets/zolal/img/culture-cinema-800.jpg 800w, /assets/zolal/img/culture-cinema-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="سالن سینما با صندلی‌های قرمز و نور پروژکتور در فضای مه‌آلود"><span class="play play--sm" aria-hidden="true"><span><svg><use href="#i-play"/></svg></span></span><span class="dur">۰۴:۴۰</span></div><h3>پشت صحنهٔ جشنوارهٔ فیلم کودک و نوجوان</h3><div class="meta"><time>۱۲ مهر ۱۴۰۵</time></div></a>
+          <a class="vcard card-link" href="/news/video" data-cat="sport"><div class="frame"><span class="cat-chip">ورزشی</span><img src="/assets/zolal/img/sport-volley-800.jpg" srcset="/assets/zolal/img/sport-volley-800.jpg 800w, /assets/zolal/img/sport-volley-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="توپ والیبال روی کف چوبی سالن سرپوشیدهٔ خالی"><span class="play play--sm" aria-hidden="true"><span><svg><use href="#i-play"/></svg></span></span><span class="dur">۰۲:۱۰</span></div><h3>تمرین تیم ملی والیبال پیش از اردوی تازه</h3><div class="meta"><time>۱۲ مهر ۱۴۰۵</time></div></a>
+          <a class="vcard card-link" href="/news/video" data-cat="news"><div class="frame"><span class="cat-chip">خبر</span><img src="/assets/zolal/img/photo-rain-800.jpg" srcset="/assets/zolal/img/photo-rain-800.jpg 800w, /assets/zolal/img/photo-rain-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="خیابانی با درختان چنار و برگ‌های زرد در نخستین باران پاییزی"><span class="play play--sm" aria-hidden="true"><span><svg><use href="#i-play"/></svg></span></span><span class="dur">۰۱:۰۰</span></div><h3>نخستین باران پاییزی در یک دقیقه</h3><div class="meta"><time>۱۲ مهر ۱۴۰۵</time></div></a>
+          <a class="vcard card-link" href="/news/video" data-cat="report"><div class="frame"><span class="cat-chip">گزارش</span><img src="/assets/zolal/img/photo-rice-800.jpg" srcset="/assets/zolal/img/photo-rice-800.jpg 800w, /assets/zolal/img/photo-rice-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="شالیزارهای سبز در مه صبحگاهی با کشاورزی در دوردست"><span class="play play--sm" aria-hidden="true"><span><svg><use href="#i-play"/></svg></span></span><span class="dur">۰۳:۲۲</span></div><h3>برداشت برنج در گیلان؛ از شالیزار تا بازار</h3><div class="meta"><time>۱۱ مهر ۱۴۰۵</time></div></a>
+          <a class="vcard card-link" href="/news/video" data-cat="doc"><div class="frame"><span class="cat-chip">مستند</span><img src="/assets/zolal/img/photo-village-800.jpg" srcset="/assets/zolal/img/photo-village-800.jpg 800w, /assets/zolal/img/photo-village-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="روستای پلکانی کوهستانی با خانه‌های کاه‌گلی در مه"><span class="play play--sm" aria-hidden="true"><span><svg><use href="#i-play"/></svg></span></span><span class="dur">۰۲:۰۵</span></div><h3>روستاهای پلکانی در مه</h3><div class="meta"><time>۱۱ مهر ۱۴۰۵</time></div></a>
+          <a class="vcard card-link" href="/news/video" data-cat="doc"><div class="frame"><span class="cat-chip">مستند</span><img src="/assets/zolal/img/prov-yazd-800.jpg" srcset="/assets/zolal/img/prov-yazd-800.jpg 800w, /assets/zolal/img/prov-yazd-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="بافت تاریخی یزد با بادگیرها و گنبد آب‌انبار در نور غروب"><span class="play play--sm" aria-hidden="true"><span><svg><use href="#i-play"/></svg></span></span><span class="dur">۰۳:۱۸</span></div><h3>آب‌انبارهای یزد دوباره جان می‌گیرند</h3><div class="meta"><time>۱۰ مهر ۱۴۰۵</time></div></a>
+          <a class="vcard card-link" href="/news/video" data-cat="talk"><div class="frame"><span class="cat-chip">گفت‌وگو</span><img src="/assets/zolal/img/world-airport-800.jpg" srcset="/assets/zolal/img/world-airport-800.jpg 800w, /assets/zolal/img/world-airport-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="هواپیمای مسافربری در کنار ترمینال فرودگاه، دیده‌شده از پشت شیشه در طلوع آفتاب"><span class="play play--sm" aria-hidden="true"><span><svg><use href="#i-play"/></svg></span></span><span class="dur">۰۱:۵۵</span></div><h3>پروازهای تازه به آسیا؛ آنچه مسافران باید بدانند</h3><div class="meta"><time>۱۰ مهر ۱۴۰۵</time></div></a>
+        </div>
+        <p class="empty" hidden>ویدیویی در این دسته نیست.</p>
+      </div>
+      <nav class="pager" aria-label="صفحه‌بندی"><span aria-current="page">۱</span><a href="#">۲</a><a href="#">۳</a><a href="#">۴</a><span class="gap" aria-hidden="true">…</span><a href="#">۱۲</a><a href="#">بعدی</a></nav>
+    </section>
+  </div>
+</main>
+
+</body>
+</html>

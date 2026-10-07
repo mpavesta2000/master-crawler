@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{zolal/layout}">
+
+<head>
+<title>اصلاحیه‌ها | خبرگزاری زلال</title>
+<th:block layout:fragment="meta">
+<meta name="description" content="فهرست اشتباه‌هایی که در خبرهای زلال اصلاح شده‌اند، با ذکر زمان.">
+<meta property="og:title" content="اصلاحیه‌ها | خبرگزاری زلال">
+<meta property="og:description" content="فهرست اشتباه‌هایی که در خبرهای زلال اصلاح شده‌اند، با ذکر زمان.">
+<meta property="og:image" content="https://example.com/assets/zolal/img/lead-dam-1600.jpg">
+</th:block>
+</head>
+
+<body>
+
+<main layout:fragment="main" id="main" tabindex="-1" class="page">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="مسیر صفحه"><ol><li><a href="/">خانه</a></li><li aria-current="page">اصلاحیه‌ها</li></ol></nav>
+    <header class="page-head">
+      <div>
+        <h1><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>اصلاحیه‌ها</h1>
+        <p>اشتباه‌هایمان را همین‌جا می‌نویسیم. هر اصلاح زیر همان خبر هم با ذکر زمان ثبت می‌شود.</p>
+      </div>
+      <div class="filters" role="group" aria-label="نوع اصلاحیه" data-filter-group="corr-list" data-status="corr-status"><button type="button" data-filter="all" aria-pressed="true">همه</button><button type="button" data-filter="number" aria-pressed="false">عدد</button><button type="button" data-filter="name" aria-pressed="false">نام و سمت</button><button type="button" data-filter="photo" aria-pressed="false">عکس</button><button type="button" data-filter="context" aria-pressed="false">توضیح تکمیلی</button></div>
+    </header>
+    <div class="article-grid">
+      <div>
+        <p class="filter-status" id="corr-status" role="status" aria-live="polite"></p>
+        <div>
+          <ul class="log log--full" id="corr-list">
+          <li data-cat="number"><time>۱۴ مهر، ۰۹:۱۰</time><div><span class="story"><span class="fix">اصلاح عدد</span><a href="/news">افزایش کرایهٔ مترو</a></span><p>رقم افزایش ۲۵ درصد ذکر شده بود. رقم درست ۲۰ درصد است.</p></div></li>
+          <li data-cat="name"><time>۱۳ مهر، ۱۸:۴۵</time><div><span class="story"><span class="fix">اصلاح سمت</span><a href="/news">سه پایه، یک کلاس، یک معلم</a></span><p>سمت یکی از مدیران آموزش و پرورش در این گزارش نادرست نوشته شده بود و اصلاح شد.</p></div></li>
+          <li data-cat="photo"><time>۱۲ مهر، ۱۱:۳۰</time><div><span class="story"><span class="fix">اصلاح عکس</span><a href="/news">بارش در گیلان</a></span><p>عکس خبر مربوط به سال گذشته بود و با عکس همان روز جایگزین شد.</p></div></li>
+          <li data-cat="context"><time>۱۰ مهر، ۲۰:۰۵</time><div><span class="story"><span class="fix">توضیح تکمیلی</span><a href="/news">ثبت‌نام وام ودیعهٔ مسکن</a></span><p>سقف وام برای شهرهای کوچک در نسخهٔ نخست خبر نیامده بود و به متن اضافه شد.</p></div></li>
+          <li data-cat="number"><time>۸ مهر، ۱۴:۲۰</time><div><span class="story"><span class="fix">اصلاح عدد</span><a href="/news">خرید تضمینی گندم</a></span><p>واحد عدد اعلام‌شده «هزار تن» نوشته شده بود. واحد درست «میلیون تن» است.</p></div></li>
+          <li data-cat="name"><time>۵ مهر، ۱۰:۴۰</time><div><span class="story"><span class="fix">اصلاح نام</span><a href="/news">نمایشگاه‌های استانی کتاب</a></span><p>نام شهر میزبان در استان کرمان اشتباه نوشته شده بود و اصلاح شد.</p></div></li>
+          <li data-cat="context"><time>۳ مهر، ۰۸:۵۵</time><div><span class="story"><span class="fix">توضیح تکمیلی</span><a href="/news">ساعت کاری مدرسه‌ها</a></span><p>پاسخ آموزش و پرورش که پس از انتشار رسید، به خبر اضافه شد.</p></div></li>
+          <li data-cat="photo"><time>۱ مهر، ۱۷:۱۰</time><div><span class="story"><span class="fix">اصلاح زیرنویس</span><a href="/news">نخستین روز مدرسه</a></span><p>زیرنویس عکس، نام مدرسه را نادرست ذکر کرده بود.</p></div></li>
+          </ul>
+          <p class="empty" hidden>اصلاحیه‌ای در این دسته نیست.</p>
+        </div>
+      </div>
+      <aside class="article-side" aria-label="دربارهٔ اصلاحیه‌ها">
+        <div class="aside-box">
+          <h2>چطور اصلاح می‌کنیم</h2>
+          <ul class="ticks" style="margin-top:8px">
+            <li>اشتباه را زیر همان خبر و با ذکر زمان اصلاح می‌کنیم.</li>
+            <li>متن نادرست را بی‌صدا عوض نمی‌کنیم.</li>
+            <li>اگر اشتباه در تیتر باشد، تیتر هم اصلاح می‌شود و در شبکه‌های اجتماعی هم اعلام می‌کنیم.</li>
+          </ul>
+        </div>
+        <div class="aside-box aside-box--deep">
+          <h2>اشتباهی دیده‌اید؟</h2>
+          <p>نشانی خبر و توضیح خود را بفرستید. هر گزارش را بررسی می‌کنیم و نتیجه را اعلام می‌کنیم.</p>
+          <a class="btn btn--light" href="/contact?subject=correction">گزارش اشتباه</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

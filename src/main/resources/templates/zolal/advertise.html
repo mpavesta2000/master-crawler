@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{zolal/layout}">
+
+<head>
+<title>پذیرش آگهی | خبرگزاری زلال</title>
+<th:block layout:fragment="meta">
+<meta name="description" content="جایگاه‌ها و شرایط آگهی در خبرگزاری زلال؛ آگهی همیشه با برچسب روشن منتشر می‌شود.">
+<meta property="og:title" content="پذیرش آگهی | خبرگزاری زلال">
+<meta property="og:description" content="جایگاه‌ها و شرایط آگهی در خبرگزاری زلال؛ آگهی همیشه با برچسب روشن منتشر می‌شود.">
+<meta property="og:image" content="https://example.com/assets/zolal/img/video-spring-1600.jpg">
+</th:block>
+</head>
+
+<body>
+
+<main layout:fragment="main" id="main" tabindex="-1" class="page">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="مسیر صفحه"><ol><li><a href="/">خانه</a></li><li aria-current="page">پذیرش آگهی</li></ol></nav>
+    <header class="page-head">
+      <div>
+        <h1><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>پذیرش آگهی</h1>
+        <p>آگهی در زلال همیشه با برچسب روشن «آگهی» منتشر می‌شود و هرگز لابه‌لای متن خبر نمی‌آید.</p>
+      </div>
+    </header>
+
+    <section class="section" aria-labelledby="offer-title" style="padding-bottom:0">
+      <h2 class="sr-only" id="offer-title">جایگاه‌های آگهی</h2>
+      <div class="offers">
+        <div class="offer">
+          <h3>بنر تصویری</h3>
+          <p>جایگاه‌های ثابت در صفحهٔ اصلی و صفحه‌های خبر، با برچسب «آگهی».</p>
+          <ul class="ticks"><li>کنار فهرست آخرین اخبار</li><li>پایین صفحه‌های خبر</li><li>اندازه‌های استاندارد برای رایانه و تلفن همراه</li></ul>
+        </div>
+        <div class="offer">
+          <h3>محتوای حمایت‌شده</h3>
+          <p>مطلب شما با برچسب «آگهی» و جدا از اخبار منتشر می‌شود. تحریریه در نوشتن آن نقشی ندارد.</p>
+          <ul class="ticks"><li>صفحهٔ جداگانه با نام آگهی‌دهنده</li><li>برچسب «آگهی» کنار تیتر و بالای صفحه</li><li>بدون نمایش در فهرست اخبار</li></ul>
+        </div>
+        <div class="offer">
+          <h3>آگهی در خبرنامهٔ صبح</h3>
+          <p>یک جایگاه آگهی در پایین هر خبرنامه، پس از خبرها.</p>
+          <ul class="ticks"><li>ارسال هر روز ساعت ۷ صبح</li><li>یک آگهی‌دهنده در هر خبرنامه</li><li>گزارش تعداد باز شدن و کلیک</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="contact-grid" style="margin-top:36px">
+      <section class="box" style="margin-top:0" aria-labelledby="ad-form-title">
+        <h2 id="ad-form-title"><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>درخواست تعرفه</h2>
+        <form data-demo-form data-done="درخواست شما ثبت شد. این نسخهٔ نمایشی است و پیامی ارسال نمی‌شود." novalidate>
+          <div class="form-grid">
+            <div class="field"><label for="ad-name">نام و نام خانوادگی</label><input id="ad-name" name="ad-name" type="text" placeholder="" required data-req="این بخش را پر کنید." autocomplete="name" aria-describedby="ad-name-err"><p class="field__err" id="ad-name-err"></p></div>
+            <div class="field"><label for="ad-co">نام شرکت یا برند <small>(اختیاری)</small></label><input id="ad-co" name="ad-co" type="text" placeholder="" autocomplete="organization" aria-describedby="ad-co-err"><p class="field__err" id="ad-co-err"></p></div>
+            <div class="field"><label for="ad-email">ایمیل</label><input id="ad-email" name="ad-email" type="email" placeholder="name@company.ir" required data-req="این بخش را پر کنید." autocomplete="email" aria-describedby="ad-email-err"><p class="field__err" id="ad-email-err"></p></div>
+            <div class="field"><label for="ad-tel">تلفن <small>(اختیاری)</small></label><input id="ad-tel" name="ad-tel" type="tel" placeholder="۰۹۱۲۰۰۰۰۰۰۰" autocomplete="tel" aria-describedby="ad-tel-err"><p class="field__err" id="ad-tel-err"></p></div>
+            <div class="field full"><label for="ad-type">نوع آگهی</label><select id="ad-type" name="ad-type"><option value="banner">بنر تصویری</option><option value="sponsored">محتوای حمایت‌شده</option><option value="newsletter">آگهی در خبرنامهٔ صبح</option><option value="unsure">هنوز نمی‌دانم، راهنمایی می‌خواهم</option></select><p class="field__err" id="ad-type-err"></p></div>
+            <div class="field full"><label for="ad-msg">توضیحات <small>(اختیاری)</small></label><textarea id="ad-msg" name="ad-msg" placeholder="بازهٔ زمانی، بودجه یا هر نکته‌ای که باید بدانیم" aria-describedby="ad-msg-err"></textarea><p class="field__err" id="ad-msg-err"></p></div>
+          </div>
+          <div class="form-foot"><button class="btn btn--accent" type="submit">ارسال درخواست</button><p>تعرفه‌ها و آمار مخاطبان را ظرف دو روز کاری برایتان می‌فرستیم.</p></div>
+          <p class="form-done" role="status" aria-live="polite" hidden></p>
+        </form>
+      </section>
+      <div>
+        <div class="aside-box">
+          <h2>آنچه نمی‌پذیریم</h2>
+          <ul class="crosses" style="margin-top:8px">
+            <li>رپورتاژ آگهی بدون برچسب «آگهی»</li>
+            <li>آگهی‌ای که شبیه خبر طراحی شده باشد</li>
+            <li>ادعاهای پزشکی، مالی یا سرمایه‌گذاری بدون مجوز و پشتوانه</li>
+            <li>آگهی شرط‌بندی و قرعه‌کشی‌های بدون مجوز</li>
+            <li>آگهی‌هایی که خودکار صدا یا ویدیو پخش می‌کنند</li>
+          </ul>
+        </div>
+        <div class="aside-box">
+          <h2>آگهی در زلال این‌طور دیده می‌شود</h2>
+          <div class="ad-sample" style="margin-top:10px"><span class="ad-label">آگهی</span><b>عنوان آگهی شما اینجا قرار می‌گیرد</b><span>نام آگهی‌دهنده</span></div>
+          <p>واحد آگهی: <span dir="ltr">ads@zolal.example</span><br>تلفن: <span dir="ltr">۰۲۱-۰۰۰۰۰۰۰۰</span> داخلی ۳</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

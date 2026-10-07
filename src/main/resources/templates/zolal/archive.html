@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{zolal/layout}">
+
+<head>
+<title>آرشیو اخبار | خبرگزاری زلال</title>
+<th:block layout:fragment="meta">
+<meta name="description" content="آرشیو خبرهای زلال بر اساس روز و سرویس.">
+<meta property="og:title" content="آرشیو اخبار | خبرگزاری زلال">
+<meta property="og:description" content="آرشیو خبرهای زلال بر اساس روز و سرویس.">
+<meta property="og:image" content="https://example.com/assets/zolal/img/lead-dam-1600.jpg">
+</th:block>
+</head>
+
+<body>
+
+<main layout:fragment="main" id="main" tabindex="-1" class="page">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="مسیر صفحه"><ol><li><a href="/">خانه</a></li><li aria-current="page">آرشیو</li></ol></nav>
+    <header class="page-head">
+      <div>
+        <h1><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>آرشیو اخبار</h1>
+        <p>خبرهای زلال را بر اساس روز، سرویس یا کلمه‌ای از تیتر پیدا کنید. برای فیلترهای بیشتر از <a href="/search" style="color:var(--accent);font-weight:500">جستجوی پیشرفته</a> استفاده کنید.</p>
+      </div>
+    </header>
+    <form class="archive-form" id="archive-form" role="search" aria-label="جستجو در آرشیو">
+      <div class="field"><label for="a-sec">سرویس</label><select id="a-sec" name="sec"><option value="all">همهٔ سرویس‌ها</option><option value="politics">سیاسی</option><option value="economy">اقتصادی</option><option value="society">اجتماعی</option><option value="world">بین‌الملل</option><option value="culture">فرهنگی</option><option value="sport">ورزشی</option><option value="science">علم و فناوری</option><option value="prov">استان‌ها</option></select><p class="field__err" id="a-sec-err"></p></div>
+      <div class="field"><label for="a-day">روز</label><select id="a-day" name="day"><option value="all">همهٔ روزها</option><option value="14">سه‌شنبه ۱۴ مهر ۱۴۰۵</option><option value="13">دوشنبه ۱۳ مهر ۱۴۰۵</option><option value="12">یکشنبه ۱۲ مهر ۱۴۰۵</option></select><p class="field__err" id="a-day-err"></p></div>
+      <div class="field field--q"><label for="a-q">جستجو در تیترها</label><input id="a-q" name="q" type="search" placeholder="مثلاً: بودجه" autocomplete="off"></div>
+      <button class="btn btn--accent" type="submit">نمایش</button>
+    </form>
+    <p class="filter-status" id="arch-status" role="status" aria-live="polite"></p>
+    <section class="day" data-day="14" aria-label="سه‌شنبه ۱۴ مهر ۱۴۰۵">
+      <h2>سه‌شنبه ۱۴ مهر ۱۴۰۵</h2>
+      <ul class="arch">
+        <li data-sec="economy"><time>۱۳:۲۲</time><span class="tagline">اقتصادی</span><a href="/news">یارانهٔ نقدی مهرماه به حساب سرپرستان خانوار واریز شد</a></li>
+        <li data-sec="society"><time>۱۳:۱۸</time><span class="tagline">اجتماعی</span><a href="/news">پروازهای فرودگاه مشهد پس از برطرف شدن مه صبحگاهی از سر گرفته شد</a></li>
+        <li data-sec="economy"><time>۱۳:۰۹</time><span class="tagline">اقتصادی</span><a href="/news">قیمت نان در استان تهران تا پایان سال تغییر نمی‌کند</a></li>
+        <li data-sec="sport"><time>۱۲:۵۷</time><span class="tagline">ورزشی</span><a href="/news">برنامهٔ کامل هفتهٔ هشتم لیگ برتر فوتبال اعلام شد</a></li>
+        <li data-sec="society"><time>۱۲:۴۰</time><span class="tagline">اجتماعی</span><a href="/news">ذخیرهٔ سدهای تهران به ۲۹ درصد رسید؛ فشار آب شب‌ها از شنبه کاهش می‌یابد</a></li>
+        <li data-sec="politics"><time>۱۲:۳۰</time><span class="tagline">سیاسی</span><a href="/news">مجلس بررسی لایحهٔ بودجهٔ ۱۴۰۶ را از نیمهٔ آبان آغاز می‌کند</a></li>
+        <li data-sec="economy"><time>۱۲:۲۵</time><span class="tagline">اقتصادی</span><a href="/news">صادرات غیرنفتی در شش‌ماههٔ نخست سال ۸ درصد افزایش یافت</a></li>
+        <li data-sec="society"><time>۱۱:۵۰</time><span class="tagline">اجتماعی</span><a href="/news">سال تحصیلی با حضور ۱۶ میلیون دانش‌آموز آغاز شد</a></li>
+        <li data-sec="world"><time>۱۱:۳۵</time><span class="tagline">بین‌الملل</span><a href="/news">پروازهای مستقیم تهران به سه مقصد آسیایی از آبان برقرار می‌شود</a></li>
+        <li data-sec="culture"><time>۱۱:۱۰</time><span class="tagline">فرهنگی</span><a href="/news">۱۲ فیلم در بخش مسابقهٔ جشنوارهٔ فیلم کودک و نوجوان رقابت می‌کنند</a></li>
+      </ul>
+    </section>
+    <section class="day" data-day="13" aria-label="دوشنبه ۱۳ مهر ۱۴۰۵">
+      <h2>دوشنبه ۱۳ مهر ۱۴۰۵</h2>
+      <ul class="arch">
+        <li data-sec="politics"><time>۲۰:۱۵</time><span class="tagline">سیاسی</span><a href="/news">کمیسیون اصل ۹۰ گزارش شکایت‌های مردمی شش‌ماهه را منتشر کرد</a></li>
+        <li data-sec="society"><time>۱۸:۴۰</time><span class="tagline">اجتماعی</span><a href="/news">۸۰۰ مدرسهٔ فرسوده در تهران در نوبت نوسازی است</a></li>
+        <li data-sec="science"><time>۱۶:۲۰</time><span class="tagline">علم و فناوری</span><a href="/news">پرتاب دو ماهوارهٔ سنجشی تا پایان سال در برنامه است</a></li>
+        <li data-sec="prov"><time>۱۴:۰۵</time><span class="tagline">استان‌ها</span><a href="/news">لایروبی ۱۲ رودخانه در گیلان پیش از بارش‌های پاییزی به پایان رسید</a></li>
+        <li data-sec="sport"><time>۱۱:۴۵</time><span class="tagline">ورزشی</span><a href="/news">داوران هفتهٔ هشتم لیگ برتر فوتبال معرفی شدند</a></li>
+        <li data-sec="culture"><time>۰۹:۳۰</time><span class="tagline">فرهنگی</span><a href="/news">۲۰۰ عنوان کتاب کودک در هفتهٔ کتاب رونمایی می‌شود</a></li>
+        <li data-sec="world"><time>۰۸:۱۰</time><span class="tagline">بین‌الملل</span><a href="/news">نشست سالانهٔ آب سازمان ملل در ژنو آغاز شد</a></li>
+      </ul>
+    </section>
+    <section class="day" data-day="12" aria-label="یکشنبه ۱۲ مهر ۱۴۰۵">
+      <h2>یکشنبه ۱۲ مهر ۱۴۰۵</h2>
+      <ul class="arch">
+        <li data-sec="economy"><time>۲۱:۰۰</time><span class="tagline">اقتصادی</span><a href="/news">پرداخت تسهیلات قرض‌الحسنه به ۱۲۰ هزار واحد تولیدی کوچک</a></li>
+        <li data-sec="prov"><time>۱۷:۳۵</time><span class="tagline">استان‌ها</span><a href="/news">برداشت انار در نی‌ریز آغاز شد؛ پیش‌بینی ۴۰ هزار تن محصول</a></li>
+        <li data-sec="science"><time>۱۵:۱۰</time><span class="tagline">علم و فناوری</span><a href="/news">ثبت‌نام دکتری بدون آزمون در دانشگاه‌ها آغاز شد</a></li>
+        <li data-sec="politics"><time>۱۲:۴۵</time><span class="tagline">سیاسی</span><a href="/news">ثبت‌نام داوطلبان انتخابات شوراهای شهر و روستا از دی‌ماه</a></li>
+        <li data-sec="sport"><time>۱۰:۲۰</time><span class="tagline">ورزشی</span><a href="/news">مسابقات قهرمانی شنای کشور در اصفهان آغاز شد</a></li>
+        <li data-sec="prov"><time>۰۸:۰۵</time><span class="tagline">استان‌ها</span><a href="/news">آب‌انبارهای تاریخی یزد دوباره به چرخهٔ آب‌رسانی بازمی‌گردند</a></li>
+      </ul>
+    </section>
+    <p class="empty" id="arch-empty" hidden>خبری با این شرایط پیدا نشد. سرویس یا روز دیگری را امتحان کنید.</p>
+    <nav class="pager" aria-label="روزهای قبل"><span aria-current="page">۱</span><a href="#">۲</a><a href="#">۳</a><span class="gap" aria-hidden="true">…</span><a href="#">روزهای قبل</a></nav>
+  </div>
+</main>
+
+</body>
+</html>

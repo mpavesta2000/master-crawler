@@ -54,7 +54,21 @@ public class SecurityConfig {
             "/admin/change/password",
             "/admin/change/password/save",
             "/error",
-            "/api/news/find"
+            "/api/news/find",
+            // public Zolal site (ZolalSiteController) — open to everyone
+            "/",
+            "/news",
+            "/news/gallery",
+            "/news/video",
+            "/gallery",
+            "/videos",
+            "/archive",
+            "/search",
+            "/about",
+            "/contact",
+            "/corrections",
+            "/principles",
+            "/advertise"
     };
 
     // Pages that list everyone's data. "Ai" users only see their own data, so

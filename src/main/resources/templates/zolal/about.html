@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{zolal/layout}">
+
+<head>
+<title>دربارهٔ ما | خبرگزاری زلال</title>
+<th:block layout:fragment="meta">
+<meta name="description" content="خبرگزاری زلال خبر ایران و جهان را سریع، دقیق و قابل فهم منتشر می‌کند.">
+<meta property="og:title" content="دربارهٔ ما | خبرگزاری زلال">
+<meta property="og:description" content="خبرگزاری زلال خبر ایران و جهان را سریع، دقیق و قابل فهم منتشر می‌کند.">
+<meta property="og:image" content="https://example.com/assets/zolal/img/video-spring-1600.jpg">
+<link rel="preload" as="image" href="/assets/zolal/img/video-spring-1600.jpg" imagesrcset="/assets/zolal/img/video-spring-800.jpg 800w, /assets/zolal/img/video-spring-1600.jpg 1600w" imagesizes="(min-width:1100px) 820px, 100vw">
+</th:block>
+</head>
+
+<body>
+
+<main layout:fragment="main" id="main" tabindex="-1" class="page">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="مسیر صفحه"><ol><li><a href="/">خانه</a></li><li aria-current="page">دربارهٔ ما</li></ol></nav>
+    <section class="about-hero" aria-labelledby="about-title">
+      <div>
+        <span class="kicker">دربارهٔ زلال</span>
+        <h1 id="about-title">خبر را وقتی می‌گوییم که روشن شده باشد</h1>
+        <p>خبرگزاری زلال خبر ایران و جهان را سریع، دقیق و قابل فهم منتشر می‌کند. هر خبر پیش از انتشار با دست‌کم دو منبع مستقل بررسی می‌شود و اگر اشتباهی رخ دهد، آشکارا و با ذکر زمان اصلاح می‌شود.</p>
+        <div class="cta-row"><a class="btn btn--accent" href="/principles">اصول خبری ما</a><a class="btn btn--outline" href="/contact">تماس با ما</a></div>
+      </div>
+      <div class="frame"><img src="/assets/zolal/img/video-spring-800.jpg" srcset="/assets/zolal/img/video-spring-800.jpg 800w, /assets/zolal/img/video-spring-1600.jpg 1600w" sizes="(min-width:960px) 560px, 100vw" width="1600" height="893" fetchpriority="high" alt="نمای زیر آب یک چشمه با نور خورشید و ذرات شن معلق"></div>
+    </section>
+  </div>
+
+  <section class="section" aria-labelledby="name-title">
+    <div class="wrap">
+      <div class="name-box">
+        <svg class="letter__lines" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M0 70 C150 50 300 90 450 70 S750 50 900 70 S1100 90 1200 70"/><path d="M0 130 C150 110 300 150 450 130 S750 110 900 130 S1100 150 1200 130"/><path d="M0 190 C150 170 300 210 450 190 S750 170 900 190 S1100 210 1200 190"/><path d="M0 250 C150 230 300 270 450 250 S750 230 900 250 S1100 270 1200 250"/></g></svg>
+        <span class="brand__word" aria-hidden="true">زلال</span>
+        <div>
+          <h2 id="name-title">چرا «زلال»؟</h2>
+          <p>زلال یعنی آبی که آن‌قدر آرام مانده که گل‌ولایش ته‌نشین شده و تا ته دیده می‌شود. خبر هم در لحظه‌های اول گل‌آلود است: شایعه، تیتر داغ، نیمی از ماجرا. ما صبر می‌کنیم تا ته‌نشین شود و بعد منتشرش می‌کنیم. اگر هنوز بخشی از ماجرا روشن نیست، همین را هم صریح می‌گوییم.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="facts-title">
+    <div class="wrap">
+      <div class="sec-head"><h2 id="facts-title"><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>زلال در یک نگاه</h2></div>
+      <div class="facts">
+        <div class="fact"><b>۳۱ استان</b><span>خبرنگار در همهٔ استان‌های کشور</span></div>
+        <div class="fact"><b>۲۴ ساعت</b><span>تحریریه در همهٔ ساعت‌های شبانه‌روز کار می‌کند</span></div>
+        <div class="fact"><b>۲ منبع</b><span>کمترین تعداد منبع مستقل برای انتشار هر خبر</span></div>
+        <div class="fact"><b>۳ زبان</b><span>فارسی، انگلیسی و عربی</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="cover-title">
+    <div class="wrap">
+      <div class="sec-head"><h2 id="cover-title"><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>آنچه پوشش می‌دهیم</h2></div>
+      <div class="services">
+        <a class="service" href="/#cat-politics"><b>سیاسی</b><span>مجلس، دولت، انتخابات و سیاست خارجی</span></a>
+        <a class="service" href="/#cat-economy"><b>اقتصادی</b><span>بازار، قیمت‌ها، بودجه و تجارت</span></a>
+        <a class="service" href="/#cat-society"><b>اجتماعی</b><span>آموزش، سلامت، شهر و زندگی روزمره</span></a>
+        <a class="service" href="/#cat-world"><b>بین‌الملل</b><span>رویدادهای منطقه و جهان</span></a>
+        <a class="service" href="/#cat-culture"><b>فرهنگی</b><span>کتاب، سینما، موسیقی و میراث فرهنگی</span></a>
+        <a class="service" href="/#cat-sport"><b>ورزشی</b><span>لیگ‌ها، تیم‌های ملی و رقابت‌های جهانی</span></a>
+        <a class="service" href="/#science"><b>علم و فناوری</b><span>پژوهش، فضا، اینترنت و نوآوری</span></a>
+        <a class="service" href="/#provinces"><b>استان‌ها</b><span>خبر ۳۱ استان از زبان خبرنگاران محلی</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="how-title">
+    <div class="wrap">
+      <div class="sec-head"><h2 id="how-title"><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>چطور کار می‌کنیم</h2><a class="more" href="/principles">متن کامل اصول خبری</a></div>
+      <div class="principles principles--4">
+        <div class="principle"><b><span>۱</span>دو منبع مستقل</b><p>هیچ خبری فقط با یک منبع منتشر نمی‌شود.</p></div>
+        <div class="principle"><b><span>۲</span>سند اصلی</b><p>عدد، سند یا تصویر را از منبع اول می‌گیریم.</p></div>
+        <div class="principle"><b><span>۳</span>حق پاسخ</b><p>نظر طرف دیگر خبر را می‌پرسیم و منتشر می‌کنیم.</p></div>
+        <div class="principle"><b><span>۴</span>اصلاح آشکار</b><p>هر اشتباه با ذکر زمان، زیر همان خبر اصلاح می‌شود.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="team-title">
+    <div class="wrap">
+      <div class="sec-head"><h2 id="team-title"><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>مدیران تحریریه</h2></div>
+      <div class="people">
+        <div class="person"><span class="op__av" aria-hidden="true">ک</span><div><b>کاوه سعیدی</b><small>مدیرعامل</small></div></div>
+        <div class="person"><span class="op__av" aria-hidden="true">م</span><div><b>مینا فروتن</b><small>سردبیر</small></div></div>
+        <div class="person"><span class="op__av" aria-hidden="true">ج</span><div><b>جواد شریفی</b><small>دبیر بخش استان‌ها</small></div></div>
+        <div class="person"><span class="op__av" aria-hidden="true">ل</span><div><b>لیلا رضوانی</b><small>دبیر عکس و ویدیو</small></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="touch-title">
+    <div class="wrap">
+      <div class="box" style="margin-top:0">
+        <h2 id="touch-title"><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>با ما در تماس باشید</h2>
+        <p style="font-size:14.5px;color:var(--text-secondary);line-height:1.9">سوژه یا خبری دارید، اشتباهی در یکی از خبرهای ما دیده‌اید یا می‌خواهید آگهی بدهید؟</p>
+        <div class="cta-row"><a class="btn btn--accent" href="/contact">تماس با ما</a><a class="btn btn--outline" href="/advertise">پذیرش آگهی</a><a class="btn btn--outline" href="/#newsletter">خبرنامهٔ صبح</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

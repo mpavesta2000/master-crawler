@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{zolal/layout}">
+
+<head>
+<title>گالری عکس | خبرگزاری زلال</title>
+<th:block layout:fragment="meta">
+<meta name="description" content="گزارش‌های تصویری عکاسان خبرگزاری زلال از ایران و جهان.">
+<meta property="og:title" content="گالری عکس | خبرگزاری زلال">
+<meta property="og:description" content="گزارش‌های تصویری عکاسان خبرگزاری زلال از ایران و جهان.">
+<meta property="og:image" content="https://example.com/assets/zolal/img/photo-rain-1600.jpg">
+<link rel="preload" as="image" href="/assets/zolal/img/photo-rain-1600.jpg" imagesrcset="/assets/zolal/img/photo-rain-800.jpg 800w, /assets/zolal/img/photo-rain-1600.jpg 1600w" imagesizes="(min-width:1100px) 820px, 100vw">
+</th:block>
+</head>
+
+<body>
+
+<main layout:fragment="main" id="main" tabindex="-1" class="page">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="مسیر صفحه"><ol><li><a href="/">خانه</a></li><li aria-current="page">عکس</li></ol></nav>
+    <header class="page-head">
+      <div>
+        <h1><svg class="glyph" aria-hidden="true"><use href="#i-camera"/></svg>گالری عکس</h1>
+        <p>گزارش‌های تصویری عکاسان خبرگزاری زلال از ایران و جهان</p>
+      </div>
+      <div class="filters" role="group" aria-label="دسته‌بندی گزارش‌های تصویری" data-filter-group="a-list" data-status="a-status"><button type="button" data-filter="all" aria-pressed="true">همه</button><button type="button" data-filter="society" aria-pressed="false">اجتماعی</button><button type="button" data-filter="economy" aria-pressed="false">اقتصادی</button><button type="button" data-filter="politics" aria-pressed="false">سیاسی</button><button type="button" data-filter="culture" aria-pressed="false">فرهنگی</button><button type="button" data-filter="sport" aria-pressed="false">ورزشی</button><button type="button" data-filter="prov" aria-pressed="false">استان‌ها</button><button type="button" data-filter="nature" aria-pressed="false">طبیعت</button></div>
+    </header>
+
+    <div class="a-feature">
+      <a class="a-feature__main card-link" href="/news/gallery">
+        <div class="frame"><img src="/assets/zolal/img/photo-rain-800.jpg" srcset="/assets/zolal/img/photo-rain-800.jpg 800w, /assets/zolal/img/photo-rain-1600.jpg 1600w" sizes="(min-width:960px) 760px, 100vw" width="1600" height="1062" fetchpriority="high" alt="خیابانی با درختان چنار و برگ‌های زرد در نخستین باران پاییزی"><span class="count"><svg aria-hidden="true"><use href="#i-camera"/></svg>۱۲ عکس</span></div>
+        <div class="a-feature__cap"><h2>هفته در قاب: ۸ تا ۱۴ مهر</h2><p>مهم‌ترین تصویرهای هفته از عکاسان زلال، ۱۴ مهر ۱۴۰۵</p></div>
+      </a>
+      <div class="a-feature__side">
+        <a class="card-link" href="/news/gallery#p2" aria-label="عکس ۲ از مجموعهٔ هفته در قاب"><div class="frame"><img src="/assets/zolal/img/photo-rice-800.jpg" srcset="/assets/zolal/img/photo-rice-800.jpg 800w, /assets/zolal/img/photo-rice-1600.jpg 1600w" sizes="(min-width:960px) 220px, 25vw" width="1600" height="1062" loading="lazy" alt="شالیزارهای سبز در مه صبحگاهی با کشاورزی در دوردست"></div></a>
+        <a class="card-link" href="/news/gallery#p3" aria-label="عکس ۳ از مجموعهٔ هفته در قاب"><div class="frame"><img src="/assets/zolal/img/photo-village-800.jpg" srcset="/assets/zolal/img/photo-village-800.jpg 800w, /assets/zolal/img/photo-village-1600.jpg 1600w" sizes="(min-width:960px) 220px, 25vw" width="1600" height="1062" loading="lazy" alt="روستای پلکانی کوهستانی با خانه‌های کاه‌گلی در مه"></div></a>
+        <a class="card-link" href="/news/gallery#p4" aria-label="عکس ۴ از مجموعهٔ هفته در قاب"><div class="frame"><img src="/assets/zolal/img/photo-metro-800.jpg" srcset="/assets/zolal/img/photo-metro-800.jpg 800w, /assets/zolal/img/photo-metro-1600.jpg 1600w" sizes="(min-width:960px) 220px, 25vw" width="1600" height="1062" loading="lazy" alt="سکوی ایستگاه مترو هنگام رسیدن قطار"></div></a>
+        <a class="card-link" href="/news/gallery#p5" aria-label="عکس ۵ از مجموعهٔ هفته در قاب"><div class="frame"><img src="/assets/zolal/img/prov-yazd-800.jpg" srcset="/assets/zolal/img/prov-yazd-800.jpg 800w, /assets/zolal/img/prov-yazd-1600.jpg 1600w" sizes="(min-width:960px) 220px, 25vw" width="1600" height="1062" loading="lazy" alt="بافت تاریخی یزد با بادگیرها و گنبد آب‌انبار در نور غروب"></div></a>
+      </div>
+    </div>
+
+    <section class="section" aria-labelledby="all-a" style="padding-bottom:0">
+      <div class="sec-head"><h2 id="all-a"><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>همهٔ گزارش‌های تصویری</h2></div>
+      <p class="filter-status" id="a-status" role="status" aria-live="polite"></p>
+      <div>
+        <div class="a-grid" id="a-list">
+          <a class="acard card-link" href="/news/gallery" data-cat="prov"><div class="frame"><img src="/assets/zolal/img/photo-rice-800.jpg" srcset="/assets/zolal/img/photo-rice-800.jpg 800w, /assets/zolal/img/photo-rice-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="شالیزارهای سبز در مه صبحگاهی با کشاورزی در دوردست"><span class="count"><svg aria-hidden="true"><use href="#i-camera"/></svg>۱۴ عکس</span></div><h3>برداشت برنج در شالیزارهای گیلان</h3><div class="meta"><span>عکس: رضا مقدم</span><time>۱۳ مهر ۱۴۰۵</time></div></a>
+          <a class="acard card-link" href="/news/gallery" data-cat="nature prov"><div class="frame"><img src="/assets/zolal/img/photo-village-800.jpg" srcset="/assets/zolal/img/photo-village-800.jpg 800w, /assets/zolal/img/photo-village-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="روستای پلکانی کوهستانی با خانه‌های کاه‌گلی در مه"><span class="count"><svg aria-hidden="true"><use href="#i-camera"/></svg>۹ عکس</span></div><h3>مه پاییزی در روستاهای پلکانی</h3><div class="meta"><span>عکس: علی صالحی</span><time>۱۳ مهر ۱۴۰۵</time></div></a>
+          <a class="acard card-link" href="/news/gallery" data-cat="society"><div class="frame"><img src="/assets/zolal/img/photo-metro-800.jpg" srcset="/assets/zolal/img/photo-metro-800.jpg 800w, /assets/zolal/img/photo-metro-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="سکوی ایستگاه مترو هنگام رسیدن قطار"><span class="count"><svg aria-hidden="true"><use href="#i-camera"/></svg>۱۱ عکس</span></div><h3>یک صبح معمولی در مترو</h3><div class="meta"><span>عکس: نگار فرهادی</span><time>۱۲ مهر ۱۴۰۵</time></div></a>
+          <a class="acard card-link" href="/news/gallery" data-cat="culture prov"><div class="frame"><img src="/assets/zolal/img/prov-yazd-800.jpg" srcset="/assets/zolal/img/prov-yazd-800.jpg 800w, /assets/zolal/img/prov-yazd-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="بافت تاریخی یزد با بادگیرها و گنبد آب‌انبار در نور غروب"><span class="count"><svg aria-hidden="true"><use href="#i-camera"/></svg>۱۶ عکس</span></div><h3>بادگیرها و آب‌انبارهای یزد</h3><div class="meta"><span>عکس: محمد کاظمی</span><time>۱۲ مهر ۱۴۰۵</time></div></a>
+          <a class="acard card-link" href="/news/gallery" data-cat="nature society"><div class="frame"><img src="/assets/zolal/img/lead-dam-800.jpg" srcset="/assets/zolal/img/lead-dam-800.jpg 800w, /assets/zolal/img/lead-dam-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="سد ذخیرهٔ آب در میان کوه‌ها با سطح آب پایین و حاشیهٔ خشک‌شدهٔ دریاچه"><span class="count"><svg aria-hidden="true"><use href="#i-camera"/></svg>۸ عکس</span></div><h3>سدهای تهران در پاییز</h3><div class="meta"><span>عکس: زلال</span><time>۱۴ مهر ۱۴۰۵</time></div></a>
+          <a class="acard card-link" href="/news/gallery" data-cat="economy"><div class="frame"><img src="/assets/zolal/img/economy-port-800.jpg" srcset="/assets/zolal/img/economy-port-800.jpg 800w, /assets/zolal/img/economy-port-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="بندر تجاری با ردیف کانتینرها، جرثقیل‌های بزرگ و یک کشتی باری در مه صبحگاهی"><span class="count"><svg aria-hidden="true"><use href="#i-camera"/></svg>۱۰ عکس</span></div><h3>رکورد تازهٔ بندرهای جنوب</h3><div class="meta"><span>عکس: حسن رحیمی</span><time>۱۱ مهر ۱۴۰۵</time></div></a>
+          <a class="acard card-link" href="/news/gallery" data-cat="society"><div class="frame"><img src="/assets/zolal/img/society-class-800.jpg" srcset="/assets/zolal/img/society-class-800.jpg 800w, /assets/zolal/img/society-class-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="کلاس درس خالی با نیمکت‌های چوبی و تخته‌سیاه سبز در نور صبح"><span class="count"><svg aria-hidden="true"><use href="#i-camera"/></svg>۱۵ عکس</span></div><h3>نخستین روز مدرسه</h3><div class="meta"><span>عکس: مریم صادقی</span><time>۱ مهر ۱۴۰۵</time></div></a>
+          <a class="acard card-link" href="/news/gallery" data-cat="culture"><div class="frame"><img src="/assets/zolal/img/culture-cinema-800.jpg" srcset="/assets/zolal/img/culture-cinema-800.jpg 800w, /assets/zolal/img/culture-cinema-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="سالن سینما با صندلی‌های قرمز و نور پروژکتور در فضای مه‌آلود"><span class="count"><svg aria-hidden="true"><use href="#i-camera"/></svg>۷ عکس</span></div><h3>سالن‌های سینما پیش از جشنواره</h3><div class="meta"><span>عکس: امید کرمی</span><time>۱۰ مهر ۱۴۰۵</time></div></a>
+          <a class="acard card-link" href="/news/gallery" data-cat="sport"><div class="frame"><img src="/assets/zolal/img/sport-volley-800.jpg" srcset="/assets/zolal/img/sport-volley-800.jpg 800w, /assets/zolal/img/sport-volley-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="توپ والیبال روی کف چوبی سالن سرپوشیدهٔ خالی"><span class="count"><svg aria-hidden="true"><use href="#i-camera"/></svg>۱۲ عکس</span></div><h3>تمرین تیم ملی والیبال</h3><div class="meta"><span>عکس: آرش نوری</span><time>۹ مهر ۱۴۰۵</time></div></a>
+          <a class="acard card-link" href="/news/gallery" data-cat="society economy"><div class="frame"><img src="/assets/zolal/img/world-airport-800.jpg" srcset="/assets/zolal/img/world-airport-800.jpg 800w, /assets/zolal/img/world-airport-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="هواپیمای مسافربری در کنار ترمینال فرودگاه، دیده‌شده از پشت شیشه در طلوع آفتاب"><span class="count"><svg aria-hidden="true"><use href="#i-camera"/></svg>۶ عکس</span></div><h3>طلوع در فرودگاه</h3><div class="meta"><span>عکس: سارا امینی</span><time>۹ مهر ۱۴۰۵</time></div></a>
+          <a class="acard card-link" href="/news/gallery" data-cat="politics"><div class="frame"><img src="/assets/zolal/img/politics-press-800.jpg" srcset="/assets/zolal/img/politics-press-800.jpg 800w, /assets/zolal/img/politics-press-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="1062" loading="lazy" alt="سالن نشست خبری با تریبون چوبی، میکروفون‌ها و صندلی‌های خالی"><span class="count"><svg aria-hidden="true"><use href="#i-camera"/></svg>۸ عکس</span></div><h3>پشت تریبون؛ یک روز در سالن نشست‌های خبری</h3><div class="meta"><span>عکس: حسن رحیمی</span><time>۸ مهر ۱۴۰۵</time></div></a>
+          <a class="acard card-link" href="/news/gallery" data-cat="nature"><div class="frame"><img src="/assets/zolal/img/video-spring-800.jpg" srcset="/assets/zolal/img/video-spring-800.jpg 800w, /assets/zolal/img/video-spring-1600.jpg 1600w" sizes="(min-width:1100px) 380px, (min-width:720px) 50vw, 100vw" width="1600" height="893" loading="lazy" alt="نمای زیر آب یک چشمه با نور خورشید و ذرات شن معلق"><span class="count"><svg aria-hidden="true"><use href="#i-camera"/></svg>۱۰ عکس</span></div><h3>زیر آب چشمه‌های زاگرس</h3><div class="meta"><span>عکس: لیلا رضوانی</span><time>۸ مهر ۱۴۰۵</time></div></a>
+        </div>
+        <p class="empty" hidden>گزارش تصویری در این دسته نیست.</p>
+      </div>
+      <nav class="pager" aria-label="صفحه‌بندی"><span aria-current="page">۱</span><a href="#">۲</a><a href="#">۳</a><a href="#">۴</a><span class="gap" aria-hidden="true">…</span><a href="#">۱۲</a><a href="#">بعدی</a></nav>
+    </section>
+  </div>
+</main>
+
+</body>
+</html>

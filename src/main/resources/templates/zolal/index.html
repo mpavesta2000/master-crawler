@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{zolal/layout}">
+
+<head>
+<title>خبرگزاری زلال | خبر دقیق و روشن از ایران و جهان</title>
+<th:block layout:fragment="meta">
+<meta name="description" content="خبرگزاری زلال: آخرین اخبار سیاسی، اقتصادی، اجتماعی، بین‌الملل، فرهنگی، ورزشی و استان‌ها. خبر را وقتی منتشر می‌کنیم که روشن شده باشد.">
+<meta property="og:title" content="خبرگزاری زلال">
+<meta property="og:description" content="خبر دقیق و روشن از ایران و جهان.">
+<meta property="og:image" content="https://example.com/assets/zolal/img/lead-dam-1600.jpg">
+<link rel="preload" as="image" href="/assets/zolal/img/lead-dam-1600.jpg" imagesrcset="/assets/zolal/img/lead-dam-800.jpg 800w, /assets/zolal/img/lead-dam-1600.jpg 1600w" imagesizes="(min-width:1100px) 680px, 100vw">
+</th:block>
+</head>
+
+<body>
+
+<main layout:fragment="main" id="main" tabindex="-1">
+  <h1 class="sr-only">خبرگزاری زلال، صفحه اصلی</h1>
+
+  <!-- lead block -->
+  <div class="wrap lead-grid" id="news">
+    <article class="lead">
+      <a class="card-link" href="/news">
+        <div class="frame">
+          <img src="/assets/zolal/img/lead-dam-1600.jpg" srcset="/assets/zolal/img/lead-dam-800.jpg 800w, /assets/zolal/img/lead-dam-1600.jpg 1600w" sizes="(min-width:1100px) 680px, 100vw" width="1600" height="1067" alt="سد ذخیرهٔ آب در میان کوه‌ها با سطح آب پایین و حاشیهٔ خشک‌شدهٔ دریاچه" fetchpriority="high">
+        </div>
+      </a>
+      <div class="lead__body">
+        <div class="lead__status">
+          <span class="status status--live"><svg aria-hidden="true"><use href="#i-live"/></svg>در حال پیگیری</span>
+          <span>آخرین به‌روزرسانی: <time>۱۳:۱۵</time></span>
+        </div>
+        <span class="kicker">آب و محیط زیست</span>
+        <a class="card-link" href="/news"><h2>ذخیرهٔ سدهای تهران به ۲۹ درصد رسید؛ فشار آب شب‌ها از شنبه کاهش می‌یابد</h2></a>
+        <p class="lead__lede">شرکت آب منطقه‌ای تهران اعلام کرد حجم آب پنج سد تأمین‌کنندهٔ پایتخت به ۲۹ درصد ظرفیت رسیده است. بر اساس این اطلاعیه، از شنبه ۱۹ مهر فشار آب شبکه از ساعت ۲۳ تا ۵ بامداد کاهش می‌یابد و آب‌رسانی در طول روز ادامه دارد.</p>
+        <div class="meta"><time>۱۴۰۵/۰۷/۱۴، ساعت ۱۲:۴۰</time><span>کد خبر: ۸۴۲۱۷</span><span>زمان مطالعه: ۳ دقیقه</span></div>
+
+        <section class="know" aria-labelledby="know-title">
+          <div class="know__head">
+            <h3 id="know-title">این خبر در حال تکمیل است</h3>
+            <time>بازبینی: امروز، ۱۳:۱۵</time>
+          </div>
+          <div class="know__cols">
+            <div class="know__col know__col--yes">
+              <h4><svg aria-hidden="true"><use href="#i-check"/></svg>آنچه می‌دانیم</h4>
+              <ul>
+                <li>حجم آب پنج سد اصلی تهران ۲۹ درصد ظرفیت است.<span class="know__src">منبع: شرکت آب منطقه‌ای تهران</span></li>
+                <li>کاهش فشار شبانه از شنبه ۱۹ مهر، ساعت ۲۳ تا ۵ بامداد اجرا می‌شود.</li>
+                <li>آب‌رسانی در ساعت‌های روز قطع نمی‌شود.</li>
+              </ul>
+            </div>
+            <div class="know__col know__col--no">
+              <h4><svg aria-hidden="true"><use href="#i-open"/></svg>آنچه هنوز نمی‌دانیم</h4>
+              <ul>
+                <li>فهرست محله‌هایی که زودتر مشمول این برنامه می‌شوند.</li>
+                <li>مدت اجرای برنامه و تاریخ پایان آن.</li>
+                <li>وضعیت شهرهای اطراف تهران.</li>
+              </ul>
+            </div>
+          </div>
+          <p class="know__foot">این خبر با دریافت هر اطلاع رسمی تازه به‌روز می‌شود و زمان هر تغییر کنار آن ثبت می‌شود.</p>
+        </section>
+      </div>
+    </article>
+
+    <section class="side" aria-labelledby="picks-title">
+      <h2 id="picks-title">انتخاب سردبیر</h2>
+      <ul class="story-list">
+        <li><a href="/news"><span class="t">پیش‌بینی هواشناسی: پاییز امسال پربارش‌تر از میانگین بلندمدت است</span><span class="m"><span class="tagline">محیط زیست</span><time>۱۲:۱۰</time></span></a></li>
+        <li><a href="/news"><span class="t">خرید تضمینی گندم پایان یافت؛ ۷.۸ میلیون تن از کشاورزان خریداری شد</span><span class="m"><span class="tagline">اقتصادی</span><time>۱۱:۴۵</time></span></a></li>
+        <li><a href="/news"><span class="t">سه پایه، یک کلاس، یک معلم؛ گزارش زلال از مدرسه‌های چندپایه در سیستان و بلوچستان</span><span class="m"><span class="tagline tagline--report">گزارش</span><time>۱۱:۲۰</time></span></a></li>
+        <li><a href="/news"><span class="t">ثبت‌نام وام ودیعهٔ مسکن مستأجران از ۲۰ مهر آغاز می‌شود</span><span class="m"><span class="tagline">اجتماعی</span><time>۱۰:۵۵</time></span></a></li>
+        <li><a href="/news"><span class="t">نمایشگاه‌های استانی کتاب در ۱۸ شهر برگزار می‌شود</span><span class="m"><span class="tagline">فرهنگی</span><time>۱۰:۳۰</time></span></a></li>
+        <li><a href="/news"><span class="t">وزارت بهداشت فهرست داروهای کمیاب هفتهٔ دوم مهر را منتشر کرد</span><span class="m"><span class="tagline">سلامت</span><time>۱۰:۰۵</time></span></a></li>
+      </ul>
+
+      <h2 class="side__sub" id="files-title">پرونده‌های ویژه</h2>
+      <ul class="files" aria-labelledby="files-title">
+        <li><a href="#"><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg><span><b>کم‌آبی تهران</b><small>۲۴ خبر و گزارش</small></span></a></li>
+        <li><a href="#"><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg><span><b>بودجهٔ ۱۴۰۶</b><small>۱۸ خبر و گزارش</small></span></a></li>
+        <li><a href="#"><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg><span><b>سال تحصیلی تازه</b><small>۳۱ خبر و گزارش</small></span></a></li>
+        <li><a href="#"><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg><span><b>بارش‌های پاییزی</b><small>۹ خبر و گزارش</small></span></a></li>
+      </ul>
+    </section>
+
+    <section class="side" data-tabs aria-label="آخرین و پربازدیدترین اخبار">
+      <div class="tabs__list" role="tablist">
+        <button class="tabs__btn" role="tab" id="tab-latest" aria-controls="panel-latest" aria-selected="true">آخرین اخبار</button>
+        <button class="tabs__btn" role="tab" id="tab-top" aria-controls="panel-top" aria-selected="false" tabindex="-1">پربازدید</button>
+      </div>
+      <div class="tabs__panel" role="tabpanel" id="panel-latest" aria-labelledby="tab-latest">
+        <ul class="story-list">
+          <li><a href="/news"><span class="t">یارانهٔ نقدی مهرماه به حساب سرپرستان خانوار واریز شد</span><span class="m"><time>۱۳:۲۲</time></span></a></li>
+          <li><a href="/news"><span class="t">پروازهای فرودگاه مشهد پس از برطرف شدن مه صبحگاهی از سر گرفته شد</span><span class="m"><time>۱۳:۱۸</time></span></a></li>
+          <li><a href="/news"><span class="t">قیمت نان در استان تهران تا پایان سال تغییر نمی‌کند</span><span class="m"><time>۱۳:۰۹</time></span></a></li>
+          <li><a href="/news"><span class="t">برنامهٔ کامل هفتهٔ هشتم لیگ برتر فوتبال اعلام شد</span><span class="m"><time>۱۲:۵۷</time></span></a></li>
+          <li><a href="/news"><span class="t">واکسیناسیون آنفلوآنزای گروه‌های پرخطر از اول آبان آغاز می‌شود</span><span class="m"><time>۱۲:۴۸</time></span></a></li>
+          <li><a href="/news"><span class="t">سامانهٔ ثبت شکایت مشترکان برق راه‌اندازی شد</span><span class="m"><time>۱۲:۳۶</time></span></a></li>
+          <li><a href="/news"><span class="t">مرمت سه کاروانسرای ثبت جهانی آغاز شد</span><span class="m"><time>۱۲:۲۱</time></span></a></li>
+          <li><a href="/news"><span class="t">سازمان ملل: کم‌آبی بیش از ۴۰ درصد جمعیت جهان را تحت تأثیر قرار داده است</span><span class="m"><time>۱۲:۰۲</time></span></a></li>
+          <li><a href="/news"><span class="t">آزمون استخدامی آموزش و پرورش در ۳۱ استان برگزار می‌شود</span><span class="m"><time>۱۱:۵۵</time></span></a></li>
+          <li><a href="/news"><span class="t">بازگشایی جادهٔ چالوس پس از پایان عملیات لایروبی</span><span class="m"><time>۱۱:۴۰</time></span></a></li>
+        </ul>
+      </div>
+      <div class="tabs__panel" role="tabpanel" id="panel-top" aria-labelledby="tab-top" hidden>
+        <ul class="story-list ranked">
+          <li><a href="/news"><span class="t">ساعت کاری ادارات استان تهران از شنبه تغییر می‌کند</span></a></li>
+          <li><a href="/news"><span class="t">کاهش فشار آب در تهران؛ آنچه تا این لحظه می‌دانیم</span></a></li>
+          <li><a href="/news"><span class="t">وام ودیعهٔ مسکن؛ شرایط، مدارک و مبلغ</span></a></li>
+          <li><a href="/news"><span class="t">پیش‌بینی هواشناسی برای سه ماه پاییز</span></a></li>
+          <li><a href="/news"><span class="t">قیمت بلیت قطارهای آبان‌ماه اعلام شد</span></a></li>
+          <li><a href="/news"><span class="t">فهرست داروهای کمیاب هفتهٔ دوم مهر</span></a></li>
+          <li><a href="/news"><span class="t">آزمون استخدامی آموزش و پرورش؛ زمان ثبت‌نام</span></a></li>
+          <li><a href="/news"><span class="t">یارانهٔ مهرماه واریز شد</span></a></li>
+          <li><a href="/news"><span class="t">برنامهٔ هفتهٔ هشتم لیگ برتر فوتبال</span></a></li>
+          <li><a href="/news"><span class="t">بازگشایی جادهٔ چالوس</span></a></li>
+        </ul>
+      </div>
+      <a class="list-more" href="/archive">آرشیو اخبار امروز</a>
+    </section>
+  </div>
+
+  <!-- info strip -->
+  <section class="section" aria-label="اطلاعات روز">
+    <div class="wrap info">
+      <div class="widget">
+        <h2>اوقات شرعی به افق تهران <small>۱۴ مهر</small></h2>
+        <dl class="prayer">
+          <div><dt>اذان صبح</dt><dd>۰۴:۴۰</dd></div>
+          <div><dt>طلوع آفتاب</dt><dd>۰۶:۰۳</dd></div>
+          <div><dt>اذان ظهر</dt><dd>۱۱:۵۲</dd></div>
+          <div><dt>غروب آفتاب</dt><dd>۱۷:۴۱</dd></div>
+          <div><dt>اذان مغرب</dt><dd>۱۷:۵۹</dd></div>
+        </dl>
+      </div>
+      <div class="widget">
+        <h2>هوای تهران <small>اکنون</small></h2>
+        <div class="weather">
+          <svg aria-hidden="true"><use href="#i-weather"/></svg>
+          <div>
+            <p class="weather__now"><bdi dir="ltr">۲۲°</bdi></p>
+            <p class="weather__desc">نیمه‌ابری، باد ملایم</p>
+          </div>
+        </div>
+        <p class="weather__next"><span>فردا <b><bdi dir="ltr">۱۸°</bdi> بارانی</b></span><span>پس‌فردا <b><bdi dir="ltr">۱۷°</bdi> ابری</b></span></p>
+      </div>
+      <div class="widget widget--market">
+        <h2>بازار امروز <small>داده‌های نمونه</small></h2>
+        <ul class="market">
+          <li><span>شاخص کل بورس</span><span class="v">۷٬۹۶۴٬۲۱۰</span><span class="d up">▲ ۰٫۸٪</span></li>
+          <li><span>سکهٔ امامی (تومان)</span><span class="v">۸۹٬۴۰۰٬۰۰۰</span><span class="d down">▼ ۰٫۴٪</span></li>
+          <li><span>طلای ۱۸ عیار، هر گرم (تومان)</span><span class="v">۸٬۶۵۰٬۰۰۰</span><span class="d down">▼ ۰٫۳٪</span></li>
+          <li><span>نفت برنت (دلار)</span><span class="v">۷۱٫۴</span><span class="d up">▲ ۱٫۱٪</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- category grid -->
+  <section class="section" aria-labelledby="cats-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 id="cats-title"><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>سرویس‌های خبری</h2>
+      </div>
+      <div class="cats">
+
+        <article class="cat" id="cat-politics">
+          <div class="cat__head"><h3>سیاسی</h3><a class="more" href="#">همهٔ اخبار سیاسی</a></div>
+          <a class="card-link cat__top" href="/news">
+            <div class="frame"><img src="/assets/zolal/img/politics-press-800.jpg" srcset="/assets/zolal/img/politics-press-800.jpg 800w, /assets/zolal/img/politics-press-1600.jpg 1600w" sizes="(min-width:1100px) 390px, (min-width:720px) 50vw, 100vw" width="800" height="533" loading="lazy" alt="سالن نشست خبری با تریبون چوبی، میکروفون‌ها و صندلی‌های خالی"></div>
+            <h4 style="margin-top:10px">مجلس بررسی لایحهٔ بودجهٔ ۱۴۰۶ را از نیمهٔ آبان آغاز می‌کند</h4>
+            <div class="meta"><time>۱۲:۳۰</time></div>
+          </a>
+          <ul class="story-list">
+            <li><a href="/news"><span class="t">جلسهٔ هفتگی هیئت دولت این هفته چهارشنبه برگزار می‌شود</span></a></li>
+            <li><a href="/news"><span class="t">کمیسیون اصل ۹۰ گزارش شکایت‌های مردمی شش‌ماهه را منتشر کرد</span></a></li>
+            <li><a href="/news"><span class="t">ثبت‌نام داوطلبان انتخابات شوراهای شهر و روستا از دی‌ماه</span></a></li>
+          </ul>
+        </article>
+
+        <article class="cat" id="cat-economy">
+          <div class="cat__head"><h3>اقتصادی</h3><a class="more" href="#">همهٔ اخبار اقتصادی</a></div>
+          <a class="card-link cat__top" href="/news">
+            <div class="frame"><img src="/assets/zolal/img/economy-port-800.jpg" srcset="/assets/zolal/img/economy-port-800.jpg 800w, /assets/zolal/img/economy-port-1600.jpg 1600w" sizes="(min-width:1100px) 390px, (min-width:720px) 50vw, 100vw" width="800" height="533" loading="lazy" alt="بندر تجاری با ردیف کانتینرها، جرثقیل‌های بزرگ و یک کشتی باری در مه صبحگاهی"></div>
+            <h4 style="margin-top:10px">صادرات غیرنفتی در شش‌ماههٔ نخست سال ۸ درصد افزایش یافت</h4>
+            <div class="meta"><time>۱۲:۲۵</time></div>
+          </a>
+          <ul class="story-list">
+            <li><a href="/news"><span class="t">مرکز آمار نرخ تورم شهریورماه را هفتهٔ آینده اعلام می‌کند</span></a></li>
+            <li><a href="/news"><span class="t">پرداخت تسهیلات قرض‌الحسنه به ۱۲۰ هزار واحد تولیدی کوچک</span></a></li>
+            <li><a href="/news"><span class="t">رکورد تخلیه و بارگیری کانتینر در بنادر جنوبی شکسته شد</span></a></li>
+          </ul>
+        </article>
+
+        <article class="cat" id="cat-society">
+          <div class="cat__head"><h3>اجتماعی</h3><a class="more" href="#">همهٔ اخبار اجتماعی</a></div>
+          <a class="card-link cat__top" href="/news">
+            <div class="frame"><img src="/assets/zolal/img/society-class-800.jpg" srcset="/assets/zolal/img/society-class-800.jpg 800w, /assets/zolal/img/society-class-1600.jpg 1600w" sizes="(min-width:1100px) 390px, (min-width:720px) 50vw, 100vw" width="800" height="533" loading="lazy" alt="کلاس درس خالی با نیمکت‌های چوبی و تخته‌سیاه سبز در نور صبح"></div>
+            <h4 style="margin-top:10px">سال تحصیلی با حضور ۱۶ میلیون دانش‌آموز آغاز شد</h4>
+            <div class="meta"><time>۱۱:۵۰</time></div>
+          </a>
+          <ul class="story-list">
+            <li><a href="/news"><span class="t">۸۰۰ مدرسهٔ فرسوده در تهران در نوبت نوسازی است</span></a></li>
+            <li><a href="/news"><span class="t">طرح سلامت دهان و دندان دانش‌آموزان در ۱۰ استان اجرا می‌شود</span></a></li>
+            <li><a href="/news"><span class="t">ثبت‌نام مهدهای کودک حمایتی تا پایان مهر ادامه دارد</span></a></li>
+          </ul>
+        </article>
+
+        <article class="cat" id="cat-world">
+          <div class="cat__head"><h3>بین‌الملل</h3><a class="more" href="#">همهٔ اخبار بین‌الملل</a></div>
+          <a class="card-link cat__top" href="/news">
+            <div class="frame"><img src="/assets/zolal/img/world-airport-800.jpg" srcset="/assets/zolal/img/world-airport-800.jpg 800w, /assets/zolal/img/world-airport-1600.jpg 1600w" sizes="(min-width:1100px) 390px, (min-width:720px) 50vw, 100vw" width="800" height="533" loading="lazy" alt="هواپیمای مسافربری در کنار ترمینال فرودگاه، دیده‌شده از پشت شیشه در طلوع آفتاب"></div>
+            <h4 style="margin-top:10px">پروازهای مستقیم تهران به سه مقصد آسیایی از آبان برقرار می‌شود</h4>
+            <div class="meta"><time>۱۱:۳۵</time></div>
+          </a>
+          <ul class="story-list">
+            <li><a href="/news"><span class="t">نشست سالانهٔ آب سازمان ملل در ژنو آغاز شد</span></a></li>
+            <li><a href="/news"><span class="t">همکاری حمل‌ونقل ریلی ایران و آسیای میانه در دستور کار</span></a></li>
+            <li><a href="/news"><span class="t">سازمان جهانی هواشناسی: تابستان امسال در شمار گرم‌ترین تابستان‌های ثبت‌شده بود</span></a></li>
+          </ul>
+        </article>
+
+        <article class="cat" id="cat-culture">
+          <div class="cat__head"><h3>فرهنگی</h3><a class="more" href="#">همهٔ اخبار فرهنگی</a></div>
+          <a class="card-link cat__top" href="/news">
+            <div class="frame"><img src="/assets/zolal/img/culture-cinema-800.jpg" srcset="/assets/zolal/img/culture-cinema-800.jpg 800w, /assets/zolal/img/culture-cinema-1600.jpg 1600w" sizes="(min-width:1100px) 390px, (min-width:720px) 50vw, 100vw" width="800" height="533" loading="lazy" alt="سالن سینما با صندلی‌های قرمز و نور پروژکتور در فضای مه‌آلود"></div>
+            <h4 style="margin-top:10px">۱۲ فیلم در بخش مسابقهٔ جشنوارهٔ فیلم کودک و نوجوان رقابت می‌کنند</h4>
+            <div class="meta"><time>۱۱:۱۰</time></div>
+          </a>
+          <ul class="story-list">
+            <li><a href="/news"><span class="t">ارکستر ملی آبان‌ماه در تالار وحدت اجرا می‌کند</span></a></li>
+            <li><a href="/news"><span class="t">۲۰۰ عنوان کتاب کودک در هفتهٔ کتاب رونمایی می‌شود</span></a></li>
+            <li><a href="/news"><span class="t">موزهٔ آب یزد پس از مرمت بازگشایی شد</span></a></li>
+          </ul>
+        </article>
+
+        <article class="cat" id="cat-sport">
+          <div class="cat__head"><h3>ورزشی</h3><a class="more" href="#">همهٔ اخبار ورزشی</a></div>
+          <a class="card-link cat__top" href="/news">
+            <div class="frame"><img src="/assets/zolal/img/sport-volley-800.jpg" srcset="/assets/zolal/img/sport-volley-800.jpg 800w, /assets/zolal/img/sport-volley-1600.jpg 1600w" sizes="(min-width:1100px) 390px, (min-width:720px) 50vw, 100vw" width="800" height="533" loading="lazy" alt="توپ والیبال روی کف چوبی سالن سرپوشیدهٔ خالی"></div>
+            <h4 style="margin-top:10px">برنامهٔ تیم ملی والیبال تا لیگ ملت‌های ۲۰۲۷ اعلام شد</h4>
+            <div class="meta"><time>۱۰:۴۵</time></div>
+          </a>
+          <ul class="story-list">
+            <li><a href="/news"><span class="t">داوران هفتهٔ هشتم لیگ برتر فوتبال معرفی شدند</span></a></li>
+            <li><a href="/news"><span class="t">اردوی تیم ملی کشتی آزاد از ۲۰ مهر در تهران برگزار می‌شود</span></a></li>
+            <li><a href="/news"><span class="t">مسابقات قهرمانی شنای کشور در اصفهان آغاز شد</span></a></li>
+          </ul>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- science + opinions -->
+  <section class="section">
+    <div class="wrap duo">
+      <div id="science">
+        <div class="sec-head"><h2><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>علم و فناوری</h2><a class="more" href="#">بیشتر</a></div>
+        <ol class="numbered">
+          <li><a href="/news">پرتاب دو ماهوارهٔ سنجشی تا پایان سال در برنامه است</a></li>
+          <li><a href="/news">اینترنت پرسرعت در ۵۰۰ روستای دیگر به‌صورت آزمایشی راه‌اندازی می‌شود</a></li>
+          <li><a href="/news">ثبت‌نام دکتری بدون آزمون در دانشگاه‌ها آغاز شد</a></li>
+          <li><a href="/news">روش تازهٔ پژوهشگران ایرانی برای تصفیهٔ پساب صنعتی</a></li>
+          <li><a href="/news">برندگان جایزهٔ ملی نوآوری آذرماه معرفی می‌شوند</a></li>
+        </ol>
+      </div>
+      <div id="opinions">
+        <div class="sec-head"><h2><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>یادداشت</h2><a class="more" href="#">همهٔ یادداشت‌ها</a></div>
+        <div class="opinions">
+          <a class="op" href="/news"><span class="op__av" aria-hidden="true">م</span><div><h3>کم‌آبی را با جدول ساعت حل نمی‌کنیم</h3><p>مریم توکلی، پژوهشگر منابع آب</p></div></a>
+          <a class="op" href="/news"><span class="op__av" aria-hidden="true">ح</span><div><h3>بودجهٔ ۱۴۰۶ و پرسش‌هایی که پیش از تصویب باید پاسخ بگیرند</h3><p>حمید رستگار، اقتصاددان</p></div></a>
+          <a class="op" href="/news"><span class="op__av" aria-hidden="true">ن</span><div><h3>تیتر دقیق، احترام به خواننده است</h3><p>نسرین کاظمی، روزنامه‌نگار</p></div></a>
+          <a class="op" href="/news"><span class="op__av" aria-hidden="true">ب</span><div><h3>مدرسه‌های چندپایه را نباید فراموش کرد</h3><p>بهزاد نیک‌نام، پژوهشگر آموزش</p></div></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- multimedia -->
+  <section class="deep" id="multimedia" aria-labelledby="mm-title">
+    <div class="wrap">
+      <div class="sec-head"><h2 id="mm-title"><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>چندرسانه‌ای</h2><span class="more-links"><a class="more" href="/videos">همهٔ ویدیوها</a><a class="more" href="/gallery">همهٔ عکس‌ها</a></span></div>
+      <div class="mm">
+        <a class="mm__feature card-link" href="/news/video">
+          <div class="frame">
+            <span class="mm__type">ویدیو</span>
+            <img src="/assets/zolal/img/video-spring-1600.jpg" srcset="/assets/zolal/img/video-spring-800.jpg 800w, /assets/zolal/img/video-spring-1600.jpg 1600w" sizes="(min-width:960px) 700px, 100vw" width="1600" height="893" loading="lazy" alt="نمای زیر آب یک چشمه با نور خورشید و ذرات شن معلق">
+            <span class="play" aria-hidden="true"><span><svg><use href="#i-play"/></svg></span></span>
+            <span class="dur">۰۴:۱۲</span>
+          </div>
+          <div class="mm__cap"><h3>مستند کوتاه: چشمه‌هایی که هنوز زلال‌اند</h3><p>گزارش تصویری از چشمه‌های دائمی زاگرس</p></div>
+        </a>
+        <div class="mm__grid">
+          <a class="mm__item card-link" href="/news/gallery#p1">
+            <div class="frame"><span class="mm__type">عکس</span><img src="/assets/zolal/img/photo-rain-800.jpg" width="800" height="533" loading="lazy" alt="خیابانی با درختان چنار و برگ‌های زرد در نخستین باران پاییزی"></div>
+            <div class="mm__cap"><h3>نخستین باران پاییزی در خیابان‌های شهر</h3><p>عکس: سارا امینی</p></div>
+          </a>
+          <a class="mm__item card-link" href="/news/gallery#p2">
+            <div class="frame"><span class="mm__type">عکس</span><img src="/assets/zolal/img/photo-rice-800.jpg" width="800" height="533" loading="lazy" alt="شالیزارهای سبز در مه صبحگاهی با کشاورزی در دوردست"></div>
+            <div class="mm__cap"><h3>برداشت برنج در شالیزارهای گیلان</h3><p>عکس: رضا مقدم</p></div>
+          </a>
+          <a class="mm__item card-link" href="/news/gallery#p3">
+            <div class="frame"><span class="mm__type">عکس</span><img src="/assets/zolal/img/photo-village-800.jpg" width="800" height="533" loading="lazy" alt="روستای پلکانی کوهستانی با خانه‌های کاه‌گلی در مه"></div>
+            <div class="mm__cap"><h3>مه پاییزی در روستاهای پلکانی</h3><p>عکس: علی صالحی</p></div>
+          </a>
+          <a class="mm__item card-link" href="/news/gallery#p4">
+            <div class="frame"><span class="mm__type">عکس</span><img src="/assets/zolal/img/photo-metro-800.jpg" width="800" height="533" loading="lazy" alt="سکوی ایستگاه مترو هنگام رسیدن قطار"></div>
+            <div class="mm__cap"><h3>یک صبح معمولی در مترو</h3><p>عکس: نگار فرهادی</p></div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- provinces -->
+  <section class="section" id="provinces" aria-labelledby="prov-title">
+    <div class="wrap">
+      <div class="sec-head"><h2 id="prov-title"><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>استان‌ها</h2><a class="more" href="#">همهٔ اخبار استان‌ها</a></div>
+      <div class="prov">
+        <div>
+          <a class="prov__feature card-link" href="/news">
+            <div class="frame"><img src="/assets/zolal/img/prov-yazd-800.jpg" srcset="/assets/zolal/img/prov-yazd-800.jpg 800w, /assets/zolal/img/prov-yazd-1600.jpg 1600w" sizes="(min-width:960px) 340px, 100vw" width="800" height="533" loading="lazy" alt="بافت تاریخی یزد با بادگیرها و گنبد آب‌انبار در نور غروب"></div>
+            <div>
+              <span class="kicker">یزد</span>
+              <h3>آب‌انبارهای تاریخی یزد دوباره به چرخهٔ آب‌رسانی بازمی‌گردند</h3>
+              <p>ادارهٔ کل میراث فرهنگی استان یزد از مرمت چهار آب‌انبار تاریخی خبر داد. دو آب‌انبار تا پایان سال برای ذخیرهٔ آب باران به کار گرفته می‌شوند.</p>
+            </div>
+          </a>
+          <ul class="story-list">
+            <li><a href="/news"><span class="t"><span class="tagline">فارس</span>برداشت انار در نی‌ریز آغاز شد؛ پیش‌بینی ۴۰ هزار تن محصول</span></a></li>
+            <li><a href="/news"><span class="t"><span class="tagline">گیلان</span>لایروبی ۱۲ رودخانه پیش از بارش‌های پاییزی به پایان رسید</span></a></li>
+            <li><a href="/news"><span class="t"><span class="tagline">خراسان رضوی</span>ظرفیت اقامتگاه‌های زائران در مشهد ۲۰ درصد بیشتر شد</span></a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="chips-note">اخبار هر استان را جداگانه ببینید:</p>
+          <ul class="chips">
+            <li><a href="#">آذربایجان شرقی</a></li><li><a href="#">آذربایجان غربی</a></li><li><a href="#">اردبیل</a></li><li><a href="#">اصفهان</a></li><li><a href="#">البرز</a></li><li><a href="#">ایلام</a></li><li><a href="#">بوشهر</a></li><li><a href="#">تهران</a></li><li><a href="#">چهارمحال و بختیاری</a></li><li><a href="#">خراسان جنوبی</a></li><li><a href="#">خراسان رضوی</a></li><li><a href="#">خراسان شمالی</a></li><li><a href="#">خوزستان</a></li><li><a href="#">زنجان</a></li><li><a href="#">سمنان</a></li><li><a href="#">سیستان و بلوچستان</a></li><li><a href="#">فارس</a></li><li><a href="#">قزوین</a></li><li><a href="#">قم</a></li><li><a href="#">کردستان</a></li><li><a href="#">کرمان</a></li><li><a href="#">کرمانشاه</a></li><li><a href="#">کهگیلویه و بویراحمد</a></li><li><a href="#">گلستان</a></li><li><a href="#">گیلان</a></li><li><a href="#">لرستان</a></li><li><a href="#">مازندران</a></li><li><a href="#">مرکزی</a></li><li><a href="#">هرمزگان</a></li><li><a href="#">همدان</a></li><li><a href="#">یزد</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- principles + corrections -->
+  <section class="section">
+    <div class="wrap trust">
+      <div>
+        <div class="sec-head"><h2><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>اصول خبری زلال</h2><a class="more" href="/principles">متن کامل</a></div>
+        <div class="principles">
+          <div class="principle"><b><span>۱</span>دو منبع مستقل</b><p>هیچ خبری فقط با یک منبع منتشر نمی‌شود.</p></div>
+          <div class="principle"><b><span>۲</span>سند اصلی</b><p>عدد، سند یا تصویر را از منبع اول می‌گیریم.</p></div>
+          <div class="principle"><b><span>۳</span>حق پاسخ</b><p>نظر طرف دیگر خبر را می‌پرسیم و منتشر می‌کنیم.</p></div>
+          <div class="principle"><b><span>۴</span>اصلاح آشکار</b><p>هر اشتباه با ذکر زمان، زیر همان خبر اصلاح می‌شود.</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="sec-head"><h2><svg class="glyph" aria-hidden="true"><use href="#g-vessel"/></svg>اصلاحیه‌ها</h2><a class="more" href="/corrections">همهٔ اصلاحیه‌ها</a></div>
+        <ul class="log">
+          <li><time>۱۴ مهر، ۰۹:۱۰</time><p><span class="fix">اصلاح عدد</span>در خبر «افزایش کرایهٔ مترو» رقم افزایش ۲۵ درصد ذکر شده بود. رقم درست ۲۰ درصد است.</p></li>
+          <li><time>۱۳ مهر، ۱۸:۴۵</time><p><span class="fix">اصلاح سمت</span>سمت یکی از مدیران آموزش و پرورش در گزارش مدرسه‌های چندپایه نادرست نوشته شده بود و اصلاح شد.</p></li>
+          <li><time>۱۲ مهر، ۱۱:۳۰</time><p><span class="fix">اصلاح عکس</span>عکس خبر «بارش در گیلان» مربوط به سال گذشته بود و با عکس همان روز جایگزین شد.</p></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- newsletter -->
+  <section class="section" id="newsletter" aria-labelledby="letter-title">
+    <div class="wrap">
+      <div class="letter">
+        <svg class="letter__lines" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true">
+          <g fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M0 70 C150 50 300 90 450 70 S750 50 900 70 S1100 90 1200 70"/>
+            <path d="M0 130 C150 110 300 150 450 130 S750 110 900 130 S1100 150 1200 130"/>
+            <path d="M0 190 C150 170 300 210 450 190 S750 170 900 190 S1100 210 1200 190"/>
+            <path d="M0 250 C150 230 300 270 450 250 S750 230 900 250 S1100 270 1200 250"/>
+          </g>
+        </svg>
+        <div>
+          <span class="kicker">خبرنامهٔ صبح زلال</span>
+          <h2 id="letter-title">هر روز ساعت ۷ صبح، مهم‌ترین خبرهای تأییدشده در ایمیل شما.</h2>
+          <p>ده خبر، پنج دقیقه مطالعه. هر زمان بخواهید با یک کلیک لغو می‌شود.</p>
+        </div>
+        <form class="form" id="letter-form" novalidate>
+          <label for="email">نشانی ایمیل</label>
+          <div class="form__row">
+            <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="example@mail.ir" required>
+            <button class="btn btn--light" type="submit">عضویت</button>
+          </div>
+          <p class="form__note">ایمیل شما فقط برای ارسال خبرنامه استفاده می‌شود.</p>
+          <p class="form__msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>
