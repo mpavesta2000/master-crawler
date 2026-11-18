@@ -1,4 +1,4 @@
-/* خبرگزاری زلال: site styles. RTL, plain CSS, no build step. */
+/* خبرگزاری هوش مصنوعی: site styles. RTL, plain CSS, no build step. */
 
 :root{
   --canvas:#EEF3F1;
@@ -81,9 +81,10 @@ h1,h2,h3,h4,p{ margin:0; }
 .masthead .wrap{ display:flex; align-items:center; justify-content:space-between; gap:24px; padding-block:14px; }
 .brand{ display:flex; align-items:center; gap:14px; }
 .brand:hover{ color:inherit; }
-.brand__mark{ width:52px; height:52px; flex:none; }
+/* the dashboard logo (assets/images/jahad-logo-*-transparent.png) is portrait, so size by height */
+.brand__mark{ width:auto; height:64px; flex:none; }
 .brand__text{ display:flex; flex-direction:column; line-height:1.2; }
-.brand__word{ font-family:var(--f-mark); font-weight:700; font-size:34px; line-height:1.7; color:var(--brand); margin-block:-14px -6px; }
+.brand__word{ font-family:var(--f-mark); font-weight:700; font-size:34px; line-height:1.7; color:var(--brand); margin-block:-14px 8px; } /* Nastaliq «هوش مصنوعی» has deep tails; the bottom margin keeps them off .brand__sub */
 .brand__sub{ font-size:13px; color:var(--text-secondary); font-weight:500; }
 .brand__latin{ font-family:var(--f-body); font-size:10.5px; letter-spacing:.14em; color:var(--text-secondary); direction:ltr; text-align:right; margin-top:2px; }
 
@@ -109,7 +110,7 @@ h1,h2,h3,h4,p{ margin:0; }
 }
 @media (max-width:719px){
   .masthead .wrap{ padding-block:10px; gap:12px; }
-  .brand__mark{ width:42px; height:42px; }
+  .brand__mark{ width:auto; height:52px; }
   .brand__word{ font-size:28px; }
   .brand__latin{ display:none; }
   .search, .masthead__tools .btn{ display:none; }
@@ -632,7 +633,7 @@ a:hover .play span{ transform:scale(1.06); background:rgba(11,117,121,.85); }
 .about-hero p{ font-size:17px; line-height:2; color:#21363C; margin-top:12px; max-width:56ch; }
 .name-box{ position:relative; overflow:hidden; background:var(--brand); color:var(--on-deep); border-radius:10px; padding:30px clamp(20px,4vw,48px); display:grid; grid-template-columns:auto minmax(0,1fr); gap:20px 36px; align-items:center; }
 .name-box > *:not(.letter__lines){ position:relative; }
-.name-box .brand__word{ font-size:72px; color:#E7F1EF; margin:0; line-height:1.6; }
+.name-box__logo{ width:auto; height:170px; }
 .name-box h2{ font-family:var(--f-display); font-weight:700; font-size:26px; line-height:1.5; color:#E2C99A; margin-bottom:6px; }
 .name-box p{ font-size:16.5px; line-height:2.05; color:#D2E3E1; max-width:72ch; }
 .facts{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; }
@@ -656,6 +657,7 @@ a:hover .play span{ transform:scale(1.06); background:rgba(11,117,121,.85); }
   .about-hero, .contact-grid{ grid-template-columns:1fr; }
   .facts, .services, .people, .offers, .principles--4{ grid-template-columns:repeat(2,minmax(0,1fr)); }
   .name-box{ grid-template-columns:1fr; }
+  .name-box__logo{ height:130px; }
 }
 @media (max-width:559px){
   .facts, .services, .people, .offers, .principles--4{ grid-template-columns:1fr; }

@@ -1,4 +1,4 @@
-/* خبرگزاری زلال: small behaviors. No dependencies. */
+/* خبرگزاری هوش مصنوعی: small behaviors. No dependencies. */
 (() => {
   'use strict';
   const $ = (s, r = document) => r.querySelector(s);
@@ -614,12 +614,12 @@
     emptyEl.hidden = res.length !== 0;
     countEl.textContent = state.q
       ? (res.length ? fa(res.length) + ' نتیجه برای «' + state.q + '»' : 'نتیجه‌ای برای «' + state.q + '» پیدا نشد')
-      : fa(res.length) + ' مطلب' + (res.length && (state.type.length || state.sec.length || state.date !== 'all' || state.prov !== 'all') ? ' با فیلترهای انتخاب‌شده' : ' در زلال');
+      : fa(res.length) + ' مطلب' + (res.length && (state.type.length || state.sec.length || state.date !== 'all' || state.prov !== 'all') ? ' با فیلترهای انتخاب‌شده' : ' در خبرگزاری هوش مصنوعی');
     renderCounts(T);
     renderChips();
     renderPager(res.length);
     writeUrl();
-    document.title = (state.q ? 'جستجو: ' + state.q : 'جستجو') + ' | خبرگزاری زلال';
+    document.title = (state.q ? 'جستجو: ' + state.q : 'جستجو') + ' | خبرگزاری هوش مصنوعی';
   }
 
   function clearAll() {
